@@ -7,6 +7,7 @@ streamlit>=1.37.0
 
 # Scientific & Explainability Stack
 scipy>=1.14.0
+xgboost>=2.1.0
 shap>=0.46.0
 
 # Testing & CI

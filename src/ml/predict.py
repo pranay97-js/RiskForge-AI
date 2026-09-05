@@ -27,21 +27,41 @@ class RiskPredictor:
 
     def __init__(
         self,
-        model_path: str | Path = "models/xgboost.pkl",
+        model_path: Optional[str | Path] = None,
         pipeline_path: str | Path = "models/feature_pipeline.pkl",
     ):
-        self.model_path = Path(model_path)
         self.pipeline_path = Path(pipeline_path)
-
-        if not self.model_path.exists():
-            raise FileNotFoundError(f"Model artifact not found at {self.model_path}")
         if not self.pipeline_path.exists():
             raise FileNotFoundError(f"Pipeline artifact not found at {self.pipeline_path}")
 
-        logger.info("Loading model from %s...", self.model_path)
-        self.model = joblib.load(self.model_path)
         logger.info("Loading feature pipeline from %s...", self.pipeline_path)
         self.pipeline: RiskFeaturePipeline = joblib.load(self.pipeline_path)
+
+        if model_path is not None:
+            self.model_path = Path(model_path)
+        else:
+            xgboost_path = Path("models/xgboost.pkl")
+            baseline_path = Path("models/baseline.pkl")
+            has_xgboost = False
+            try:
+                import xgboost  # noqa: F401
+                has_xgboost = True
+            except (ImportError, Exception):
+                has_xgboost = False
+
+            if has_xgboost and xgboost_path.exists():
+                self.model_path = xgboost_path
+            elif baseline_path.exists():
+                logger.info("Using calibrated baseline pipeline (serverless mode).")
+                self.model_path = baseline_path
+            else:
+                self.model_path = xgboost_path
+
+        if not self.model_path.exists():
+            raise FileNotFoundError(f"Model artifact not found at {self.model_path}")
+
+        logger.info("Loading model from %s...", self.model_path)
+        self.model = joblib.load(self.model_path)
 
     def predict_proba(self, df: pd.DataFrame) -> np.ndarray:
         """Score a batch of transactions and return probability of chargeback."""

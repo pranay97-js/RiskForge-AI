@@ -4,7 +4,6 @@ pandas>=2.2.0
 
 # Machine Learning Inference & Pipeline
 scikit-learn>=1.5.0
-xgboost>=2.1.0
 joblib>=1.4.0
 
 # Validation, API & Type Safety
