@@ -1,2 +1,22 @@
+[project]
+name = "riskforge-ai"
+version = "2.0.0"
+description = "Razorpay RiskForge AI - Fraud and Chargeback Intelligence"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=2.0.0",
+    "pandas>=2.2.0",
+    "scikit-learn>=1.5.0",
+    "xgboost>=2.1.0",
+    "joblib>=1.4.0",
+    "pydantic>=2.8.0",
+    "fastapi>=0.110.0",
+    "uvicorn>=0.30.0",
+    "python-dotenv>=1.0.1",
+    "starlette>=0.37.0",
+    "httpx2>=0.1.0",
+]
+
 [tool.vercel]
 entrypoint = "app.py:app"
