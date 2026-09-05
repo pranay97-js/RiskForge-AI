@@ -19,6 +19,8 @@
       --input-bg: rgba(15, 23, 42, 0.85);
       --input-border: rgba(11, 114, 231, 0.35);
       --input-text: #f8fafc;
+      --dropdown-bg: #0f172a;
+      --table-header-bg: rgba(11, 114, 231, 0.15);
       --accent-blue: #0b72e7;
       --accent-blue-dim: rgba(11, 114, 231, 0.18);
       --accent-cyan: #00d2d2;
@@ -42,6 +44,8 @@
       --input-bg: #ffffff;
       --input-border: rgba(11, 114, 231, 0.30);
       --input-text: #0f172a;
+      --dropdown-bg: #ffffff;
+      --table-header-bg: rgba(11, 114, 231, 0.10);
       --accent-blue: #0b72e7;
       --accent-blue-dim: rgba(11, 114, 231, 0.12);
       --accent-cyan: #0284c7;
@@ -60,20 +64,18 @@
     }
 
     body {
+      margin: 0;
+      padding: 0;
       font-family: 'Plus Jakarta Sans', sans-serif;
       background-color: var(--bg-color);
       color: var(--text-primary);
-      margin: 0;
-      padding: 0;
       overflow-x: hidden;
-      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     .font-mono {
       font-family: 'JetBrains Mono', monospace;
     }
 
-    /* Exact Streamlit Card Styling */
     .metric-card {
       background: var(--card-bg);
       backdrop-filter: blur(20px);
@@ -86,57 +88,6 @@
     }
     .metric-card:hover {
       border-color: var(--accent-cyan);
-    }
-
-    .badge-high {
-      background: rgba(244, 63, 94, 0.18);
-      color: var(--accent-rose);
-      border: 1px solid rgba(244, 63, 94, 0.45);
-      padding: 3px 12px;
-      border-radius: 9999px;
-      font-weight: 700;
-      font-size: 11px;
-      letter-spacing: 0.5px;
-      display: inline-block;
-      text-transform: uppercase;
-    }
-
-    .badge-review {
-      background: rgba(245, 158, 11, 0.18);
-      color: var(--accent-amber);
-      border: 1px solid rgba(245, 158, 11, 0.45);
-      padding: 3px 12px;
-      border-radius: 9999px;
-      font-weight: 700;
-      font-size: 11px;
-      letter-spacing: 0.5px;
-      display: inline-block;
-      text-transform: uppercase;
-    }
-
-    .badge-low {
-      background: rgba(16, 185, 129, 0.18);
-      color: var(--accent-emerald);
-      border: 1px solid rgba(16, 185, 129, 0.45);
-      padding: 3px 12px;
-      border-radius: 9999px;
-      font-weight: 700;
-      font-size: 11px;
-      letter-spacing: 0.5px;
-      display: inline-block;
-      text-transform: uppercase;
-    }
-
-    .delta-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      background: rgba(16, 185, 129, 0.15);
-      color: #10b981;
     }
 
     .status-pill {
@@ -161,6 +112,42 @@
       box-shadow: 0 0 8px #10b981;
     }
 
+    .badge-high {
+      background: rgba(244, 63, 94, 0.18);
+      color: var(--accent-rose);
+      border: 1px solid rgba(244, 63, 94, 0.45);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    .badge-review {
+      background: rgba(245, 158, 11, 0.18);
+      color: var(--accent-amber);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    .badge-low {
+      background: rgba(16, 185, 129, 0.18);
+      color: var(--accent-emerald);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
     .st-input {
       background-color: var(--input-bg);
       color: var(--input-text);
@@ -173,29 +160,34 @@
     }
     .st-input:focus {
       border-color: var(--accent-blue);
+      box-shadow: 0 0 0 1px var(--accent-blue);
     }
 
-    /* Custom Radio styling matching Streamlit */
     .st-radio-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 7px 10px;
+      padding: 7px 12px;
       border-radius: 8px;
       cursor: pointer;
       font-size: 13px;
-      color: var(--text-primary);
-      transition: background 0.15s;
+      color: var(--text-secondary);
+      transition: all 0.2s;
       user-select: none;
     }
     .st-radio-item:hover {
-      background: rgba(11, 114, 231, 0.08);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+    }
+    .st-radio-item.active {
+      color: var(--text-primary);
+      font-weight: 600;
     }
     .st-radio-dot {
-      width: 15px;
-      height: 15px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
-      border: 2px solid var(--text-secondary);
+      border: 2px solid #64748b;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -207,21 +199,79 @@
     }
     .st-radio-item.active .st-radio-dot::after {
       content: "";
-      width: 5px;
-      height: 5px;
+      width: 4px;
+      height: 4px;
       border-radius: 50%;
       background: white;
+    }
+
+    table.st-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+    }
+    table.st-table th {
+      background: var(--table-header-bg);
+      color: var(--text-primary);
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: left;
+      border-bottom: 1px solid var(--card-border);
+    }
+    table.st-table td {
+      padding: 9px 14px;
+      font-size: 12px;
+      color: var(--text-primary);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    table.st-table tr:hover td {
+      background: rgba(11, 114, 231, 0.06);
+    }
+
+    /* Custom Streamlit Header Bar in top right */
+    .st-header-chrome {
+      position: fixed;
+      top: 14px;
+      right: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 50;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .st-header-chrome .deploy-btn {
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
   </style>
 </head>
 <body class="min-h-screen flex">
 
+  <!-- Streamlit Top-Right Chrome ("Deploy ⋮") -->
+  <div class="st-header-chrome">
+    <div class="deploy-btn hover:text-white transition-all">
+      <span>Deploy</span>
+    </div>
+    <div class="cursor-pointer hover:text-white transition-all font-bold text-base">
+      ⋮
+    </div>
+  </div>
+
   <!-- ======================================================================= -->
-  <!-- SIDEBAR: Exact Streamlit Replica from User's Screenshot                 -->
+  <!-- SIDEBAR: Identical Replica from All 5 Screenshots                       -->
   <!-- ======================================================================= -->
   <aside class="w-80 flex-shrink-0 min-h-screen p-5 border-r border-[var(--card-border)] flex flex-col justify-between" style="background: var(--sidebar-bg); backdrop-filter: blur(20px);">
     <div>
-      <!-- 1. Razorpay RiskForge Brand Header -->
+      <!-- 1. Brand Header -->
       <div class="flex items-center gap-3 mb-2">
         <div class="w-8 h-8 rounded-lg bg-[#0b72e7] flex items-center justify-center text-white shadow-md shadow-blue-500/30 font-bold text-lg">
           ⚡
@@ -270,11 +320,11 @@
         </div>
         <div onclick="switchModule('investigator')" class="st-radio-item active" id="nav-investigator">
           <div class="st-radio-dot"></div>
-          <span class="font-bold text-white">🔍 Transaction Investigator</span>
+          <span>🔍 Transaction Investigator</span>
         </div>
         <div onclick="switchModule('simulator')" class="st-radio-item" id="nav-simulator">
           <div class="st-radio-dot"></div>
-          <span>🔥 Live Simulator & Human Review</span>
+          <span>✍️ Live Simulator & Human Review</span>
         </div>
         <div onclick="switchModule('evidence')" class="st-radio-item" id="nav-evidence">
           <div class="st-radio-dot"></div>
@@ -314,9 +364,10 @@
         <div>
           <div class="flex justify-between text-[11px] mb-1">
             <span class="text-[var(--text-secondary)]">Decision Cutoff (τ)</span>
-            <span id="txtTau" class="font-mono font-bold text-[var(--accent-blue)]">0.20</span>
+            <span id="txtTau" class="font-mono font-bold text-[#f43f5e]">0.20</span>
           </div>
-          <input type="range" min="0.05" max="0.90" step="0.05" value="0.20" oninput="document.getElementById('txtTau').innerText = parseFloat(this.value).toFixed(2)" class="w-full accent-[#0b72e7] cursor-pointer">
+          <input type="range" min="0.05" max="0.90" step="0.05" value="0.20" oninput="document.getElementById('txtTau').innerText = parseFloat(this.value).toFixed(2)" class="w-full accent-[#f43f5e] cursor-pointer">
+          <div class="text-[10px] text-[var(--text-secondary)] mt-1">Custom thresholds apply live across risk queues.</div>
         </div>
       </div>
     </div>
@@ -324,23 +375,22 @@
     <!-- Sidebar Bottom Note -->
     <div class="pt-4 border-t border-[var(--card-border)]">
       <p class="text-[10px] text-[var(--text-secondary)] leading-tight">
-        🔒 <strong>Enterprise Security:</strong> Defense-Only active. PII tokenized with ISO 27001 standards.
+        🔒 <strong>Enterprise Security:</strong> Defense-Only Mode active. PII tokenized with ISO 27001 compliance standards.
       </p>
     </div>
   </aside>
 
 
   <!-- ======================================================================= -->
-  <!-- MAIN WORKSPACE: Exact Match to User's Uploaded Screenshot               -->
+  <!-- MAIN CONTENT CONTAINER                                                  -->
   <!-- ======================================================================= -->
   <main class="flex-1 min-h-screen p-8 overflow-y-auto" style="background-color: var(--bg-color);">
     
     <!-- ------------------------------------------------------------------- -->
-    <!-- MODULE: TRANSACTION INVESTIGATOR (DEFAULT ACTIVE, MATCHES IMAGE)    -->
+    <!-- MODULE 2: TRANSACTION INVESTIGATOR (SCREENSHOT 1 & 3)               -->
     <!-- ------------------------------------------------------------------- -->
     <section id="view-investigator" class="space-y-6">
-      
-      <!-- 1. Header Title -->
+      <!-- Title & Subtitle -->
       <div>
         <h1 class="text-3xl font-extrabold text-[#00d2d2] tracking-tight leading-snug">
           Transaction Autopsy & Tri-Signal Verification
@@ -350,283 +400,710 @@
         </p>
       </div>
 
-      <!-- 2. Select Transaction Dropdown -->
+      <!-- Select Transaction -->
       <div>
-        <label class="text-xs font-semibold text-[var(--text-secondary)] block mb-1.5">Select Transaction to Inspect</label>
+        <label class="text-xs font-semibold text-[var(--text-secondary)] block mb-1.5">Select Transaction to inspect</label>
         <div class="relative max-w-full">
-          <select id="selTxn" onchange="onSelectTxn(this.value)" class="st-input w-full font-mono text-sm py-2.5 appearance-none cursor-pointer">
+          <select id="selTxn" onchange="onSelectTxn(this.value)" class="st-input w-full font-mono text-sm py-2 appearance-none cursor-pointer">
             <option value="TXN_000001" selected>TXN_000001</option>
+            <option value="TXN_000002">TXN_000002</option>
+            <option value="TXN_000003">TXN_000003</option>
             <option value="TXN_000008">TXN_000008</option>
             <option value="TXN_000014">TXN_000014</option>
-            <option value="TXN_000024">TXN_000024</option>
-            <option value="TXN_000004">TXN_000004</option>
           </select>
           <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            ▼
           </div>
         </div>
       </div>
 
-      <!-- 3. Big Transaction Reference Card with 3D Risk Radar Inside -->
-      <div class="metric-card p-6 relative overflow-hidden">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          
-          <!-- Left Content -->
-          <div class="lg:col-span-8 space-y-3">
-            <span class="text-[11px] font-bold tracking-wider text-[var(--text-secondary)] uppercase">TRANSACTION REFERENCE</span>
-            <div class="flex items-center gap-3">
-              <h2 id="cardTxnId" class="text-4xl font-extrabold font-mono text-[var(--text-primary)] tracking-tight">TXN_000001</h2>
-              <span id="cardBadge" class="badge-review">REVIEW RISK</span>
-            </div>
-
-            <div class="text-xs text-[var(--text-primary)] space-y-1.5 pt-1">
+      <!-- Top Banner: Transaction Reference Card + 3D HUD Box -->
+      <div class="grid grid-cols-12 gap-6 items-start">
+        <!-- Left: Transaction Reference Card + 3 Metrics -->
+        <div class="col-span-12 lg:col-span-8 space-y-4">
+          <div class="metric-card p-5">
+            <div class="flex items-center justify-between">
               <div>
-                <strong class="text-[var(--text-secondary)]">Decision Rationale:</strong>
-                <span id="cardRationale" class="font-mono text-[var(--text-primary)]">SIGNAL_DISAGREEMENT_RULE_LEAD: Deterministic rule triggered, but ML overall probability remains low.</span>
+                <span class="text-[11px] font-bold text-[var(--text-secondary)] tracking-wider uppercase">TRANSACTION REFERENCE</span>
+                <h2 id="refTxnId" class="text-2xl font-mono font-bold text-[var(--text-primary)] mt-0.5">TXN_000001</h2>
               </div>
-              <div>
-                <strong class="text-[var(--text-secondary)]">Recommended Action:</strong>
-                <span id="cardAction">Human investigation</span>
-              </div>
+              <span id="refBadge" class="badge-review">REVIEW RISK</span>
+            </div>
+            <div class="mt-3 text-xs text-[var(--text-secondary)] space-y-1">
+              <div><strong class="text-[var(--text-primary)]">Decision Rationale:</strong> <span id="refRationale">SIGNAL_DISAGREEMENT_RULE_LEAD: Deterministic rule triggered, but ML overall probability remains low.</span></div>
+              <div><strong class="text-[var(--text-primary)]">Recommended Action:</strong> <span id="refAction">Human Investigation</span></div>
             </div>
           </div>
 
-          <!-- Right Content: 3D RISK RADAR HUD Box -->
-          <div class="lg:col-span-4 flex justify-end">
-            <div class="w-72 h-44 rounded-2xl border border-[var(--card-border)] bg-black/60 p-3 relative flex flex-col justify-between shadow-inner">
-              <div class="flex items-center justify-between text-[10px] font-mono border-b border-white/10 pb-1.5">
-                <span class="text-amber-400 font-bold flex items-center gap-1">
-                  <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                  <span>3D RISK RADAR</span>
-                </span>
-                <span id="radarStateText" class="text-amber-300 font-bold uppercase">ANOMALY REVIEW REQUIRED</span>
-              </div>
-              
-              <!-- 3D Canvas Canvas -->
-              <div class="relative flex-1 w-full flex items-center justify-center overflow-hidden">
-                <canvas id="goldenSphereCanvas" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
-              </div>
-
-              <div class="text-[10px] font-mono text-slate-400 flex justify-between pt-1 border-t border-white/10">
-                <span>Prob: <strong id="radarProb" class="text-white">8.2%</strong></span>
-                <span>₹<strong id="radarAmt" class="text-white">2,074</strong></span>
-                <span>64 Nodes</span>
-              </div>
+          <!-- 3 KPI Metrics Row -->
+          <div class="grid grid-cols-3 gap-4">
+            <div class="metric-card p-4">
+              <div class="text-[11px] font-bold uppercase text-[var(--text-secondary)]">ML Chargeback Probability</div>
+              <div id="mProb" class="text-2xl font-mono font-bold text-[var(--text-primary)] mt-1">8.2%</div>
+              <div id="mProbDelta" class="text-[11px] font-semibold text-emerald-400 mt-0.5">↑ Tier: Low</div>
+            </div>
+            <div class="metric-card p-4">
+              <div class="text-[11px] font-bold uppercase text-[var(--text-secondary)]">Rule Severity Score</div>
+              <div id="mRule" class="text-2xl font-mono font-bold text-[var(--text-primary)] mt-1">0.50 / 1.00</div>
+              <div id="mRuleDelta" class="text-[11px] font-semibold text-emerald-400 mt-0.5">↑ Signal: High</div>
+            </div>
+            <div class="metric-card p-4">
+              <div class="text-[11px] font-bold uppercase text-[var(--text-secondary)]">Expected Financial Loss</div>
+              <div id="mLoss" class="text-2xl font-mono font-bold text-[var(--text-primary)] mt-1">₹416.13</div>
+              <div id="mLossDelta" class="text-[11px] font-semibold text-emerald-400 mt-0.5">↑ Exposure: ₹5,074</div>
             </div>
           </div>
+        </div>
 
+        <!-- Right: 3D Golden Particle Sphere HUD Box -->
+        <div class="col-span-12 lg:col-span-4">
+          <div class="relative w-full h-[230px] rounded-2xl border border-[var(--hud-border)] overflow-hidden" style="background: var(--hud-bg); backdrop-filter: blur(16px);">
+            <!-- HUD Overlay Header -->
+            <div class="absolute top-3 left-3 z-10 font-mono text-[10px] pointer-events-none p-2 rounded-lg border border-[var(--hud-border)] bg-black/40">
+              <div class="text-white font-bold">3D RISK RADAR • <span id="hudStateBadge" class="text-amber-400">ANOMALY REVIEW REQUIRED</span></div>
+              <div id="hudSubText" class="text-slate-400 mt-0.5">Prob: 8.2% | ₹2,074 | 64 Nodes</div>
+            </div>
+            <canvas id="goldenSphereCanvas" class="w-full h-full block"></canvas>
+          </div>
         </div>
       </div>
 
-      <!-- 4. 3 KPI Metric Cards with Delta Badges -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="metric-card p-5">
-          <p class="text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">ML Chargeback Probability</p>
-          <div class="flex items-baseline gap-2 mb-2">
-            <span id="metricProb" class="text-3xl font-extrabold font-mono text-[var(--text-primary)]">8.2%</span>
-          </div>
-          <span id="metricProbDelta" class="delta-pill">↑ Tier: Low</span>
-        </div>
+      <hr class="border-[var(--card-border)] my-6">
 
-        <div class="metric-card p-5">
-          <p class="text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Rule Severity Score</p>
-          <div class="flex items-baseline gap-2 mb-2">
-            <span id="metricRule" class="text-3xl font-extrabold font-mono text-[var(--text-primary)]">0.50 <span class="text-lg text-[var(--text-secondary)]">/ 1.00</span></span>
-          </div>
-          <span id="metricRuleDelta" class="delta-pill">↑ Signal: High</span>
-        </div>
-
-        <div class="metric-card p-5">
-          <p class="text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Expected Financial Loss</p>
-          <div class="flex items-baseline gap-2 mb-2">
-            <span id="metricLoss" class="text-3xl font-extrabold font-mono text-[var(--text-primary)]">₹416.13</span>
-          </div>
-          <span id="metricLossDelta" class="delta-pill">↑ Exposure: ₹5,074</span>
-        </div>
-      </div>
-
-      <!-- 5. Bottom Two Columns: SHAP Feature Attribution & Deterministic Rules -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
+      <!-- Bottom Dual Columns: SHAP Chart vs Deterministic Rules & Context Table -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <!-- Left: Feature Factor Attribution (SHAP Explainer) -->
-        <div class="metric-card p-6 space-y-3">
-          <div class="flex items-center gap-2">
-            <span class="text-lg">🌳</span>
-            <h3 class="text-sm font-bold text-[var(--text-primary)]">Feature Factor Attribution (SHAP Explainer)</h3>
-          </div>
-          <p class="text-xs text-[var(--text-secondary)] font-semibold">Top Risk-Elevating Feature Contributions</p>
-          <div id="plotlyShapChart" class="w-full h-56"></div>
+        <div class="metric-card p-5">
+          <h3 class="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
+            <span>🌳</span><span>Feature Factor Attribution (SHAP Explainer)</span>
+          </h3>
+          <p class="text-xs text-[var(--text-secondary)] mt-0.5 mb-2">Top Risk-Elevating Feature Contributions</p>
+          <div id="plotlyShap" class="w-full h-72"></div>
         </div>
 
-        <!-- Right: Deterministic Verification Rules -->
-        <div class="metric-card p-6 space-y-4">
-          <div class="flex items-center gap-2">
-            <span class="text-lg">🛡️</span>
-            <h3 class="text-sm font-bold text-[var(--text-primary)]">Deterministic Verification Rules</h3>
-          </div>
+        <!-- Right: Deterministic Verification Rules & Context Summary Table -->
+        <div class="space-y-4">
+          <div class="metric-card p-5 space-y-3">
+            <h3 class="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
+              <span>🛡️</span><span>Deterministic Verification Rules</span>
+            </h3>
 
-          <!-- Warning Box -->
-          <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center gap-2">
-            <span>⚠️</span><span>1 Independent Rule(s) Triggered:</span>
-          </div>
-
-          <!-- Rule Card -->
-          <div class="p-3.5 rounded-xl border border-[var(--card-border)] bg-slate-900/60 border-l-4 border-l-rose-500 space-y-1">
-            <div class="flex items-center gap-2">
-              <strong class="font-mono text-sm text-[var(--text-primary)]">VELOCITY_ANOMALY</strong>
-              <span class="text-[10px] font-extrabold text-rose-400 bg-rose-500/20 px-1.5 py-0.5 rounded">HIGH</span>
+            <!-- Alert Box (Olive / Dark Gold from screenshot) -->
+            <div id="ruleAlert" class="p-3 rounded-lg border border-yellow-700/60 bg-yellow-950/30 text-yellow-300 text-xs font-semibold flex items-center gap-2">
+              <span>⚠️</span><span>1 Independent Rule(s) Triggered:</span>
             </div>
-            <p class="text-xs text-[var(--text-secondary)]">Cardholder velocity exceeds standard hourly deviation limits (5 attempts in 10 mins).</p>
+
+            <!-- Rule Item Card -->
+            <div id="ruleList" class="p-3.5 rounded-xl border border-blue-900/40 bg-slate-900/60 space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs font-bold text-white">VELOCITY_ANOMALY</span>
+                <span class="text-slate-400 text-xs">•</span>
+                <span class="text-rose-400 font-bold text-xs">HIGH</span>
+              </div>
+              <div class="text-xs text-slate-400">
+                Transaction frequency spikes significantly above customer baseline.
+              </div>
+            </div>
+          </div>
+
+          <!-- Transaction Context Summary Table (matches screenshot table) -->
+          <div class="metric-card p-5">
+            <h4 class="text-sm font-bold text-[var(--text-primary)] mb-3 flex items-center gap-2">
+              <span>📋</span><span>Transaction Context Summary</span>
+            </h4>
+            <table class="st-table">
+              <thead>
+                <tr>
+                  <th style="width: 45%;">Attribute</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody id="tblContextBody">
+                <tr><td class="font-medium text-slate-400">Customer ID</td><td class="font-mono" id="ctxCustId">CUST_01116</td></tr>
+                <tr><td class="font-medium text-slate-400">Amount</td><td class="font-mono font-bold" id="ctxAmt">₹2,073.70</td></tr>
+                <tr><td class="font-medium text-slate-400">Payment Method</td><td class="font-mono uppercase" id="ctxMethod">CARD</td></tr>
+                <tr><td class="font-medium text-slate-400">Card Network</td><td class="font-mono uppercase" id="ctxNetwork">MASTERCARD</td></tr>
+                <tr><td class="font-medium text-slate-400">Category</td><td id="ctxCategory">Electronics</td></tr>
+                <tr><td class="font-medium text-slate-400">3D-Secure Authenticated</td><td id="ctx3ds">Yes ✅</td></tr>
+                <tr><td class="font-medium text-slate-400">IP Country</td><td class="font-mono uppercase" id="ctxCountry">IN</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
-
       </div>
-
     </section>
 
+
     <!-- ------------------------------------------------------------------- -->
-    <!-- MODULE: EXECUTIVE COMMAND CENTER                                    -->
+    <!-- MODULE 1: EXECUTIVE COMMAND CENTER (SCREENSHOT 2)                   -->
     <!-- ------------------------------------------------------------------- -->
     <section id="view-command_center" class="space-y-6 hidden">
       <div>
-        <h1 class="text-3xl font-extrabold text-[#00d2d2]">Merchant Risk Command Center</h1>
-        <p class="text-xs text-[var(--text-secondary)] mt-1">Live portfolio exposure, 3D threat topology, and real-time transaction ingestion stream.</p>
+        <h1 class="text-3xl font-extrabold text-[#00d2d2] tracking-tight leading-snug">
+          Merchant Risk Command Center
+        </h1>
+        <p class="text-xs text-[var(--text-secondary)] mt-1">
+          Live portfolio exposure, 3D threat topology, and real-time transaction ingestion stream.
+        </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="metric-card p-5">
-          <p class="text-[11px] font-bold text-[var(--text-secondary)] uppercase">Total Portfolio Exposure</p>
-          <h2 class="text-2xl font-bold font-mono text-[var(--text-primary)] my-1">₹1,48,20,500</h2>
-          <span class="text-xs text-[var(--accent-blue)] font-semibold">14,250 active volume</span>
+      <!-- 4 KPI Cards (Screenshot 2) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="metric-card p-4">
+          <div class="text-[11px] font-bold uppercase text-[var(--text-secondary)]">Total Portfolio Exposure</div>
+          <div class="text-2xl font-mono font-bold text-white mt-1">₹2,703,436</div>
+          <div class="text-[11px] font-semibold text-blue-400 mt-0.5">1,000 active volume</div>
         </div>
-        <div class="metric-card p-5">
-          <p class="text-[11px] font-bold text-[var(--text-secondary)] uppercase">Flagged Risk Queue</p>
-          <h2 class="text-2xl font-bold font-mono text-[var(--accent-amber)] my-1">142 <span class="text-xs text-slate-400">(1.0%)</span></h2>
-          <span class="text-xs text-[var(--text-secondary)]">Within analyst SLA capacity</span>
+        <div class="metric-card p-4">
+          <div class="text-[11px] font-bold uppercase text-[var(--text-secondary)]">Flagged Risk Queue</div>
+          <div class="text-2xl font-mono font-bold text-amber-400 mt-1">27 (2.7%)</div>
+          <div class="text-[11px] font-semibold text-slate-400 mt-0.5">Within analyst SLA capacity</div>
         </div>
-        <div class="metric-card p-5">
-          <p class="text-[11px] font-bold text-[var(--text-secondary)] uppercase">Dispute Risk Exposure</p>
-          <h2 class="text-2xl font-bold font-mono text-[var(--accent-rose)] my-1">₹8,45,000</h2>
-          <span class="text-xs text-emerald-400 font-semibold">Subject to automated defense</span>
+        <div class="metric-card p-4">
+          <div class="text-[11px] font-bold uppercase text-[var(--text-secondary)]">Dispute Risk Exposure</div>
+          <div class="text-2xl font-mono font-bold text-rose-400 mt-1">₹353,770</div>
+          <div class="text-[11px] font-semibold text-emerald-400 mt-0.5">Subject to automated defense</div>
         </div>
-        <div class="metric-card p-5">
-          <p class="text-[11px] font-bold text-[var(--text-secondary)] uppercase">Shield Engine PR-AUC</p>
-          <h2 class="text-2xl font-bold font-mono text-[var(--accent-cyan)] my-1">0.7331</h2>
-          <span class="text-xs text-[var(--accent-cyan)] font-semibold">Calibrated XGBoost Model</span>
+        <div class="metric-card p-4">
+          <div class="text-[11px] font-bold uppercase text-[var(--text-secondary)]">Shield Engine PR-AUC</div>
+          <div class="text-2xl font-mono font-bold text-cyan-400 mt-1">0.6953</div>
+          <div class="text-[11px] font-semibold text-cyan-400 mt-0.5">Calibrated XGBoost Model</div>
         </div>
       </div>
 
-      <!-- Charts -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="metric-card p-5">
-          <h4 class="text-xs font-bold uppercase text-[var(--text-secondary)] mb-2">📊 Category Volume vs Chargeback Risk</h4>
-          <div id="plotlyCategoryBar" class="w-full h-64"></div>
+      <!-- Live 3D Risk Topology & Ingestion Stream -->
+      <div class="metric-card p-6 text-center space-y-3">
+        <h3 class="text-sm font-bold text-left text-[var(--text-primary)] flex items-center gap-2">
+          <span>🌐</span><span>Live 3D Risk Topology & Ingestion Stream</span>
+        </h3>
+        <div class="relative w-full h-56 mx-auto rounded-2xl overflow-hidden flex items-center justify-center">
+          <canvas id="cmdCenterSphereCanvas" class="w-full h-full block"></canvas>
+          <div class="absolute top-3 left-4 font-mono text-[10px] p-2 rounded-lg border border-[var(--hud-border)] bg-black/40 text-left pointer-events-none">
+            <div class="text-white font-bold">3D RISK RADAR • <span class="text-amber-400">ANOMALY REVIEW REQUIRED</span></div>
+            <div class="text-slate-400 mt-0.5">Prob: 8.2% | ₹2,074 | 64 Nodes</div>
+          </div>
         </div>
-        <div class="metric-card p-5">
-          <h4 class="text-xs font-bold uppercase text-[var(--text-secondary)] mb-2">💳 Payment Channel Share</h4>
-          <div id="plotlyChannelPie" class="w-full h-64"></div>
+      </div>
+
+      <!-- Filter Row -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+        <div class="md:col-span-6">
+          <label class="text-xs font-semibold text-[var(--text-secondary)] block mb-1">🔍 Search Transactions</label>
+          <input id="tblSearchInput" onkeyup="filterTable()" type="text" placeholder="Filter by Transaction ID or Customer ID..." class="st-input w-full">
+        </div>
+        <div class="md:col-span-3">
+          <label class="text-xs font-semibold text-[var(--text-secondary)] block mb-1">Payment Channel</label>
+          <select id="tblMethodFilter" onchange="filterTable()" class="st-input w-full">
+            <option value="All">All</option>
+            <option value="card">card</option>
+            <option value="upi">upi</option>
+            <option value="netbanking">netbanking</option>
+            <option value="wallet">wallet</option>
+          </select>
+        </div>
+        <div class="md:col-span-3">
+          <label class="text-xs font-semibold text-[var(--text-secondary)] block mb-1">Risk Filter</label>
+          <select id="tblRiskFilter" onchange="filterTable()" class="st-input w-full">
+            <option value="All">All</option>
+            <option value="Flagged">Flagged Disputes Only</option>
+            <option value="3DS">3DS Authenticated Only</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Live Data Table -->
+      <div class="overflow-x-auto rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)]">
+        <table class="st-table" id="liveTxnTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>transaction_id</th>
+              <th>timestamp</th>
+              <th>customer_id</th>
+              <th>amount</th>
+              <th>payment_method</th>
+              <th>card_network</th>
+              <th>merchant_category</th>
+              <th>is_3ds_authenticated</th>
+            </tr>
+          </thead>
+          <tbody id="liveTxnTableBody">
+            <!-- Populated dynamically via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Two Charts side-by-side -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="col-span-12 lg:col-span-7 metric-card p-5">
+          <h4 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+            <span>📊</span><span>Transaction Volume vs Chargeback Risk by Category</span>
+          </h4>
+          <div id="plotlyCategoryBar" class="w-full h-72"></div>
+        </div>
+        <div class="col-span-12 lg:col-span-5 metric-card p-5">
+          <h4 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+            <span>💳</span><span>Payment Channel Share</span>
+          </h4>
+          <div id="plotlyPaymentDonut" class="w-full h-72"></div>
         </div>
       </div>
     </section>
 
+
     <!-- ------------------------------------------------------------------- -->
-    <!-- MODULE: LIVE SIMULATOR & REVIEW                                     -->
+    <!-- MODULE 3: LIVE SIMULATOR & ANALYST REVIEW (SCREENSHOT 4)            -->
     <!-- ------------------------------------------------------------------- -->
     <section id="view-simulator" class="space-y-6 hidden">
       <div>
-        <h1 class="text-3xl font-extrabold text-[#00d2d2]">Live Risk Simulator & Analyst Review</h1>
-        <p class="text-xs text-[var(--text-secondary)] mt-1">Manually construct custom transaction payloads, trigger real-time multi-signal scoring, and record human-in-the-loop audit decisions.</p>
+        <h1 class="text-3xl font-extrabold text-[#00d2d2] tracking-tight leading-snug">
+          Live Risk Simulator & Analyst Review
+        </h1>
+        <p class="text-xs text-[var(--text-secondary)] mt-1">
+          Manually construct custom transaction payloads, trigger real-time multi-signal scoring, and record human-in-the-loop audit decisions.
+        </p>
       </div>
 
-      <div class="metric-card p-6 space-y-4">
-        <h3 class="text-xs font-bold uppercase text-[var(--text-secondary)]">1. Scenario Templates & Quick Fill</h3>
-        <div class="flex flex-wrap gap-2">
-          <button onclick="fillSim(1250, 'upi', 'visa', 'groceries', true)" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-white border border-slate-700 hover:border-blue-500">Template: Clean Low-Value UPI</button>
-          <button onclick="fillSim(98000, 'card', 'visa', 'electronics', true)" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-white border border-slate-700 hover:border-blue-500">Template: High-Value Luxury Spike</button>
-          <button onclick="fillSim(18500, 'card', 'mastercard', 'gaming', false)" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-white border border-slate-700 hover:border-blue-500">Template: Rapid Card Velocity Burst</button>
-        </div>
-
-        <h3 class="text-xs font-bold uppercase text-[var(--text-secondary)] pt-4">2. Transaction Parameters</h3>
-        <div class="grid grid-cols-3 gap-4">
-          <input id="simInAmt" type="number" value="45000" class="st-input" placeholder="Amount">
-          <select id="simInMethod" class="st-input"><option value="card">Card</option><option value="upi">UPI</option><option value="netbanking">Netbanking</option></select>
-          <label class="flex items-center gap-2 text-xs cursor-pointer"><input id="simIn3ds" type="checkbox" checked class="accent-blue-500"> <span>3DS Authenticated</span></label>
-        </div>
-        <button onclick="evalSim()" class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-sm shadow-md">⚡ Run Tri-Signal Evaluation</button>
+      <!-- 1. Scenario Templates & Quick Fill -->
+      <div class="metric-card p-5 space-y-2">
+        <h3 class="text-sm font-bold text-[var(--text-primary)]">1. Scenario Templates & Quick Fill</h3>
+        <label class="text-xs text-[var(--text-secondary)] block">Choose an Ingestion Profile to Populate Fields:</label>
+        <select id="simPreset" onchange="applySimPreset(this.value)" class="st-input w-full text-xs">
+          <option value="custom" selected>Custom Blank Payload</option>
+          <option value="clean_upi">Template: Clean Low-Value UPI Purchase</option>
+          <option value="luxury_card">Template: High-Value Luxury Spike (Potential Friendly Fraud)</option>
+          <option value="velocity_burst">Template: Rapid Card Velocity Burst (Account Takeover Risk)</option>
+          <option value="cross_border">Template: Cross-Border Foreign IP without 3DS</option>
+          <option value="cold_start">Template: Cold-Start First-Time Buyer</option>
+        </select>
       </div>
 
-      <div id="simVerdictBox" class="metric-card p-6 space-y-3 hidden">
-        <h3 class="text-xs font-bold uppercase text-[var(--text-secondary)]">3. Real-Time Risk Verdict</h3>
-        <div id="simVerdictBadge" class="badge-high">HIGH RISK</div>
-        <p id="simVerdictText" class="text-xs text-white">Score: 89.2% | Rule Violations: VELOCITY_ANOMALY</p>
+      <!-- 2. Transaction Parameters Form -->
+      <div class="metric-card p-5 space-y-4">
+        <h3 class="text-sm font-bold text-[var(--text-primary)]">2. Transaction Parameters</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Col 1 -->
+          <div class="space-y-3">
+            <div>
+              <label class="text-xs text-[var(--text-secondary)] block mb-1">Transaction Reference ID</label>
+              <input id="simTxnId" type="text" value="TXN_SIM_2400" class="st-input w-full font-mono text-xs">
+            </div>
+            <div>
+              <label class="text-xs text-[var(--text-secondary)] block mb-1">Customer Entity ID</label>
+              <input id="simCustId" type="text" value="CUST_SIM_7082" class="st-input w-full font-mono text-xs">
+            </div>
+            <div>
+              <label class="text-xs text-[var(--text-secondary)] block mb-1">Transaction Amount (₹)</label>
+              <div class="flex items-center">
+                <input id="simAmount" type="number" step="500" value="4500.00" class="st-input w-full font-mono text-xs rounded-r-none">
+                <button onclick="stepInput('simAmount', -500)" class="px-2.5 py-2 bg-slate-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold">-</button>
+                <button onclick="stepInput('simAmount', 500)" class="px-2.5 py-2 bg-slate-800 border border-l-0 border-slate-700 text-slate-300 hover:text-white text-xs font-bold rounded-r-lg">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 2 -->
+          <div class="space-y-3">
+            <div>
+              <label class="text-xs text-[var(--text-secondary)] block mb-1">Payment Channel</label>
+              <select id="simMethod" class="st-input w-full text-xs">
+                <option value="upi" selected>upi</option>
+                <option value="card">card</option>
+                <option value="netbanking">netbanking</option>
+                <option value="wallet">wallet</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs text-[var(--text-secondary)] block mb-1">Card Network</label>
+              <select id="simNetwork" class="st-input w-full text-xs">
+                <option value="unknown" selected>unknown</option>
+                <option value="visa">visa</option>
+                <option value="mastercard">mastercard</option>
+                <option value="rupay">rupay</option>
+                <option value="amex">amex</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs text-[var(--text-secondary)] block mb-1">Merchant Category</label>
+              <select id="simCategory" class="st-input w-full text-xs">
+                <option value="groceries" selected>groceries</option>
+                <option value="electronics">electronics</option>
+                <option value="fashion">fashion</option>
+                <option value="gaming">gaming</option>
+                <option value="digital_goods">digital_goods</option>
+                <option value="travel">travel</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Col 3 -->
+          <div class="space-y-3">
+            <div>
+              <label class="text-xs text-[var(--text-secondary)] block mb-1">Client Device</label>
+              <select id="simDevice" class="st-input w-full text-xs">
+                <option value="mobile_android" selected>mobile_android</option>
+                <option value="mobile_ios">mobile_ios</option>
+                <option value="desktop_windows">desktop_windows</option>
+                <option value="desktop_mac">desktop_mac</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs text-[var(--text-secondary)] block mb-1">IP Country Code (ISO)</label>
+              <input id="simCountry" type="text" value="IN" class="st-input w-full font-mono text-xs">
+            </div>
+            <div class="space-y-1 pt-1">
+              <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                <input id="sim3ds" type="checkbox" checked class="accent-[#0b72e7]">
+                <span>3D-Secure / OTP Authenticated</span>
+              </label>
+              <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                <input id="simFirstTxn" type="checkbox" class="accent-[#0b72e7]">
+                <span>First-Time Account (Cold Start)</span>
+              </label>
+            </div>
+            <div>
+              <label class="text-xs text-[var(--text-secondary)] block mb-1">Customer Prior Disputes</label>
+              <input id="simPriorDisputes" type="number" value="0" min="0" max="20" class="st-input w-full font-mono text-xs">
+            </div>
+          </div>
+        </div>
+
+        <button onclick="runSimulation()" class="w-full py-3 rounded-xl bg-[#f43f5e] hover:bg-[#e11d48] text-white font-bold text-sm tracking-wide shadow-lg shadow-rose-500/25 transition-all">
+          ⚡ Evaluate Transaction Risk
+        </button>
+      </div>
+
+      <!-- 3. Risk Engine Verdict Section (Shows dynamically when evaluated) -->
+      <div id="simResultSection" class="space-y-6 hidden">
+        <hr class="border-[var(--card-border)]">
+        <h3 class="text-lg font-bold text-[var(--text-primary)]">3. Risk Engine Verdict</h3>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="col-span-12 lg:col-span-8 space-y-4">
+            <div class="metric-card p-5">
+              <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold font-mono text-white">Evaluation for <span id="simResTxnId">TXN_SIM_2400</span></h3>
+                <span id="simResBadge" class="badge-low">LOW RISK</span>
+              </div>
+              <div class="mt-3 text-xs text-slate-300 space-y-1">
+                <div><strong>Operational Verdict:</strong> <span id="simResVerdict">Allow / normal monitoring</span></div>
+                <div><strong>System Reason:</strong> <span id="simResReason">CLEAN_BASELINE: Low probability with 3DS corroboration.</span></div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4">
+              <div class="metric-card p-4">
+                <div class="text-[11px] font-bold uppercase text-[var(--text-secondary)]">ML Chargeback Probability</div>
+                <div id="simResProb" class="text-2xl font-mono font-bold text-white mt-1">4.2%</div>
+              </div>
+              <div class="metric-card p-4">
+                <div class="text-[11px] font-bold uppercase text-[var(--text-secondary)]">Rule Violations</div>
+                <div id="simResRules" class="text-2xl font-mono font-bold text-emerald-400 mt-1">0 Triggered</div>
+              </div>
+              <div class="metric-card p-4">
+                <div class="text-[11px] font-bold uppercase text-[var(--text-secondary)]">Expected Financial Loss</div>
+                <div id="simResLoss" class="text-2xl font-mono font-bold text-white mt-1">₹189.00</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-span-12 lg:col-span-4">
+            <div class="relative w-full h-[200px] rounded-2xl border border-[var(--hud-border)] overflow-hidden" style="background: var(--hud-bg);">
+              <canvas id="simSphereCanvas" class="w-full h-full block"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div id="simRuleBanner" class="p-3.5 rounded-xl border border-emerald-700/50 bg-emerald-950/30 text-emerald-300 text-xs font-semibold">
+          ✅ All 6 deterministic security rules passed cleanly.
+        </div>
+
+        <!-- 4. Human Review & Decision Ledger -->
+        <hr class="border-[var(--card-border)]">
+        <div>
+          <h3 class="text-lg font-bold text-[var(--text-primary)]">4. Human Review & Decision Ledger</h3>
+          <p class="text-xs text-[var(--text-secondary)] mt-0.5 mb-4">Review findings, annotate merchant notes, and record official operational actions.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="col-span-12 lg:col-span-5 metric-card p-5 space-y-3">
+            <label class="text-xs font-bold text-[var(--text-primary)] block">Select Operational Action:</label>
+            <div class="space-y-1.5 text-xs text-slate-300">
+              <label class="flex items-center gap-2 cursor-pointer p-1.5 rounded hover:bg-slate-800"><input type="radio" name="simAction" value="Approve" checked class="accent-[#0b72e7]"> <span>🟢 Approve Transaction (Clear Settlement)</span></label>
+              <label class="flex items-center gap-2 cursor-pointer p-1.5 rounded hover:bg-slate-800"><input type="radio" name="simAction" value="Escalate" class="accent-[#0b72e7]"> <span>🟡 Escalate for Step-Up 2FA / KYC</span></label>
+              <label class="flex items-center gap-2 cursor-pointer p-1.5 rounded hover:bg-slate-800"><input type="radio" name="simAction" value="Block" class="accent-[#0b72e7]"> <span>🔴 Block Transaction & Issue Immediate Refund</span></label>
+              <label class="flex items-center gap-2 cursor-pointer p-1.5 rounded hover:bg-slate-800"><input type="radio" name="simAction" value="Dispute" class="accent-[#0b72e7]"> <span>⚖️ Forward to Dispute Defense Queue</span></label>
+            </div>
+
+            <div>
+              <label class="text-xs font-bold text-[var(--text-primary)] block mb-1">Analyst Rationale / Evidence Notes:</label>
+              <textarea id="simNotes" rows="3" placeholder="e.g. Customer verified via registered mobile number. Order dispatch authorized." class="st-input w-full text-xs"></textarea>
+            </div>
+
+            <button onclick="commitDecision()" class="w-full py-2.5 rounded-xl bg-[#0b72e7] hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-500/25 transition-all">
+              💾 Commit Analyst Decision
+            </button>
+          </div>
+
+          <div class="col-span-12 lg:col-span-7 metric-card p-5 space-y-3">
+            <h4 class="text-xs font-bold uppercase text-[var(--text-secondary)]">📜 Recent Analyst Audit Ledger</h4>
+            <div class="overflow-x-auto">
+              <table class="st-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Txn ID</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody id="auditLedgerBody">
+                  <tr>
+                    <td class="font-mono text-slate-400">2026-09-06 01:15</td>
+                    <td class="font-mono">TXN_INIT_9041</td>
+                    <td class="font-mono font-bold">₹42,000</td>
+                    <td><span class="badge-low">Approved</span></td>
+                    <td class="text-slate-300">Customer confirmed order via registered phone OTP.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
+
     <!-- ------------------------------------------------------------------- -->
-    <!-- MODULE: DISPUTE DEFENSE & EVIDENCE CENTER                           -->
+    <!-- MODULE 4: DISPUTE DEFENSE & EVIDENCE CENTER (SCREENSHOT 5)          -->
     <!-- ------------------------------------------------------------------- -->
     <section id="view-evidence" class="space-y-6 hidden">
       <div>
-        <h1 class="text-3xl font-extrabold text-[#00d2d2]">Dispute Defense & Evidence Center</h1>
-        <p class="text-xs text-[var(--text-secondary)] mt-1">Compile compelling evidence packages and generate grounded dispute rebuttal letters conforming to card network rules.</p>
+        <h1 class="text-3xl font-extrabold text-[#00d2d2] tracking-tight leading-snug">
+          Dispute Defense & Evidence Center
+        </h1>
+        <p class="text-xs text-[var(--text-secondary)] mt-1">
+          Compile compelling evidence packages and generate grounded dispute rebuttal letters conforming to card network rules.
+        </p>
       </div>
 
-      <div class="grid grid-cols-2 gap-6">
-        <div class="metric-card p-6 space-y-4">
-          <h3 class="text-xs font-bold uppercase text-[var(--text-secondary)]">Evidence Checklist (Compelling Evidence 3.0)</h3>
-          <div class="space-y-2 text-xs">
-            <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-blue-500"> <span>Gateway Settlement Receipt & Payment ID Verified</span></label>
-            <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-blue-500"> <span>3D-Secure Authentication Logs & OTP Verified</span></label>
-            <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-blue-500"> <span>Signed Courier Proof of Delivery (POD) / Waybill</span></label>
+      <!-- Select Transaction to Defend -->
+      <div>
+        <label class="text-xs font-semibold text-[var(--text-secondary)] block mb-1.5">Select Transaction to Defend</label>
+        <div class="relative max-w-full">
+          <select id="defendTxn" class="st-input w-full font-mono text-sm py-2 appearance-none cursor-pointer">
+            <option value="TXN_000001" selected>TXN_000001</option>
+            <option value="TXN_000008">TXN_000008</option>
+            <option value="TXN_000014">TXN_000014</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+            ▼
           </div>
-          <button onclick="generateMemo()" class="w-full py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs">✨ Generate Grounded Dispute Rebuttal Memo</button>
+        </div>
+      </div>
+
+      <!-- Two Columns (Matches Screenshot 5) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <!-- Left Column: Evidence Checklist -->
+        <div class="metric-card p-5 space-y-4">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>📋</span><span>Evidence Checklist (Compelling Evidence 3.0)</span>
+          </h3>
+
+          <div class="space-y-2.5 text-xs text-slate-200">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input id="chkGateway" type="checkbox" checked onchange="updateCompleteness()" class="accent-[#0b72e7]">
+              <span>Gateway Settlement Receipt & Payment ID Verified</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input id="chk3dsAuth" type="checkbox" checked onchange="updateCompleteness()" class="accent-[#0b72e7]">
+              <span>3D-Secure Authentication Logs & OTP Verified</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input id="chkDelivery" type="checkbox" checked onchange="updateCompleteness()" class="accent-[#0b72e7]">
+              <span>Signed Courier Proof of Delivery (POD) / Waybill</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input id="chkOrderComm" type="checkbox" onchange="updateCompleteness()" class="accent-[#0b72e7]">
+              <span>Customer Order Confirmation & Communication Logs</span>
+            </label>
+          </div>
+
+          <div>
+            <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden mb-1.5">
+              <div id="progBar" class="bg-[#0b72e7] h-2 rounded-full transition-all" style="width: 75%;"></div>
+            </div>
+            <div class="text-xs text-slate-300">
+              <strong>Evidence Completeness Score:</strong> <span id="scoreText" class="font-mono text-[#38bdf8]">75.0%</span>
+            </div>
+          </div>
+
+          <!-- Dark Green Callout (Matches Screenshot 5) -->
+          <div id="defenseReadyBanner" class="p-3.5 rounded-xl border border-emerald-700/60 bg-emerald-950/40 text-emerald-300 text-xs font-semibold flex items-center gap-2">
+            <span>🛡️</span><span><strong>Defense-Ready:</strong> Sufficient compelling documentation to overturn liability under Visa & Mastercard guidelines.</span>
+          </div>
+
+          <button onclick="generateGroundedMemo()" class="w-full py-2.5 rounded-xl bg-[#0b72e7] hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-500/25 transition-all flex items-center justify-center gap-1.5">
+            <span>✨</span><span>Generate Grounded Dispute Rebuttal Memo</span>
+          </button>
         </div>
 
-        <div class="metric-card p-6 space-y-3">
-          <h3 class="text-xs font-bold uppercase text-[var(--text-secondary)]">Formal Network Rebuttal Memorandum</h3>
-          <div id="memoOutput" class="p-4 rounded-xl bg-black/50 font-mono text-xs text-slate-300 whitespace-pre-wrap">Click Generate to compile compelling evidence.</div>
+        <!-- Right Column: Generated Formal Dispute Memorandum -->
+        <div class="metric-card p-5 space-y-4">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>🤖</span><span>Generated Formal Dispute Memorandum</span>
+          </h3>
+
+          <div id="memoPlaceholder" class="p-4 rounded-xl border border-slate-800 bg-slate-900/50 text-xs text-slate-400">
+            Click 'Generate Grounded Dispute Rebuttal Memo' to synthesize an auditable response based strictly on verified evidence.
+          </div>
+
+          <div id="memoContent" class="space-y-3 hidden">
+            <div class="p-3 rounded-lg bg-slate-900/80 border border-slate-800 text-xs text-slate-300 italic">
+              <strong>Executive Case Brief:</strong> <span id="memoSummary">Transaction TXN_000001 carries verified 3DS authentication and physical signed delivery proof at billing location.</span>
+            </div>
+            <div class="text-xs text-slate-300 space-y-1">
+              <strong>Primary Evidence Anchors:</strong>
+              <div id="memoAnchors" class="text-slate-400 pl-3">
+                • 3DS OTP Authentication authenticated cardholder identity.<br>
+                • Carrier POD signed at designated shipping address.
+              </div>
+            </div>
+            <div class="text-xs font-bold text-slate-200">Formal Network Rebuttal Memorandum:</div>
+            <pre id="memoDraft" class="p-4 rounded-xl bg-black/70 border border-slate-800 font-mono text-xs text-slate-300 whitespace-pre-wrap overflow-x-auto leading-relaxed"></pre>
+          </div>
         </div>
       </div>
     </section>
 
+
     <!-- ------------------------------------------------------------------- -->
-    <!-- MODULE: RISK ENGINE INTELLIGENCE                                    -->
+    <!-- MODULE 5: RISK ENGINE INTELLIGENCE                                  -->
     <!-- ------------------------------------------------------------------- -->
     <section id="view-intelligence" class="space-y-6 hidden">
       <div>
-        <h1 class="text-3xl font-extrabold text-[#00d2d2]">Risk Engine Performance & Threshold Intelligence</h1>
-        <p class="text-xs text-[var(--text-secondary)] mt-1">Empirical held-out evaluation, confusion matrix breakdown, and Bayesian threshold cost optimization.</p>
+        <h1 class="text-3xl font-extrabold text-[#00d2d2] tracking-tight leading-snug">
+          Risk Engine Performance & Threshold Intelligence
+        </h1>
+        <p class="text-xs text-[var(--text-secondary)] mt-1">
+          Empirical held-out evaluation, confusion matrix breakdown, and Bayesian threshold cost optimization.
+        </p>
       </div>
 
-      <div class="grid grid-cols-5 gap-4">
-        <div class="metric-card p-4 text-center"><span class="text-[10px] text-slate-400 font-bold uppercase">PR-AUC</span><div class="text-2xl font-bold font-mono text-blue-400 mt-1">0.7331</div></div>
-        <div class="metric-card p-4 text-center"><span class="text-[10px] text-slate-400 font-bold uppercase">ROC-AUC</span><div class="text-2xl font-bold font-mono text-cyan-400 mt-1">0.9327</div></div>
-        <div class="metric-card p-4 text-center"><span class="text-[10px] text-slate-400 font-bold uppercase">Precision</span><div class="text-2xl font-bold font-mono text-emerald-400 mt-1">74.1%</div></div>
-        <div class="metric-card p-4 text-center"><span class="text-[10px] text-slate-400 font-bold uppercase">Recall</span><div class="text-2xl font-bold font-mono text-amber-400 mt-1">87.8%</div></div>
-        <div class="metric-card p-4 text-center"><span class="text-[10px] text-slate-400 font-bold uppercase">Brier Score</span><div class="text-2xl font-bold font-mono text-white mt-1">0.0288</div></div>
+      <!-- 5 Metric Cards (Matches Screenshot media_1788645359233.png) -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div class="metric-card p-4">
+          <span class="text-[10px] text-slate-400 font-bold uppercase">PR-AUC</span>
+          <div class="text-2xl font-bold font-mono text-white mt-1">0.6953</div>
+        </div>
+        <div class="metric-card p-4">
+          <span class="text-[10px] text-slate-400 font-bold uppercase">ROC-AUC</span>
+          <div class="text-2xl font-bold font-mono text-white mt-1">0.9327</div>
+        </div>
+        <div class="metric-card p-4">
+          <span class="text-[10px] text-slate-400 font-bold uppercase">Precision</span>
+          <div class="text-2xl font-bold font-mono text-white mt-1">66.5%</div>
+        </div>
+        <div class="metric-card p-4">
+          <span class="text-[10px] text-slate-400 font-bold uppercase">Recall</span>
+          <div class="text-2xl font-bold font-mono text-white mt-1">87.6%</div>
+        </div>
+        <div class="metric-card p-4">
+          <span class="text-[10px] text-slate-400 font-bold uppercase">Brier Score</span>
+          <div class="text-2xl font-bold font-mono text-white mt-1">0.0166</div>
+        </div>
       </div>
 
-      <div class="metric-card p-6">
-        <h4 class="text-xs font-bold uppercase text-slate-400 mb-2">📉 Bayesian Threshold vs Operational Cost Frontier</h4>
-        <div id="plotlyCostLine" class="w-full h-64"></div>
+      <hr class="border-[var(--card-border)]">
+
+      <!-- Comparison Table vs Bayesian Cost Curve -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div class="metric-card p-5">
+          <h4 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+            <span>⚖️</span><span>Baseline vs Final XGBoost Shield Performance</span>
+          </h4>
+          <table class="st-table">
+            <thead>
+              <tr>
+                <th>Architecture</th>
+                <th>Precision</th>
+                <th>Recall</th>
+                <th>PR-AUC</th>
+                <th>False Positives</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-medium">Linear Baseline Model</td>
+                <td class="font-mono">41.9%</td>
+                <td class="font-mono">66.2%</td>
+                <td class="font-mono">0.5717</td>
+                <td class="text-slate-300">110 (High review burden)</td>
+              </tr>
+              <tr>
+                <td class="font-bold text-white">XGBoost + Tri-Signal Fusion</td>
+                <td class="font-mono font-bold text-white">66.5%</td>
+                <td class="font-mono font-bold text-white">87.6%</td>
+                <td class="font-mono font-bold text-white">0.6953</td>
+                <td class="text-slate-300">45 (-59.1% false alarms)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="metric-card p-5">
+          <h4 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+            <span>📉</span><span>Bayesian Threshold vs Operational Cost Frontier</span>
+          </h4>
+          <div id="plotlyCostLine" class="w-full h-64"></div>
+        </div>
+      </div>
+
+      <!-- Architecture Overview -->
+      <div class="metric-card p-5 space-y-2">
+        <h4 class="text-sm font-bold text-white flex items-center gap-2">
+          <span>🏗️</span><span>Production Architecture Overview</span>
+        </h4>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          RiskForge AI deploys an Enterprise <strong>Tri-Signal Architecture</strong>:
+        </p>
+        <ol class="text-xs text-slate-300 space-y-1.5 pl-4 list-decimal">
+          <li><strong>Probabilistic Risk Estimation:</strong> Gradient-boosted decision trees (XGBoost) trained on 43 time, velocity, and customer behavioral deviation features.</li>
+          <li><strong>Independent Deterministic Controls:</strong> 6 rule verifiers (<code class="text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded border border-emerald-800/40 font-mono text-[11px]">VELOCITY_ANOMALY</code>, <code class="text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded border border-emerald-800/40 font-mono text-[11px]">SPENDING_DEVIATION</code>, <code class="text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded border border-emerald-800/40 font-mono text-[11px]">DISPUTE_HISTORY</code>, <code class="text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded border border-emerald-800/40 font-mono text-[11px]">NEW_ACCOUNT_HIGH_VALUE</code>, <code class="text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded border border-emerald-800/40 font-mono text-[11px]">PAYMENT_CHANGE</code>, <code class="text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded border border-emerald-800/40 font-mono text-[11px]">DATA_INSUFFICIENT</code>).</li>
+          <li><strong>Bayesian Decision Fusion:</strong> Reconciles machine predictions and rule violations with expected loss economics to prevent operational false alarms while defending revenue.</li>
+        </ol>
       </div>
     </section>
 
+
     <!-- ------------------------------------------------------------------- -->
-    <!-- MODULE: EMBEDDED MOBILE APP VIEW                                    -->
+    <!-- MODULE 0: EMBEDDED MOBILE APP VIEW                                  -->
     <!-- ------------------------------------------------------------------- -->
     <section id="view-mobile" class="space-y-6 hidden">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-extrabold text-[#00d2d2]">RiskForge Mobile — Phone View (393x852)</h1>
-          <p class="text-xs text-[var(--text-secondary)]">Dedicated mobile glassmorphic risk intelligence interface.</p>
+          <h1 class="text-2xl font-extrabold text-[#00d2d2]">RiskForge AI — Mobile Risk Intelligence</h1>
+          <p class="text-xs text-[var(--text-secondary)]">Futuristic glassmorphism mobile experience (393x852 portrait) with 3D isometric glowing verification core.</p>
         </div>
-        <a href="/app" target="_blank" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-all">
-          Open In New Window ↗
+        <a href="/app" target="_blank" class="px-4 py-2 text-xs font-bold rounded-xl bg-[#0b72e7] hover:bg-blue-500 text-white shadow-md shadow-blue-500/25 transition-all">
+          Open Native Fullscreen Mobile App ↗
         </a>
       </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div class="metric-card p-4">
+          <h4 class="text-xs font-bold text-cyan-400 mb-1">⚡ Mobile Risk Telemetry & XAI Inspector</h4>
+          <p class="text-xs text-slate-400">Interactive portrait intelligence app below. Features real-time risk spline charts, SHAP-based drill-downs, Visa CE3.0 readiness gauges, and one-tap dispute deflectors.</p>
+        </div>
+        <div class="metric-card p-4">
+          <h4 class="text-xs font-bold text-blue-400 mb-1">🛡️ Unified Risk Microservice Stream</h4>
+          <p class="text-xs text-slate-400">Real-time tri-signal scoring stream active across Tabular XGBoost, Deterministic Rule Gates, and Bayesian Loss Decision Fusion.</p>
+        </div>
+      </div>
+
       <div class="flex justify-center p-4">
-        <iframe src="/app" style="width: 393px; height: 852px; border-radius: 40px; border: 4px solid #1f2937; box-shadow: 0 25px 60px rgba(0,0,0,0.8);"></iframe>
+        <iframe src="/app" style="width: 393px; height: 852px; border-radius: 42px; border: 4px solid #1e293b; box-shadow: 0 25px 60px rgba(0,0,0,0.85);"></iframe>
       </div>
     </section>
 
@@ -634,11 +1111,30 @@
 
 
   <!-- ======================================================================= -->
-  <!-- JAVASCRIPT: Radar Sphere, Plotly Charts & Logic                         -->
+  <!-- CLIENT JAVASCRIPT: Radar Spheres, Plotly Charts & Full Interactivity    -->
   <!-- ======================================================================= -->
   <script>
     let activeTheme = 'dark';
+    let currentModule = 'investigator';
 
+    // Sample Transaction Database (matches data/sample/transactions_sample.csv exactly)
+    const transactionsData = [
+      { id: "TXN_000001", time: "2026-01-01 00:00:13.574571275", cust: "CUST_01116", amt: 2073.70, method: "card", net: "mastercard", cat: "electronics", dev: "mobile_ios", country: "IN", auth3ds: true, is_charge: 0, prob: 0.082, ruleScore: 0.50, loss: 416.13, state: "REVIEW", rule: "VELOCITY_ANOMALY", reason: "SIGNAL_DISAGREEMENT_RULE_LEAD: Deterministic rule triggered, but ML overall probability remains low.", action: "Human Investigation" },
+      { id: "TXN_000002", time: "2026-01-01 00:02:06.804404490", cust: "CUST_00063", amt: 2114.39, method: "netbanking", net: "mastercard", cat: "gaming", dev: "mobile_android", country: "IN", auth3ds: true, is_charge: 0, prob: 0.045, ruleScore: 0.00, loss: 95.14, state: "LOW", rule: "NONE", reason: "LOW_RISK_BASELINE: Standard transactional parameters within customer profile.", action: "Auto-Approve" },
+      { id: "TXN_000003", time: "2026-01-01 00:02:18.418256700", cust: "CUST_00010", amt: 1039.49, method: "card", net: "mastercard", cat: "travel", dev: "mobile_android", country: "IN", auth3ds: true, is_charge: 0, prob: 0.032, ruleScore: 0.00, loss: 33.26, state: "LOW", rule: "NONE", reason: "LOW_RISK_BASELINE: Domestic transaction with full 3DS authentication.", action: "Auto-Approve" },
+      { id: "TXN_000004", time: "2026-01-01 00:04:08.197030467", cust: "CUST_00006", amt: 455.72, method: "upi", net: "visa", cat: "electronics", dev: "desktop_windows", country: "IN", auth3ds: true, is_charge: 0, prob: 0.015, ruleScore: 0.00, loss: 6.84, state: "LOW", rule: "NONE", reason: "CLEAN_SETTLEMENT: Low amount UPI cleared instantly.", action: "Auto-Approve" },
+      { id: "TXN_000005", time: "2026-01-01 00:04:49.302461039", cust: "CUST_00182", amt: 2361.69, method: "upi", net: "mastercard", cat: "electronics", dev: "mobile_android", country: "GB", auth3ds: true, is_charge: 0, prob: 0.095, ruleScore: 0.00, loss: 224.36, state: "LOW", rule: "NONE", reason: "CROSS_BORDER_CLEAN: Foreign IP but valid 3DS verified token.", action: "Auto-Approve" },
+      { id: "TXN_000006", time: "2026-01-01 00:07:06.374776183", cust: "CUST_00074", amt: 3217.26, method: "upi", net: "mastercard", cat: "groceries", dev: "mobile_android", country: "GB", auth3ds: true, is_charge: 0, prob: 0.065, ruleScore: 0.00, loss: 209.12, state: "LOW", rule: "NONE", reason: "NORMAL_PATTERN: Consistent grocery purchase profile.", action: "Auto-Approve" },
+      { id: "TXN_000007", time: "2026-01-01 00:07:51.571769373", cust: "CUST_00458", amt: 960.78, method: "wallet", net: "visa", cat: "fashion", dev: "desktop_mac", country: "IN", auth3ds: true, is_charge: 0, prob: 0.021, ruleScore: 0.00, loss: 20.18, state: "LOW", rule: "NONE", reason: "LOW_VALUE_WALLET: Safe transaction parameters.", action: "Auto-Approve" },
+      { id: "TXN_000008", time: "2026-01-01 00:08:53.882728348", cust: "CUST_02907", amt: 23237.52, method: "netbanking", net: "visa", cat: "electronics", dev: "desktop_windows", country: "IN", auth3ds: false, is_charge: 1, prob: 0.892, ruleScore: 0.90, loss: 20913.77, state: "HIGH", rule: "NEW_ACCOUNT_HIGH_VALUE", reason: "HIGH_RISK_BREACH: High amount without 3DS from cold-start customer account.", action: "Block Transaction / Immediate Refund" },
+      { id: "TXN_000009", time: "2026-01-01 00:10:00.853666655", cust: "CUST_00395", amt: 4506.65, method: "card", net: "visa", cat: "gaming", dev: "mobile_android", country: "IN", auth3ds: true, is_charge: 0, prob: 0.058, ruleScore: 0.00, loss: 261.38, state: "LOW", rule: "NONE", reason: "STANDARD_GAMING: Expected recurring card activity.", action: "Auto-Approve" },
+      { id: "TXN_000010", time: "2026-01-01 00:22:07.026911181", cust: "CUST_00445", amt: 1534.46, method: "upi", net: "mastercard", cat: "digital_goods", dev: "mobile_android", country: "US", auth3ds: true, is_charge: 0, prob: 0.075, ruleScore: 0.00, loss: 115.08, state: "LOW", rule: "NONE", reason: "DIGITAL_CLEARED: 3DS verified digital service.", action: "Auto-Approve" },
+      { id: "TXN_000014", time: "2026-01-01 00:32:01.449202981", cust: "CUST_00305", amt: 6009.74, method: "upi", net: "mastercard", cat: "fashion", dev: "mobile_ios", country: "IN", auth3ds: false, is_charge: 1, prob: 0.765, ruleScore: 0.80, loss: 4597.45, state: "HIGH", rule: "PAYMENT_CHANGE", reason: "RULE_VIOLATION_CONFIRMED: Sudden payment instrument switch without authentication.", action: "Require Step-Up 2FA" }
+    ];
+
+    // -----------------------------------------------------------------------
+    // Theme Switcher
+    // -----------------------------------------------------------------------
     function setTheme(mode) {
       activeTheme = mode;
       const root = document.getElementById('htmlRoot');
@@ -666,7 +1162,11 @@
       el.value = val.toFixed(2);
     }
 
+    // -----------------------------------------------------------------------
+    // Module Navigation
+    // -----------------------------------------------------------------------
     function switchModule(modId) {
+      currentModule = modId;
       const allMods = ['mobile', 'command_center', 'investigator', 'simulator', 'evidence', 'intelligence'];
       allMods.forEach(m => {
         const sec = document.getElementById('view-' + m);
@@ -683,267 +1183,606 @@
     }
 
     // -----------------------------------------------------------------------
-    // Exact 3D Golden/Amber Rotating Particle Sphere HUD (from screenshot)
+    // Exact 3D Golden/Amber Rotating Particle Sphere HUD (Screenshots 1, 2, 3)
     // -----------------------------------------------------------------------
-    const canvas = document.getElementById('goldenSphereCanvas');
-    const ctx = canvas.getContext('2d');
-    let angleX = 0, angleY = 0, mouseX = 0, mouseY = 0;
-    const particles = [];
-    const count = 64;
-    const radius = 55;
+    function setupParticleSphere(canvasId) {
+      const cvs = document.getElementById(canvasId);
+      if (!cvs) return;
+      const c = cvs.getContext('2d');
+      let aX = 0, aY = 0, mX = 0, mY = 0;
+      const pList = [];
+      const numPts = 64;
+      const rad = 50;
 
-    for (let i = 0; i < count; i++) {
-      const theta = Math.acos(2 * Math.random() - 1);
-      const phi = Math.random() * Math.PI * 2;
-      particles.push({
-        x: radius * Math.sin(theta) * Math.cos(phi),
-        y: radius * Math.sin(theta) * Math.sin(phi),
-        z: radius * Math.cos(theta),
-        size: Math.random() * 2 + 1.2
-      });
-    }
-
-    function resizeRadar() {
-      if (!canvas.parentElement) return;
-      canvas.width = canvas.parentElement.clientWidth;
-      canvas.height = canvas.parentElement.clientHeight;
-    }
-    window.addEventListener('resize', resizeRadar);
-    resizeRadar();
-
-    canvas.addEventListener('mousemove', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      mouseX = (e.clientX - rect.left - canvas.width / 2) * 0.0004;
-      mouseY = (e.clientY - rect.top - canvas.height / 2) * 0.0004;
-    });
-
-    function drawRadar() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const cx = canvas.width / 2;
-      const cy = canvas.height / 2;
-      const fov = 320;
-
-      angleY += 0.015 + mouseX;
-      angleX += mouseY;
-
-      // Golden Amber Glow
-      const grad = ctx.createRadialGradient(cx, cy, 5, cx, cy, radius * 1.3);
-      grad.addColorStop(0, 'rgba(245, 158, 11, 0.35)');
-      grad.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius * 1.3, 0, Math.PI * 2);
-      ctx.fill();
-
-      const projected = [];
-      for (let i = 0; i < particles.length; i++) {
-        let p = particles[i];
-        const cosX = Math.cos(angleX), sinX = Math.sin(angleX);
-        const y1 = p.y * cosX - p.z * sinX;
-        const z1 = p.y * sinX + p.z * cosX;
-        const cosY = Math.cos(angleY), sinY = Math.sin(angleY);
-        const x2 = p.x * cosY + z1 * sinY;
-        const z2 = -p.x * sinY + z1 * cosY;
-
-        const scale = fov / (fov + z2);
-        const px = cx + x2 * scale;
-        const py = cy + y1 * scale;
-        const alpha = Math.max(0.2, (z2 + radius) / (2 * radius));
-        projected.push({ x: px, y: py, z: z2, scale, alpha, size: p.size * scale });
+      for (let i = 0; i < numPts; i++) {
+        const theta = Math.acos(2 * Math.random() - 1);
+        const phi = Math.random() * Math.PI * 2;
+        pList.push({
+          x: rad * Math.sin(theta) * Math.cos(phi),
+          y: rad * Math.sin(theta) * Math.sin(phi),
+          z: rad * Math.cos(theta),
+          size: Math.random() * 2 + 1.2
+        });
       }
 
-      // Golden Node Connecting Lines
-      ctx.lineWidth = 0.8;
-      for (let i = 0; i < projected.length; i++) {
-        for (let j = i + 1; j < projected.length; j++) {
-          const dx = projected[i].x - projected[j].x;
-          const dy = projected[i].y - projected[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 38) {
-            ctx.strokeStyle = `rgba(245, 158, 11, ${0.4 * (1 - dist / 38)})`;
-            ctx.beginPath();
-            ctx.moveTo(projected[i].x, projected[i].y);
-            ctx.lineTo(projected[j].x, projected[j].y);
-            ctx.stroke();
+      function resize() {
+        if (!cvs.parentElement) return;
+        cvs.width = cvs.parentElement.clientWidth;
+        cvs.height = cvs.parentElement.clientHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      cvs.addEventListener('mousemove', (e) => {
+        const rect = cvs.getBoundingClientRect();
+        mX = (e.clientX - rect.left - cvs.width / 2) * 0.0004;
+        mY = (e.clientY - rect.top - cvs.height / 2) * 0.0004;
+      });
+
+      function loop() {
+        c.clearRect(0, 0, cvs.width, cvs.height);
+        const cx = cvs.width / 2;
+        const cy = cvs.height / 2;
+        const fov = 320;
+
+        aY += 0.015 + mX;
+        aX += mY;
+
+        // Golden amber glow
+        const grad = c.createRadialGradient(cx, cy, 5, cx, cy, rad * 1.3);
+        grad.addColorStop(0, 'rgba(245, 158, 11, 0.35)');
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        c.fillStyle = grad;
+        c.beginPath();
+        c.arc(cx, cy, rad * 1.3, 0, Math.PI * 2);
+        c.fill();
+
+        const projected = [];
+        for (let i = 0; i < pList.length; i++) {
+          let p = pList[i];
+          const cosX = Math.cos(aX), sinX = Math.sin(aX);
+          const y1 = p.y * cosX - p.z * sinX;
+          const z1 = p.y * sinX + p.z * cosX;
+          const cosY = Math.cos(aY), sinY = Math.sin(aY);
+          const x2 = p.x * cosY + z1 * sinY;
+          const z2 = -p.x * sinY + z1 * cosY;
+
+          const scale = fov / (fov + z2);
+          const px = cx + x2 * scale;
+          const py = cy + y1 * scale;
+          const alpha = Math.max(0.2, (z2 + rad) / (2 * rad));
+          projected.push({ x: px, y: py, scale: scale, alpha: alpha, size: p.size * scale });
+        }
+
+        // Connecting lattice lines
+        c.lineWidth = 0.6;
+        for (let i = 0; i < projected.length; i++) {
+          for (let j = i + 1; j < projected.length; j++) {
+            const dx = projected[i].x - projected[j].x;
+            const dy = projected[i].y - projected[j].y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d < 36) {
+              c.strokeStyle = `rgba(245, 158, 11, ${0.4 * (1 - d / 36)})`;
+              c.beginPath();
+              c.moveTo(projected[i].x, projected[i].y);
+              c.lineTo(projected[j].x, projected[j].y);
+              c.stroke();
+            }
           }
         }
+
+        // Nodes
+        for (let i = 0; i < projected.length; i++) {
+          const pt = projected[i];
+          c.fillStyle = `rgba(251, 191, 36, ${pt.alpha})`;
+          c.beginPath();
+          c.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
+          c.fill();
+        }
+
+        // Orbit ring
+        c.save();
+        c.translate(cx, cy);
+        c.rotate(aY * 0.4);
+        c.strokeStyle = 'rgba(245, 158, 11, 0.35)';
+        c.lineWidth = 1;
+        c.beginPath();
+        c.ellipse(0, 0, rad * 1.15, rad * 0.35, Math.PI / 6, 0, Math.PI * 2);
+        c.stroke();
+        c.restore();
+
+        requestAnimationFrame(loop);
       }
-
-      // Golden Particle Dots
-      for (let i = 0; i < projected.length; i++) {
-        const pt = projected[i];
-        ctx.fillStyle = `rgba(245, 158, 11, ${pt.alpha})`;
-        ctx.beginPath();
-        ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      requestAnimationFrame(drawRadar);
-    }
-    drawRadar();
-
-    // -----------------------------------------------------------------------
-    // Transaction Data & Dropdown Handler
-    // -----------------------------------------------------------------------
-    const txnData = {
-      'TXN_000001': {
-        amount: 2073.70, prob: '8.2%', ruleScore: '0.50 / 1.00', loss: '₹416.13',
-        badge: 'REVIEW RISK', badgeClass: 'badge-review',
-        rationale: 'SIGNAL_DISAGREEMENT_RULE_LEAD: Deterministic rule triggered, but ML overall probability remains low.',
-        action: 'Human investigation',
-        deltaTier: '↑ Tier: Low', deltaRule: '↑ Signal: High', deltaLoss: '↑ Exposure: ₹5,074',
-        shapName: '24-Hour Order Frequency', shapVal: 0.38
-      },
-      'TXN_000008': {
-        amount: 23237.52, prob: '89.4%', ruleScore: '0.85 / 1.00', loss: '₹26,237.52',
-        badge: 'HIGH RISK', badgeClass: 'badge-high',
-        rationale: 'VELOCITY_SPIKE_FOREIGN_IP: Rapid repeat orders detected from unregistered proxy.',
-        action: 'Block transaction and initiate biometric 2FA challenge',
-        deltaTier: '↑ Tier: High', deltaRule: '↑ Signal: High', deltaLoss: '↑ Exposure: ₹26,237',
-        shapName: 'IP Velocity Spike', shapVal: 0.42
-      }
-    };
-
-    function onSelectTxn(id) {
-      const item = txnData[id] || txnData['TXN_000001'];
-      document.getElementById('cardTxnId').innerText = id;
-      const b = document.getElementById('cardBadge');
-      b.innerText = item.badge;
-      b.className = item.badgeClass;
-      document.getElementById('cardRationale').innerText = item.rationale;
-      document.getElementById('cardAction').innerText = item.action;
-
-      document.getElementById('metricProb').innerText = item.prob;
-      document.getElementById('metricRule').innerHTML = `${item.ruleScore.split(' ')[0]} <span class="text-lg text-[var(--text-secondary)]">/ 1.00</span>`;
-      document.getElementById('metricLoss').innerText = item.loss;
-
-      document.getElementById('metricProbDelta').innerText = item.deltaTier;
-      document.getElementById('metricRuleDelta').innerText = item.deltaRule;
-      document.getElementById('metricLossDelta').innerText = item.deltaLoss;
-
-      document.getElementById('radarProb').innerText = item.prob;
-      document.getElementById('radarAmt').innerText = item.amount.toLocaleString(undefined, {maximumFractionDigits: 0});
-      renderShap(item.shapName, item.shapVal);
+      loop();
     }
 
     // -----------------------------------------------------------------------
-    // Plotly Charts (SHAP, Category, Channel, Cost)
+    // Module 2 (Transaction Investigator) Updates
     // -----------------------------------------------------------------------
-    function renderShap(featureName, val) {
-      featureName = featureName || '24-Hour Order Frequency';
-      val = val || 0.38;
+    function onSelectTxn(txnId) {
+      const t = transactionsData.find(x => x.id === txnId) || transactionsData[0];
+      
+      document.getElementById('refTxnId').innerText = t.id;
+      const b = document.getElementById('refBadge');
+      b.innerText = t.state + " RISK";
+      b.className = t.state === 'HIGH' ? 'badge-high' : (t.state === 'REVIEW' ? 'badge-review' : 'badge-low');
+
+      document.getElementById('refRationale').innerText = t.reason;
+      document.getElementById('refAction').innerText = t.action;
+
+      document.getElementById('mProb').innerText = (t.prob * 100).toFixed(1) + "%";
+      document.getElementById('mProbDelta').innerText = "↑ Tier: " + (t.prob > 0.4 ? "High" : (t.prob > 0.1 ? "Medium" : "Low"));
+
+      document.getElementById('mRule').innerText = t.ruleScore.toFixed(2) + " / 1.00";
+      document.getElementById('mRuleDelta').innerText = "↑ Signal: " + (t.ruleScore > 0.4 ? "High" : "Low");
+
+      document.getElementById('mLoss').innerText = "₹" + t.loss.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('mLossDelta').innerText = "↑ Exposure: ₹" + Math.round(t.amt + 3000).toLocaleString('en-IN');
+
+      document.getElementById('hudStateBadge').innerText = t.state === 'HIGH' ? "ELEVATED THREAT DETECTED" : (t.state === 'REVIEW' ? "ANOMALY REVIEW REQUIRED" : "SETTLEMENT CLEARED");
+      document.getElementById('hudStateBadge').className = t.state === 'HIGH' ? 'text-rose-400' : (t.state === 'REVIEW' ? 'text-amber-400' : 'text-emerald-400');
+      document.getElementById('hudSubText').innerText = `Prob: ${(t.prob * 100).toFixed(1)}% | ₹${Math.round(t.amt).toLocaleString('en-IN')} | 64 Nodes`;
+
+      // Context summary table
+      document.getElementById('ctxCustId').innerText = t.cust;
+      document.getElementById('ctxAmt').innerText = "₹" + t.amt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('ctxMethod').innerText = t.method.toUpperCase();
+      document.getElementById('ctxNetwork').innerText = t.net.toUpperCase();
+      document.getElementById('ctxCategory').innerText = t.cat.charAt(0).toUpperCase() + t.cat.slice(1);
+      document.getElementById('ctx3ds').innerText = t.auth3ds ? "Yes ✅" : "No ❌";
+      document.getElementById('ctxCountry').innerText = t.country;
+
+      // Rule alert & list
+      const rAlert = document.getElementById('ruleAlert');
+      const rList = document.getElementById('ruleList');
+      if (t.rule === 'NONE') {
+        rAlert.className = 'p-3 rounded-lg border border-emerald-700/60 bg-emerald-950/30 text-emerald-300 text-xs font-semibold flex items-center gap-2';
+        rAlert.innerHTML = '<span>✅</span><span>All deterministic security rules passed cleanly.</span>';
+        rList.classList.add('hidden');
+      } else {
+        rAlert.className = 'p-3 rounded-lg border border-yellow-700/60 bg-yellow-950/30 text-yellow-300 text-xs font-semibold flex items-center gap-2';
+        rAlert.innerHTML = '<span>⚠️</span><span>1 Independent Rule(s) Triggered:</span>';
+        rList.classList.remove('hidden');
+        rList.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="font-mono text-xs font-bold text-white">${t.rule}</span>
+            <span class="text-slate-400 text-xs">•</span>
+            <span class="text-rose-400 font-bold text-xs">${t.state}</span>
+          </div>
+          <div class="text-xs text-slate-400">
+            Transaction frequency spikes significantly above customer baseline.
+          </div>
+        `;
+      }
+
+      renderShapChart();
+    }
+
+    // -----------------------------------------------------------------------
+    // Plotly Charts
+    // -----------------------------------------------------------------------
+    function renderShapChart() {
       const isDark = activeTheme === 'dark';
       const textColor = isDark ? '#f8fafc' : '#0f172a';
-      const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)';
+      const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(15, 23, 42, 0.08)';
 
-      const data = [{
+      // Screenshot 1 & 3 exact 3 bars with continuous colorscale legend on the right
+      Plotly.newPlot('plotlyShap', [{
         type: 'bar',
         orientation: 'h',
-        x: [val],
-        y: [featureName],
-        marker: { color: '#f43f5e' }
-      }];
-      const layout = {
+        x: [0.08, 0.11, 0.17],
+        y: ['Transaction Hour', 'Customer Historical Average Spending', '24-Hour Order Frequency'],
+        marker: {
+          color: [0.08, 0.11, 0.17],
+          colorscale: [
+            [0.0, '#00d2d2'],
+            [0.5, '#f59e0b'],
+            [1.0, '#f43f5e']
+          ],
+          colorbar: {
+            title: 'shap_value',
+            titleside: 'top',
+            thickness: 12,
+            len: 0.85,
+            tickfont: { color: textColor, size: 10 }
+          }
+        }
+      }], {
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
         font: { color: textColor, family: 'Plus Jakarta Sans', size: 11 },
-        margin: { l: 160, r: 20, t: 10, b: 25 },
-        xaxis: { title: 'shap_value', gridcolor: gridColor },
-        yaxis: { gridcolor: gridColor }
-      };
-      Plotly.react('plotlyShapChart', data, layout, { responsive: true, displayModeBar: true });
+        margin: { l: 210, r: 40, t: 20, b: 35 },
+        xaxis: {
+          title: 'shap_value',
+          gridcolor: gridColor,
+          range: [0, 0.19],
+          tickvals: [0, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12, 0.14, 0.16]
+        },
+        yaxis: {
+          gridcolor: gridColor,
+          autorange: true
+        }
+      }, { responsive: true, displayModeBar: false });
+    }
+
+    function renderCommandCenterCharts() {
+      const isDark = activeTheme === 'dark';
+      const textColor = isDark ? '#f8fafc' : '#0f172a';
+      const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(15, 23, 42, 0.08)';
+
+      // Grouped Bar Chart: Category Volume vs Chargeback
+      Plotly.newPlot('plotlyCategoryBar', [
+        {
+          name: '0 (Legitimate)',
+          type: 'bar',
+          x: ['electronics', 'gaming', 'travel', 'groceries', 'fashion', 'digital_goods'],
+          y: [240000, 195000, 110000, 310000, 275000, 175000],
+          marker: { color: '#0b72e7' }
+        },
+        {
+          name: '1 (Chargeback)',
+          type: 'bar',
+          x: ['electronics', 'gaming', 'travel', 'groceries', 'fashion', 'digital_goods'],
+          y: [78000, 8500, 4200, 3800, 41000, 19000],
+          marker: { color: '#f43f5e' }
+        }
+      ], {
+        barmode: 'group',
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        font: { color: textColor, family: 'Plus Jakarta Sans', size: 11 },
+        margin: { l: 50, r: 20, t: 20, b: 40 },
+        xaxis: { gridcolor: gridColor, title: 'merchant_category' },
+        yaxis: { gridcolor: gridColor, title: 'sum of amount' },
+        legend: { orientation: 'h', y: 1.1, x: 0.7 }
+      }, { responsive: true, displayModeBar: false });
+
+      // Donut Chart: Payment Channel Share
+      Plotly.newPlot('plotlyPaymentDonut', [{
+        type: 'pie',
+        labels: ['upi', 'card', 'netbanking', 'wallet'],
+        values: [52.3, 27.1, 14.8, 5.8],
+        hole: 0.48,
+        marker: {
+          colors: ['#00d2d2', '#0b72e7', '#6366f1', '#f59e0b']
+        },
+        textinfo: 'percent',
+        hoverinfo: 'label+percent'
+      }], {
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        font: { color: textColor, family: 'Plus Jakarta Sans', size: 11 },
+        margin: { l: 20, r: 20, t: 20, b: 20 },
+        legend: { orientation: 'v', y: 0.5, x: 1.05 }
+      }, { responsive: true, displayModeBar: false });
+    }
+
+    function renderIntelligenceCharts() {
+      const isDark = activeTheme === 'dark';
+      const textColor = isDark ? '#f8fafc' : '#0f172a';
+      const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(15, 23, 42, 0.08)';
+
+      const taus = [0.05, 0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90];
+      const costs = [38000, 48000, 68000, 83000, 97000, 111000, 125000, 137000, 148000, 158000];
+
+      Plotly.newPlot('plotlyCostLine', [{
+        x: taus,
+        y: costs,
+        mode: 'lines',
+        line: { color: '#6366f1', width: 2 }
+      }], {
+        title: {
+          text: 'Bayesian Cost Frontier (Active τ* = 0.20)',
+          font: { color: textColor, family: 'Plus Jakarta Sans', size: 11 },
+          x: 0.05,
+          y: 0.98
+        },
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        font: { color: textColor, family: 'Plus Jakarta Sans', size: 10 },
+        margin: { l: 55, r: 20, t: 30, b: 35 },
+        xaxis: {
+          title: 'Decision Threshold (τ)',
+          gridcolor: gridColor,
+          range: [0.05, 0.92],
+          tickvals: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+        },
+        yaxis: {
+          title: 'Estimated Total Cost (INR)',
+          gridcolor: gridColor,
+          range: [30000, 165000],
+          tickvals: [40000, 60000, 80000, 100000, 120000, 140000, 160000],
+          ticktext: ['40k', '60k', '80k', '100k', '120k', '140k', '160k']
+        },
+        shapes: [{
+          type: 'line',
+          x0: 0.20,
+          x1: 0.20,
+          y0: 30000,
+          y1: 160000,
+          line: { color: '#10b981', width: 1.5, dash: 'dash' }
+        }],
+        annotations: [{
+          x: 0.20,
+          y: 155000,
+          text: 'Active τ = 0.20',
+          showarrow: false,
+          xanchor: 'left',
+          xshift: 5,
+          font: { color: '#10b981', size: 10 }
+        }]
+      }, { responsive: true, displayModeBar: false });
     }
 
     function renderAllCharts() {
-      const isDark = activeTheme === 'dark';
-      const textColor = isDark ? '#f8fafc' : '#0f172a';
-      const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)';
-
-      // 1. Category Bar
-      if (document.getElementById('plotlyCategoryBar')) {
-        Plotly.react('plotlyCategoryBar', [
-          { name: 'Legitimate', x: ['Electronics', 'Groceries', 'Fashion', 'Gaming', 'Digital', 'Travel'], y: [340, 480, 290, 210, 310, 140], type: 'bar', marker: { color: '#0b72e7' } },
-          { name: 'Disputed', x: ['Electronics', 'Groceries', 'Fashion', 'Gaming', 'Digital', 'Travel'], y: [42, 12, 19, 38, 45, 11], type: 'bar', marker: { color: '#f43f5e' } }
-        ], {
-          barmode: 'group',
-          paper_bgcolor: 'rgba(0,0,0,0)',
-          plot_bgcolor: 'rgba(0,0,0,0)',
-          font: { color: textColor, family: 'Plus Jakarta Sans', size: 10 },
-          margin: { l: 30, r: 20, t: 10, b: 30 },
-          xaxis: { gridcolor: gridColor },
-          yaxis: { gridcolor: gridColor }
-        }, { responsive: true, displayModeBar: false });
-      }
-
-      // 2. Channel Pie
-      if (document.getElementById('plotlyChannelPie')) {
-        Plotly.react('plotlyChannelPie', [{
-          values: [45, 28, 15, 12],
-          labels: ['UPI', 'Cards', 'Netbanking', 'Wallets'],
-          type: 'pie',
-          hole: 0.45,
-          marker: { colors: ['#0b72e7', '#00d2d2', '#6366f1', '#f59e0b'] }
-        }], {
-          paper_bgcolor: 'rgba(0,0,0,0)',
-          plot_bgcolor: 'rgba(0,0,0,0)',
-          font: { color: textColor, family: 'Plus Jakarta Sans', size: 10 },
-          margin: { l: 20, r: 20, t: 10, b: 20 }
-        }, { responsive: true, displayModeBar: false });
-      }
-
-      // 3. Cost Line
-      if (document.getElementById('plotlyCostLine')) {
-        const taus = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50];
-        const costs = taus.map(t => Math.round(18000 + 42000 * Math.pow(t - 0.20, 2)));
-        Plotly.react('plotlyCostLine', [{
-          x: taus, y: costs, type: 'scatter', mode: 'lines+markers', line: { color: '#0b72e7', width: 2.5 }, marker: { color: '#00d2d2' }
-        }], {
-          paper_bgcolor: 'rgba(0,0,0,0)',
-          plot_bgcolor: 'rgba(0,0,0,0)',
-          font: { color: textColor, family: 'Plus Jakarta Sans', size: 10 },
-          margin: { l: 50, r: 20, t: 10, b: 35 },
-          xaxis: { title: 'Decision Cutoff (τ)', gridcolor: gridColor },
-          yaxis: { title: 'Cost (INR)', gridcolor: gridColor }
-        }, { responsive: true, displayModeBar: false });
-      }
-
-      renderShap();
+      if (currentModule === 'investigator') renderShapChart();
+      else if (currentModule === 'command_center') renderCommandCenterCharts();
+      else if (currentModule === 'intelligence') renderIntelligenceCharts();
     }
 
     // -----------------------------------------------------------------------
-    // Live Simulator & Dispute Helpers
+    // Module 1 Data Table Population & Filtering
     // -----------------------------------------------------------------------
-    function fillSim(amt, method, net, cat, is3ds) {
-      document.getElementById('simInAmt').value = amt;
-      document.getElementById('simInMethod').value = method;
-      document.getElementById('simIn3ds').checked = is3ds;
+    function populateLiveTable() {
+      const tbody = document.getElementById('liveTxnTableBody');
+      tbody.innerHTML = '';
+      transactionsData.forEach((t, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="font-mono text-slate-400">${i + 1}</td>
+          <td class="font-mono font-bold text-white cursor-pointer hover:text-cyan-400" onclick="switchModule('investigator'); onSelectTxn('${t.id}');">${t.id}</td>
+          <td class="font-mono text-slate-400">${t.time}</td>
+          <td class="font-mono">${t.cust}</td>
+          <td class="font-mono font-bold">${t.amt.toFixed(2)}</td>
+          <td class="font-mono uppercase">${t.method}</td>
+          <td class="font-mono uppercase">${t.net}</td>
+          <td>${t.cat}</td>
+          <td class="text-center">${t.auth3ds ? '☑' : '☐'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
 
-    async function evalSim() {
-      const amt = parseFloat(document.getElementById('simInAmt').value);
-      const is3ds = document.getElementById('simIn3ds').checked;
-      const box = document.getElementById('simVerdictBox');
-      box.classList.remove('hidden');
-      const badge = document.getElementById('simVerdictBadge');
-      const text = document.getElementById('simVerdictText');
+    function filterTable() {
+      const q = document.getElementById('tblSearchInput').value.toLowerCase();
+      const method = document.getElementById('tblMethodFilter').value;
+      const risk = document.getElementById('tblRiskFilter').value;
 
-      if (amt > 40000 && !is3ds) {
-        badge.innerText = 'HIGH RISK';
-        badge.className = 'badge-high';
-        text.innerText = 'Score: 91.4% | Triggered: VELOCITY_ANOMALY, HIGH_VALUE_NON_3DS';
+      const tbody = document.getElementById('liveTxnTableBody');
+      tbody.innerHTML = '';
+
+      let idx = 1;
+      transactionsData.forEach(t => {
+        const matchesQ = !q || t.id.toLowerCase().includes(q) || t.cust.toLowerCase().includes(q);
+        const matchesM = method === 'All' || t.method === method;
+        let matchesR = true;
+        if (risk === 'Flagged') matchesR = (t.is_charge === 1 || t.state === 'HIGH');
+        else if (risk === '3DS') matchesR = t.auth3ds;
+
+        if (matchesQ && matchesM && matchesR) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="font-mono text-slate-400">${idx++}</td>
+            <td class="font-mono font-bold text-white cursor-pointer hover:text-cyan-400" onclick="switchModule('investigator'); onSelectTxn('${t.id}');">${t.id}</td>
+            <td class="font-mono text-slate-400">${t.time}</td>
+            <td class="font-mono">${t.cust}</td>
+            <td class="font-mono font-bold">${t.amt.toFixed(2)}</td>
+            <td class="font-mono uppercase">${t.method}</td>
+            <td class="font-mono uppercase">${t.net}</td>
+            <td>${t.cat}</td>
+            <td class="text-center">${t.auth3ds ? '☑' : '☐'}</td>
+          `;
+          tbody.appendChild(tr);
+        }
+      });
+    }
+
+    // -----------------------------------------------------------------------
+    // Module 3 Live Simulator Logic
+    // -----------------------------------------------------------------------
+    function applySimPreset(preset) {
+      if (preset === 'clean_upi') {
+        document.getElementById('simAmount').value = '1250.00';
+        document.getElementById('simMethod').value = 'upi';
+        document.getElementById('simNetwork').value = 'unknown';
+        document.getElementById('simCategory').value = 'groceries';
+        document.getElementById('simDevice').value = 'mobile_android';
+        document.getElementById('simCountry').value = 'IN';
+        document.getElementById('sim3ds').checked = true;
+        document.getElementById('simFirstTxn').checked = false;
+        document.getElementById('simPriorDisputes').value = '0';
+      } else if (preset === 'luxury_card') {
+        document.getElementById('simAmount').value = '98000.00';
+        document.getElementById('simMethod').value = 'card';
+        document.getElementById('simNetwork').value = 'visa';
+        document.getElementById('simCategory').value = 'electronics';
+        document.getElementById('simDevice').value = 'desktop_windows';
+        document.getElementById('simCountry').value = 'IN';
+        document.getElementById('sim3ds').checked = true;
+        document.getElementById('simFirstTxn').checked = false;
+        document.getElementById('simPriorDisputes').value = '0';
+      } else if (preset === 'velocity_burst') {
+        document.getElementById('simAmount').value = '18500.00';
+        document.getElementById('simMethod').value = 'card';
+        document.getElementById('simNetwork').value = 'mastercard';
+        document.getElementById('simCategory').value = 'gaming';
+        document.getElementById('simDevice').value = 'mobile_ios';
+        document.getElementById('simCountry').value = 'IN';
+        document.getElementById('sim3ds').checked = false;
+        document.getElementById('simFirstTxn').checked = false;
+        document.getElementById('simPriorDisputes').value = '1';
+      } else if (preset === 'cross_border') {
+        document.getElementById('simAmount').value = '45000.00';
+        document.getElementById('simMethod').value = 'card';
+        document.getElementById('simNetwork').value = 'amex';
+        document.getElementById('simCategory').value = 'digital_goods';
+        document.getElementById('simDevice').value = 'desktop_mac';
+        document.getElementById('simCountry').value = 'US';
+        document.getElementById('sim3ds').checked = false;
+        document.getElementById('simFirstTxn').checked = false;
+        document.getElementById('simPriorDisputes').value = '2';
+      } else if (preset === 'cold_start') {
+        document.getElementById('simAmount').value = '24000.00';
+        document.getElementById('simMethod').value = 'card';
+        document.getElementById('simNetwork').value = 'rupay';
+        document.getElementById('simCategory').value = 'fashion';
+        document.getElementById('simDevice').value = 'mobile_android';
+        document.getElementById('simCountry').value = 'IN';
+        document.getElementById('sim3ds').checked = true;
+        document.getElementById('simFirstTxn').checked = true;
+        document.getElementById('simPriorDisputes').value = '0';
+      }
+    }
+
+    async function runSimulation() {
+      const amt = parseFloat(document.getElementById('simAmount').value);
+      const is3ds = document.getElementById('sim3ds').checked;
+      const isFirst = document.getElementById('simFirstTxn').checked;
+      const disputes = parseInt(document.getElementById('simPriorDisputes').value) || 0;
+      const txnId = document.getElementById('simTxnId').value || 'TXN_SIM_2400';
+
+      const resSec = document.getElementById('simResultSection');
+      resSec.classList.remove('hidden');
+
+      document.getElementById('simResTxnId').innerText = txnId;
+
+      let isHigh = (amt > 30000 && !is3ds) || disputes > 1 || (isFirst && amt > 20000 && !is3ds);
+      let isReview = (!isHigh && (amt > 20000 || !is3ds || isFirst));
+
+      const b = document.getElementById('simResBadge');
+      const v = document.getElementById('simResVerdict');
+      const r = document.getElementById('simResReason');
+      const p = document.getElementById('simResProb');
+      const rules = document.getElementById('simResRules');
+      const l = document.getElementById('simResLoss');
+      const banner = document.getElementById('simRuleBanner');
+
+      if (isHigh) {
+        b.innerText = 'HIGH RISK';
+        b.className = 'badge-high';
+        v.innerText = 'Block Transaction / Immediate Refund';
+        r.innerText = 'CRITICAL_THREAT_BREACH: High amount without 3DS or prior dispute history detected.';
+        p.innerText = '89.4%';
+        rules.innerText = '2 Triggered';
+        rules.className = 'text-2xl font-mono font-bold text-rose-400 mt-1';
+        l.innerText = '₹' + Math.round(amt * 0.89).toLocaleString('en-IN') + '.00';
+        banner.className = 'p-3.5 rounded-xl border border-rose-700/60 bg-rose-950/40 text-rose-300 text-xs font-semibold';
+        banner.innerHTML = '⚠️ Triggered Deterministic Policy Rules:<br>• <strong>VELOCITY_ANOMALY</strong> (HIGH): Transaction exceeds baseline frequency.<br>• <strong>HIGH_VALUE_NON_3DS</strong> (HIGH): Unauthenticated high-value transaction.';
+      } else if (isReview) {
+        b.innerText = 'REVIEW RISK';
+        b.className = 'badge-review';
+        v.innerText = 'Route to manual fraud queue; request step-up 2FA re-authentication.';
+        r.innerText = 'SIGNAL_DISAGREEMENT_RULE_LEAD: Moderate ML risk corroborated with policy trigger.';
+        p.innerText = '34.2%';
+        rules.innerText = '1 Triggered';
+        rules.className = 'text-2xl font-mono font-bold text-amber-400 mt-1';
+        l.innerText = '₹' + Math.round(amt * 0.34).toLocaleString('en-IN') + '.00';
+        banner.className = 'p-3.5 rounded-xl border border-yellow-700/60 bg-yellow-950/40 text-yellow-300 text-xs font-semibold';
+        banner.innerHTML = '⚠️ Triggered Deterministic Policy Rules:<br>• <strong>VELOCITY_ANOMALY</strong> (0.50): Transaction frequency spikes significantly above customer baseline.';
       } else {
-        badge.innerText = 'LOW RISK';
-        badge.className = 'badge-low';
-        text.innerText = 'Score: 12.0% | All deterministic rules passed';
+        b.innerText = 'LOW RISK';
+        b.className = 'badge-low';
+        v.innerText = 'Allow / normal monitoring';
+        r.innerText = 'CLEAN_BASELINE: Low probability with 3DS corroboration.';
+        p.innerText = '4.2%';
+        rules.innerText = '0 Triggered';
+        rules.className = 'text-2xl font-mono font-bold text-emerald-400 mt-1';
+        l.innerText = '₹' + Math.round(amt * 0.042).toLocaleString('en-IN') + '.00';
+        banner.className = 'p-3.5 rounded-xl border border-emerald-700/50 bg-emerald-950/30 text-emerald-300 text-xs font-semibold';
+        banner.innerHTML = '✅ All 6 deterministic security rules passed cleanly.';
+      }
+
+      setupParticleSphere('simSphereCanvas');
+    }
+
+    function commitDecision() {
+      const txnId = document.getElementById('simResTxnId').innerText;
+      const amt = document.getElementById('simAmount').value;
+      const notes = document.getElementById('simNotes').value || 'Standard manual verification recorded.';
+      const act = document.querySelector('input[name="simAction"]:checked').value;
+
+      const tbody = document.getElementById('auditLedgerBody');
+      const tr = document.createElement('tr');
+      const now = new Date().toISOString().replace('T', ' ').substring(0, 16);
+      tr.innerHTML = `
+        <td class="font-mono text-slate-400">${now}</td>
+        <td class="font-mono">${txnId}</td>
+        <td class="font-mono font-bold">₹${parseFloat(amt).toLocaleString('en-IN')}</td>
+        <td><span class="${act === 'Approve' ? 'badge-low' : (act === 'Block' ? 'badge-high' : 'badge-review')}">${act}</span></td>
+        <td class="text-slate-300">${notes}</td>
+      `;
+      tbody.insertBefore(tr, tbody.firstChild);
+      alert('Audit record committed for ' + txnId);
+    }
+
+    // -----------------------------------------------------------------------
+    // Module 4 Dispute Defense & Evidence Logic
+    // -----------------------------------------------------------------------
+    function updateCompleteness() {
+      let count = 0;
+      if (document.getElementById('chkGateway').checked) count++;
+      if (document.getElementById('chk3dsAuth').checked) count++;
+      if (document.getElementById('chkDelivery').checked) count++;
+      if (document.getElementById('chkOrderComm').checked) count++;
+
+      const pct = (count / 4) * 100;
+      document.getElementById('progBar').style.width = pct + '%';
+      document.getElementById('scoreText').innerText = pct.toFixed(1) + '%';
+
+      const banner = document.getElementById('defenseReadyBanner');
+      if (pct >= 75) {
+        banner.className = 'p-3.5 rounded-xl border border-emerald-700/60 bg-emerald-950/40 text-emerald-300 text-xs font-semibold flex items-center gap-2';
+        banner.innerHTML = '<span>🛡️</span><span><strong>Defense-Ready:</strong> Sufficient compelling documentation to overturn liability under Visa & Mastercard guidelines.</span>';
+      } else {
+        banner.className = 'p-3.5 rounded-xl border border-yellow-700/60 bg-yellow-950/40 text-yellow-300 text-xs font-semibold flex items-center gap-2';
+        banner.innerHTML = '<span>⚠️</span><span><strong>Missing Documentation:</strong> Incomplete documentation package. Obtain proof before filing contestation to avoid penalty fees.</span>';
       }
     }
 
-    function generateMemo() {
-      document.getElementById('memoOutput').innerText = `# FORMAL DISPUTE REBUTTAL MEMORANDUM\nCase Reference: DSP_9041\nNetwork Standards: Visa Compelling Evidence 3.0 & Mastercard CE\n\nCardholder authenticated via 3DS OTP and physical courier POD signed at billing address. Fraud liability shifted to issuer.`;
+    function generateGroundedMemo() {
+      document.getElementById('memoPlaceholder').classList.add('hidden');
+      document.getElementById('memoContent').classList.remove('hidden');
+
+      const txnId = document.getElementById('defendTxn').value;
+      const t = transactionsData.find(x => x.id === txnId) || transactionsData[0];
+
+      document.getElementById('memoSummary').innerText = `Transaction ${t.id} carries verified 3DS authentication and physical signed delivery proof at billing location.`;
+      document.getElementById('memoAnchors').innerHTML = `
+        • 3D-Secure OTP Authentication verified cardholder identity.<br>
+        • Carrier proof-of-delivery (POD) confirmed delivery to cardholder address.<br>
+        • Payment ID settlement receipt matches merchant acquirer gateway logs.
+      `;
+
+      document.getElementById('memoDraft').innerText = `# FORMAL DISPUTE REBUTTAL MEMORANDUM
+Case Reference: DSP_${t.id}
+Transaction ID: ${t.id}
+Amount: ₹${t.amt.toFixed(2)}
+Network Protocols: Visa Compelling Evidence 3.0 & Mastercard CE Guideline
+
+To Card Issuing Bank Dispute Committee:
+
+This memorandum formally contests the chargeback filed for Transaction ${t.id}.
+
+1. AUTHENTICATION EVIDENCE
+The cardholder successfully completed two-factor 3D-Secure authentication (OTP) at the time of purchase. Electronic commerce indicator (ECI 05) was obtained from the directory server, shifting chargeback fraud liability to the card issuer under network operating regulations.
+
+2. FULFILLMENT & DELIVERY PROOF
+The merchandise was dispatched to the verified billing address and signed for upon receipt. The courier waybill and proof-of-delivery signature correspond exactly with the billing information supplied during checkout.
+
+3. SETTLEMENT INTEGRITY
+Gateway settlement logs confirm transaction clearance with zero settlement discrepancies.
+
+REQUESTED REMEDY:
+In accordance with Visa CE3.0 and Mastercard dispute representment standards, we respectfully request the immediate reversal of the provisional credit and restoration of funds to the merchant account.`;
     }
 
-    // Init on load
+    // -----------------------------------------------------------------------
+    // Page Initializer
+    // -----------------------------------------------------------------------
     window.addEventListener('DOMContentLoaded', () => {
+      setupParticleSphere('goldenSphereCanvas');
+      setupParticleSphere('cmdCenterSphereCanvas');
+      populateLiveTable();
       onSelectTxn('TXN_000001');
       setTimeout(renderAllCharts, 100);
     });
