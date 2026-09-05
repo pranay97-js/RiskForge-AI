@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Razorpay RiskForge AI — Enterprise Merchant Risk & Dispute Defense Platform</title>
+  <title>Razorpay RiskForge AI — Merchant Risk Platform</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
   <style>
@@ -26,7 +26,7 @@
       --accent-rose: #f43f5e;
       --accent-amber: #f59e0b;
       --shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
-      --hud-bg: rgba(3, 7, 18, 0.85);
+      --hud-bg: rgba(3, 7, 18, 0.82);
       --hud-border: rgba(255, 255, 255, 0.12);
       --pill-bg: rgba(11, 114, 231, 0.15);
       --pill-text: #38bdf8;
@@ -49,80 +49,94 @@
       --accent-rose: #e11d48;
       --accent-amber: #d97706;
       --shadow: 0 10px 28px rgba(11, 114, 231, 0.09);
-      --hud-bg: rgba(255, 255, 255, 0.92);
+      --hud-bg: rgba(255, 255, 255, 0.90);
       --hud-border: rgba(11, 114, 231, 0.25);
       --pill-bg: rgba(11, 114, 231, 0.10);
       --pill-text: #0b72e7;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       background-color: var(--bg-color);
       color: var(--text-primary);
-      transition: background-color 0.3s ease, color 0.3s ease;
+      margin: 0;
+      padding: 0;
       overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     .font-mono {
       font-family: 'JetBrains Mono', monospace;
     }
 
-    .glass-card {
+    /* Exact Streamlit Card Styling */
+    .metric-card {
       background: var(--card-bg);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--card-border);
       border-radius: 18px;
+      padding: 22px;
       box-shadow: var(--shadow);
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .glass-card:hover {
+    .metric-card:hover {
       border-color: var(--accent-cyan);
-      transform: translateY(-2px);
-    }
-
-    .gradient-header {
-      background: linear-gradient(135deg, #00d2d2 0%, #0b72e7 50%, #6366f1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: 800;
-      letter-spacing: -0.5px;
     }
 
     .badge-high {
       background: rgba(244, 63, 94, 0.18);
       color: var(--accent-rose);
       border: 1px solid rgba(244, 63, 94, 0.45);
-      padding: 4px 12px;
+      padding: 3px 12px;
       border-radius: 9999px;
       font-weight: 700;
       font-size: 11px;
       letter-spacing: 0.5px;
       display: inline-block;
+      text-transform: uppercase;
     }
 
     .badge-review {
       background: rgba(245, 158, 11, 0.18);
       color: var(--accent-amber);
       border: 1px solid rgba(245, 158, 11, 0.45);
-      padding: 4px 12px;
+      padding: 3px 12px;
       border-radius: 9999px;
       font-weight: 700;
       font-size: 11px;
       letter-spacing: 0.5px;
       display: inline-block;
+      text-transform: uppercase;
     }
 
     .badge-low {
       background: rgba(16, 185, 129, 0.18);
       color: var(--accent-emerald);
       border: 1px solid rgba(16, 185, 129, 0.45);
-      padding: 4px 12px;
+      padding: 3px 12px;
       border-radius: 9999px;
       font-weight: 700;
       font-size: 11px;
       letter-spacing: 0.5px;
       display: inline-block;
+      text-transform: uppercase;
+    }
+
+    .delta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
     }
 
     .status-pill {
@@ -147,7 +161,6 @@
       box-shadow: 0 0 8px #10b981;
     }
 
-    /* Custom form input styles matching Streamlit */
     .st-input {
       background-color: var(--input-bg);
       color: var(--input-text);
@@ -162,1279 +175,777 @@
       border-color: var(--accent-blue);
     }
 
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+    /* Custom Radio styling matching Streamlit */
+    .st-radio-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-primary);
+      transition: background 0.15s;
+      user-select: none;
     }
-    ::-webkit-scrollbar-track {
-      background: transparent;
+    .st-radio-item:hover {
+      background: rgba(11, 114, 231, 0.08);
     }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(11, 114, 231, 0.3);
-      border-radius: 3px;
+    .st-radio-dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 2px solid var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(11, 114, 231, 0.6);
+    .st-radio-item.active .st-radio-dot {
+      border-color: #f43f5e;
+      background: #f43f5e;
+    }
+    .st-radio-item.active .st-radio-dot::after {
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: white;
     }
   </style>
 </head>
-<body class="min-h-screen flex antialiased">
+<body class="min-h-screen flex">
 
-  <!-- ========================================================================= -->
-  <!-- SIDEBAR: Enterprise Razorpay Design System Navigation -->
-  <!-- ========================================================================= -->
-  <aside class="w-72 flex-shrink-0 min-h-screen p-5 border-r border-[var(--card-border)] flex flex-col justify-between" style="background: var(--sidebar-bg); backdrop-filter: blur(20px);">
+  <!-- ======================================================================= -->
+  <!-- SIDEBAR: Exact Streamlit Replica from User's Screenshot                 -->
+  <!-- ======================================================================= -->
+  <aside class="w-80 flex-shrink-0 min-h-screen p-5 border-r border-[var(--card-border)] flex flex-col justify-between" style="background: var(--sidebar-bg); backdrop-filter: blur(20px);">
     <div>
-      <!-- Brand Logo Header -->
-      <div class="flex items-center gap-3 mb-3">
-        <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="100" height="100" rx="22" fill="#0B72E7"/>
-          <path d="M28 72L50 24H72L42 72H28Z" fill="#00D2D2"/>
-          <path d="M46 72L68 24H76L54 72H46Z" fill="#FFFFFF" fill-opacity="0.95"/>
-          <path d="M38 52H68L62 64H32L38 52Z" fill="#02042B" fill-opacity="0.3"/>
-        </svg>
+      <!-- 1. Razorpay RiskForge Brand Header -->
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-8 h-8 rounded-lg bg-[#0b72e7] flex items-center justify-center text-white shadow-md shadow-blue-500/30 font-bold text-lg">
+          ⚡
+        </div>
         <div>
-          <div class="text-xl font-extrabold tracking-tight leading-tight">
-            <span class="text-[#0B72E7]">Razorpay</span> <span class="gradient-header">RiskForge</span>
+          <div class="text-[17px] font-extrabold tracking-tight leading-tight">
+            <span class="text-[#0b72e7]">Razorpay</span> <span class="text-[#38bdf8]">RiskForge</span>
           </div>
-          <div class="text-[10px] font-bold tracking-wider text-[var(--text-secondary)] uppercase">
-            Dispute & Risk Defense
+          <div class="text-[9px] font-bold tracking-wider text-[var(--text-secondary)] uppercase">
+            DISPUTE & RISK DEFENSE
           </div>
         </div>
       </div>
 
-      <!-- Engine Status Pill -->
-      <div class="mb-4">
+      <!-- 2. Status Pill -->
+      <div class="mb-5">
         <div class="status-pill">
           <span>ENGINE STATUS: ACTIVE</span>
         </div>
       </div>
 
-      <hr class="border-[var(--card-border)] my-3">
-
-      <!-- Dark / Light Theme Toggle -->
-      <div class="grid grid-cols-2 gap-2 mb-4">
-        <button id="btnThemeDark" onclick="setTheme('dark')" class="px-3 py-1.5 text-xs font-bold rounded-lg border transition-all flex items-center justify-center gap-1.5 bg-[#0b72e7] text-white border-transparent shadow-sm">
-          <span>🌙</span><span>Dark</span>
+      <!-- 3. Dark / Light Mode Buttons -->
+      <div class="grid grid-cols-2 gap-2 mb-5">
+        <button id="btnDark" onclick="setTheme('dark')" class="px-3 py-2 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 bg-[#0b72e7] text-white shadow-sm transition-all">
+          <span>🌙</span><span>Dark Mode</span>
         </button>
-        <button id="btnThemeLight" onclick="setTheme('light')" class="px-3 py-1.5 text-xs font-bold rounded-lg border border-[var(--card-border)] bg-[var(--card-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all flex items-center justify-center gap-1.5">
-          <span>☀️</span><span>Light</span>
+        <button id="btnLight" onclick="setTheme('light')" class="px-3 py-2 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 bg-transparent border border-slate-700 text-slate-300 hover:text-white transition-all">
+          <span>☀️</span><span>Light Mode</span>
         </button>
       </div>
-
-      <hr class="border-[var(--card-border)] my-3">
-
-      <!-- Platform Navigation Modules -->
-      <div class="text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-2">
-        Platform Modules
-      </div>
-      <nav class="space-y-1" id="moduleNav">
-        <button onclick="switchModule('command_center')" id="nav-command_center" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2.5 transition-all bg-[var(--accent-blue-dim)] text-[var(--accent-blue)] border border-[var(--accent-blue)] font-bold">
-          <span>🌐</span><span>Executive Command Center</span>
-        </button>
-        <button onclick="switchModule('investigator')" id="nav-investigator" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2.5 transition-all text-[var(--text-secondary)] hover:bg-[var(--card-bg)] hover:text-[var(--text-primary)] border border-transparent">
-          <span>🔍</span><span>Transaction Investigator</span>
-        </button>
-        <button onclick="switchModule('simulator')" id="nav-simulator" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2.5 transition-all text-[var(--text-secondary)] hover:bg-[var(--card-bg)] hover:text-[var(--text-primary)] border border-transparent">
-          <span>✍️</span><span>Live Simulator & Review</span>
-        </button>
-        <button onclick="switchModule('evidence')" id="nav-evidence" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2.5 transition-all text-[var(--text-secondary)] hover:bg-[var(--card-bg)] hover:text-[var(--text-primary)] border border-transparent">
-          <span>📑</span><span>Dispute Defense Center</span>
-        </button>
-        <button onclick="switchModule('intelligence')" id="nav-intelligence" class="w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2.5 transition-all text-[var(--text-secondary)] hover:bg-[var(--card-bg)] hover:text-[var(--text-primary)] border border-transparent">
-          <span>📊</span><span>Risk Engine Intelligence</span>
-        </button>
-      </nav>
 
       <hr class="border-[var(--card-border)] my-4">
 
-      <!-- Financial Risk Controls Slider -->
-      <div class="space-y-3">
-        <div class="text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
-          ⚙️ Financial Risk Controls
+      <!-- 4. Platform Modules Radio List -->
+      <div class="text-[12px] font-bold text-[var(--text-secondary)] mb-2">
+        Platform Modules
+      </div>
+      <div class="space-y-1" id="sidebarModules">
+        <div onclick="switchModule('mobile')" class="st-radio-item" id="nav-mobile">
+          <div class="st-radio-dot"></div>
+          <span>📱 RiskForge Mobile (Mobile 393x852 View)</span>
         </div>
-        <div>
-          <div class="flex justify-between text-[11px] mb-1">
-            <span class="text-[var(--text-secondary)]">Decision Cutoff (τ):</span>
-            <span id="txtCutoff" class="font-mono font-bold text-[var(--accent-blue)]">0.20</span>
-          </div>
-          <input id="sliderCutoff" type="range" min="0.05" max="0.90" step="0.05" value="0.20" oninput="onCutoffChange(this.value)" class="w-full accent-[#0b72e7] cursor-pointer">
-          <span class="text-[10px] text-[var(--text-secondary)] block mt-0.5">Custom threshold applies live.</span>
+        <div onclick="switchModule('command_center')" class="st-radio-item" id="nav-command_center">
+          <div class="st-radio-dot"></div>
+          <span>🌐 Executive Command Center</span>
+        </div>
+        <div onclick="switchModule('investigator')" class="st-radio-item active" id="nav-investigator">
+          <div class="st-radio-dot"></div>
+          <span class="font-bold text-white">🔍 Transaction Investigator</span>
+        </div>
+        <div onclick="switchModule('simulator')" class="st-radio-item" id="nav-simulator">
+          <div class="st-radio-dot"></div>
+          <span>🔥 Live Simulator & Human Review</span>
+        </div>
+        <div onclick="switchModule('evidence')" class="st-radio-item" id="nav-evidence">
+          <div class="st-radio-dot"></div>
+          <span>📑 Dispute Defense & Evidence Center</span>
+        </div>
+        <div onclick="switchModule('intelligence')" class="st-radio-item" id="nav-intelligence">
+          <div class="st-radio-dot"></div>
+          <span>📊 Risk Engine Intelligence</span>
         </div>
       </div>
 
+      <hr class="border-[var(--card-border)] my-4">
+
+      <!-- 5. Financial Risk Controls -->
+      <div class="space-y-3">
+        <div class="flex items-center gap-2 text-[13px] font-bold text-[var(--text-primary)]">
+          <span>⚙️</span><span>Financial Risk Controls</span>
+        </div>
+        <div>
+          <label class="text-[11px] text-[var(--text-secondary)] font-medium block mb-1">Manual Review Cost (₹)</label>
+          <div class="flex items-center">
+            <input id="inReviewCost" type="text" value="50.00" class="st-input w-full font-mono text-xs rounded-r-none">
+            <button onclick="stepInput('inReviewCost', -5)" class="px-2.5 py-2 bg-slate-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold">-</button>
+            <button onclick="stepInput('inReviewCost', 5)" class="px-2.5 py-2 bg-slate-800 border border-l-0 border-slate-700 text-slate-300 hover:text-white text-xs font-bold rounded-r-lg">+</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-[11px] text-[var(--text-secondary)] font-medium block mb-1">Network Dispute Penalty (₹)</label>
+          <div class="flex items-center">
+            <input id="inPenalty" type="text" value="3000.00" class="st-input w-full font-mono text-xs rounded-r-none">
+            <button onclick="stepInput('inPenalty', -250)" class="px-2.5 py-2 bg-slate-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-bold">-</button>
+            <button onclick="stepInput('inPenalty', 250)" class="px-2.5 py-2 bg-slate-800 border border-l-0 border-slate-700 text-slate-300 hover:text-white text-xs font-bold rounded-r-lg">+</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-[11px] mb-1">
+            <span class="text-[var(--text-secondary)]">Decision Cutoff (τ)</span>
+            <span id="txtTau" class="font-mono font-bold text-[var(--accent-blue)]">0.20</span>
+          </div>
+          <input type="range" min="0.05" max="0.90" step="0.05" value="0.20" oninput="document.getElementById('txtTau').innerText = parseFloat(this.value).toFixed(2)" class="w-full accent-[#0b72e7] cursor-pointer">
+        </div>
+      </div>
     </div>
 
-    <!-- Sidebar Footer -->
-    <div class="pt-4 border-t border-[var(--card-border)] space-y-3">
-      <!-- Mobile App View Link -->
-      <a href="/app" target="_blank" class="w-full px-3 py-2 rounded-xl text-xs font-bold border border-cyan-500/40 bg-cyan-950/40 text-cyan-300 hover:bg-cyan-900/60 transition-all flex items-center justify-between shadow-sm">
-        <span class="flex items-center gap-2"><span>📱</span><span>Launch Mobile App View</span></span>
-        <span class="text-[10px] uppercase font-mono">393x852 ↗</span>
-      </a>
+    <!-- Sidebar Bottom Note -->
+    <div class="pt-4 border-t border-[var(--card-border)]">
       <p class="text-[10px] text-[var(--text-secondary)] leading-tight">
-        🔒 <strong>Enterprise Security:</strong> Defense-Only active. PII tokenized with ISO 27001 compliance standards.
+        🔒 <strong>Enterprise Security:</strong> Defense-Only active. PII tokenized with ISO 27001 standards.
       </p>
     </div>
   </aside>
 
 
-  <!-- ========================================================================= -->
-  <!-- MAIN WORKSPACE: Dynamic Module Viewport -->
-  <!-- ========================================================================= -->
+  <!-- ======================================================================= -->
+  <!-- MAIN WORKSPACE: Exact Match to User's Uploaded Screenshot               -->
+  <!-- ======================================================================= -->
   <main class="flex-1 min-h-screen p-8 overflow-y-auto" style="background-color: var(--bg-color);">
     
-    <!-- --------------------------------------------------------------------- -->
-    <!-- MODULE 1: EXECUTIVE COMMAND CENTER                                    -->
-    <!-- --------------------------------------------------------------------- -->
-    <section id="module-command_center" class="module-view space-y-6">
+    <!-- ------------------------------------------------------------------- -->
+    <!-- MODULE: TRANSACTION INVESTIGATOR (DEFAULT ACTIVE, MATCHES IMAGE)    -->
+    <!-- ------------------------------------------------------------------- -->
+    <section id="view-investigator" class="space-y-6">
+      
+      <!-- 1. Header Title -->
       <div>
-        <h1 class="text-3xl font-extrabold gradient-header">Merchant Risk Command Center</h1>
+        <h1 class="text-3xl font-extrabold text-[#00d2d2] tracking-tight leading-snug">
+          Transaction Autopsy & Tri-Signal Verification
+        </h1>
+        <p class="text-xs text-[var(--text-secondary)] mt-1">
+          Comprehensive risk diagnostics combining Machine Learning, Deterministic Rules, and TreeSHAP attributions.
+        </p>
+      </div>
+
+      <!-- 2. Select Transaction Dropdown -->
+      <div>
+        <label class="text-xs font-semibold text-[var(--text-secondary)] block mb-1.5">Select Transaction to Inspect</label>
+        <div class="relative max-w-full">
+          <select id="selTxn" onchange="onSelectTxn(this.value)" class="st-input w-full font-mono text-sm py-2.5 appearance-none cursor-pointer">
+            <option value="TXN_000001" selected>TXN_000001</option>
+            <option value="TXN_000008">TXN_000008</option>
+            <option value="TXN_000014">TXN_000014</option>
+            <option value="TXN_000024">TXN_000024</option>
+            <option value="TXN_000004">TXN_000004</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Big Transaction Reference Card with 3D Risk Radar Inside -->
+      <div class="metric-card p-6 relative overflow-hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          
+          <!-- Left Content -->
+          <div class="lg:col-span-8 space-y-3">
+            <span class="text-[11px] font-bold tracking-wider text-[var(--text-secondary)] uppercase">TRANSACTION REFERENCE</span>
+            <div class="flex items-center gap-3">
+              <h2 id="cardTxnId" class="text-4xl font-extrabold font-mono text-[var(--text-primary)] tracking-tight">TXN_000001</h2>
+              <span id="cardBadge" class="badge-review">REVIEW RISK</span>
+            </div>
+
+            <div class="text-xs text-[var(--text-primary)] space-y-1.5 pt-1">
+              <div>
+                <strong class="text-[var(--text-secondary)]">Decision Rationale:</strong>
+                <span id="cardRationale" class="font-mono text-[var(--text-primary)]">SIGNAL_DISAGREEMENT_RULE_LEAD: Deterministic rule triggered, but ML overall probability remains low.</span>
+              </div>
+              <div>
+                <strong class="text-[var(--text-secondary)]">Recommended Action:</strong>
+                <span id="cardAction">Human investigation</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Content: 3D RISK RADAR HUD Box -->
+          <div class="lg:col-span-4 flex justify-end">
+            <div class="w-72 h-44 rounded-2xl border border-[var(--card-border)] bg-black/60 p-3 relative flex flex-col justify-between shadow-inner">
+              <div class="flex items-center justify-between text-[10px] font-mono border-b border-white/10 pb-1.5">
+                <span class="text-amber-400 font-bold flex items-center gap-1">
+                  <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                  <span>3D RISK RADAR</span>
+                </span>
+                <span id="radarStateText" class="text-amber-300 font-bold uppercase">ANOMALY REVIEW REQUIRED</span>
+              </div>
+              
+              <!-- 3D Canvas Canvas -->
+              <div class="relative flex-1 w-full flex items-center justify-center overflow-hidden">
+                <canvas id="goldenSphereCanvas" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+              </div>
+
+              <div class="text-[10px] font-mono text-slate-400 flex justify-between pt-1 border-t border-white/10">
+                <span>Prob: <strong id="radarProb" class="text-white">8.2%</strong></span>
+                <span>₹<strong id="radarAmt" class="text-white">2,074</strong></span>
+                <span>64 Nodes</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 4. 3 KPI Metric Cards with Delta Badges -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="metric-card p-5">
+          <p class="text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">ML Chargeback Probability</p>
+          <div class="flex items-baseline gap-2 mb-2">
+            <span id="metricProb" class="text-3xl font-extrabold font-mono text-[var(--text-primary)]">8.2%</span>
+          </div>
+          <span id="metricProbDelta" class="delta-pill">↑ Tier: Low</span>
+        </div>
+
+        <div class="metric-card p-5">
+          <p class="text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Rule Severity Score</p>
+          <div class="flex items-baseline gap-2 mb-2">
+            <span id="metricRule" class="text-3xl font-extrabold font-mono text-[var(--text-primary)]">0.50 <span class="text-lg text-[var(--text-secondary)]">/ 1.00</span></span>
+          </div>
+          <span id="metricRuleDelta" class="delta-pill">↑ Signal: High</span>
+        </div>
+
+        <div class="metric-card p-5">
+          <p class="text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">Expected Financial Loss</p>
+          <div class="flex items-baseline gap-2 mb-2">
+            <span id="metricLoss" class="text-3xl font-extrabold font-mono text-[var(--text-primary)]">₹416.13</span>
+          </div>
+          <span id="metricLossDelta" class="delta-pill">↑ Exposure: ₹5,074</span>
+        </div>
+      </div>
+
+      <!-- 5. Bottom Two Columns: SHAP Feature Attribution & Deterministic Rules -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Left: Feature Factor Attribution (SHAP Explainer) -->
+        <div class="metric-card p-6 space-y-3">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">🌳</span>
+            <h3 class="text-sm font-bold text-[var(--text-primary)]">Feature Factor Attribution (SHAP Explainer)</h3>
+          </div>
+          <p class="text-xs text-[var(--text-secondary)] font-semibold">Top Risk-Elevating Feature Contributions</p>
+          <div id="plotlyShapChart" class="w-full h-56"></div>
+        </div>
+
+        <!-- Right: Deterministic Verification Rules -->
+        <div class="metric-card p-6 space-y-4">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">🛡️</span>
+            <h3 class="text-sm font-bold text-[var(--text-primary)]">Deterministic Verification Rules</h3>
+          </div>
+
+          <!-- Warning Box -->
+          <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center gap-2">
+            <span>⚠️</span><span>1 Independent Rule(s) Triggered:</span>
+          </div>
+
+          <!-- Rule Card -->
+          <div class="p-3.5 rounded-xl border border-[var(--card-border)] bg-slate-900/60 border-l-4 border-l-rose-500 space-y-1">
+            <div class="flex items-center gap-2">
+              <strong class="font-mono text-sm text-[var(--text-primary)]">VELOCITY_ANOMALY</strong>
+              <span class="text-[10px] font-extrabold text-rose-400 bg-rose-500/20 px-1.5 py-0.5 rounded">HIGH</span>
+            </div>
+            <p class="text-xs text-[var(--text-secondary)]">Cardholder velocity exceeds standard hourly deviation limits (5 attempts in 10 mins).</p>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ------------------------------------------------------------------- -->
+    <!-- MODULE: EXECUTIVE COMMAND CENTER                                    -->
+    <!-- ------------------------------------------------------------------- -->
+    <section id="view-command_center" class="space-y-6 hidden">
+      <div>
+        <h1 class="text-3xl font-extrabold text-[#00d2d2]">Merchant Risk Command Center</h1>
         <p class="text-xs text-[var(--text-secondary)] mt-1">Live portfolio exposure, 3D threat topology, and real-time transaction ingestion stream.</p>
       </div>
 
-      <!-- KPI Metric Cards Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="glass-card p-5">
-          <p class="text-[11px] uppercase font-bold text-[var(--text-secondary)] tracking-wider">Total Portfolio Exposure</p>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="metric-card p-5">
+          <p class="text-[11px] font-bold text-[var(--text-secondary)] uppercase">Total Portfolio Exposure</p>
           <h2 class="text-2xl font-bold font-mono text-[var(--text-primary)] my-1">₹1,48,20,500</h2>
           <span class="text-xs text-[var(--accent-blue)] font-semibold">14,250 active volume</span>
         </div>
-
-        <div class="glass-card p-5">
-          <p class="text-[11px] uppercase font-bold text-[var(--text-secondary)] tracking-wider">Flagged Risk Queue</p>
-          <h2 class="text-2xl font-bold font-mono text-[var(--accent-amber)] my-1">142 <span class="text-xs text-[var(--text-secondary)]">(1.0%)</span></h2>
+        <div class="metric-card p-5">
+          <p class="text-[11px] font-bold text-[var(--text-secondary)] uppercase">Flagged Risk Queue</p>
+          <h2 class="text-2xl font-bold font-mono text-[var(--accent-amber)] my-1">142 <span class="text-xs text-slate-400">(1.0%)</span></h2>
           <span class="text-xs text-[var(--text-secondary)]">Within analyst SLA capacity</span>
         </div>
-
-        <div class="glass-card p-5">
-          <p class="text-[11px] uppercase font-bold text-[var(--text-secondary)] tracking-wider">Dispute Risk Exposure</p>
+        <div class="metric-card p-5">
+          <p class="text-[11px] font-bold text-[var(--text-secondary)] uppercase">Dispute Risk Exposure</p>
           <h2 class="text-2xl font-bold font-mono text-[var(--accent-rose)] my-1">₹8,45,000</h2>
-          <span class="text-xs text-[var(--accent-emerald)] font-semibold">Subject to automated defense</span>
+          <span class="text-xs text-emerald-400 font-semibold">Subject to automated defense</span>
         </div>
-
-        <div class="glass-card p-5">
-          <p class="text-[11px] uppercase font-bold text-[var(--text-secondary)] tracking-wider">Shield Engine PR-AUC</p>
+        <div class="metric-card p-5">
+          <p class="text-[11px] font-bold text-[var(--text-secondary)] uppercase">Shield Engine PR-AUC</p>
           <h2 class="text-2xl font-bold font-mono text-[var(--accent-cyan)] my-1">0.7331</h2>
           <span class="text-xs text-[var(--accent-cyan)] font-semibold">Calibrated XGBoost Model</span>
         </div>
       </div>
 
-      <!-- 3D Risk Globe Container -->
-      <div class="glass-card p-4 relative overflow-hidden">
-        <div class="flex items-center justify-between mb-2">
-          <h3 class="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
-            <span>🌐</span><span>Live 3D Risk Topology & Ingestion Stream</span>
-          </h3>
-          <span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full">REAL-TIME WEBGL</span>
-        </div>
-        <div class="relative w-full h-56 flex items-center justify-center">
-          <div id="globeHud" class="absolute top-2 left-3 z-10 text-[11px] font-mono px-3 py-1.5 rounded-lg border shadow-sm backdrop-blur-md" style="background: var(--hud-bg); border-color: var(--hud-border); color: var(--text-primary);">
-            STATUS: <span id="globeBadge" class="font-bold text-[#00d2d2]">SETTLEMENT CLEARED</span>
-          </div>
-          <canvas id="riskGlobeCanvas" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
-        </div>
-      </div>
-
-      <!-- Filter Controls & Search -->
-      <div class="glass-card p-4 flex flex-wrap items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-          <input id="tableSearch" type="text" placeholder="🔍 Search Txn ID or Customer ID..." oninput="filterTable()" class="st-input w-64">
-          <select id="channelFilter" onchange="filterTable()" class="st-input">
-            <option value="ALL">Payment Channel: All</option>
-            <option value="card">Card</option>
-            <option value="upi">UPI</option>
-            <option value="netbanking">Netbanking</option>
-            <option value="wallet">Wallet</option>
-          </select>
-          <select id="riskFilter" onchange="filterTable()" class="st-input">
-            <option value="ALL">Risk Filter: All</option>
-            <option value="HIGH">High Risk Only</option>
-            <option value="REVIEW">Review Only</option>
-            <option value="LOW">Low Risk Only</option>
-          </select>
-        </div>
-        <span id="tableCountText" class="text-xs font-mono text-[var(--text-secondary)]">Showing 20 transactions</span>
-      </div>
-
-      <!-- Ingestion Stream Table -->
-      <div class="glass-card p-4 overflow-x-auto">
-        <table class="w-full text-left text-xs border-collapse">
-          <thead>
-            <tr class="border-b border-[var(--card-border)] text-[var(--text-secondary)] uppercase font-bold text-[10px] tracking-wider">
-              <th class="py-3 px-3">Transaction ID</th>
-              <th class="py-3 px-3">Timestamp</th>
-              <th class="py-3 px-3">Customer</th>
-              <th class="py-3 px-3">Amount</th>
-              <th class="py-3 px-3">Channel</th>
-              <th class="py-3 px-3">3DS Auth</th>
-              <th class="py-3 px-3">Risk State</th>
-              <th class="py-3 px-3 text-right">Action</th>
-            </tr>
-          </thead>
-          <tbody id="txnTableBody" class="divide-y divide-[var(--card-border)]">
-            <!-- Dynamic rows rendered by JS -->
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Plotly Visualizations Grid -->
+      <!-- Charts -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="glass-card p-5">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-2">📊 Transaction Volume vs Chargeback Risk by Category</h4>
-          <div id="chartCategoryVolume" class="w-full h-64"></div>
+        <div class="metric-card p-5">
+          <h4 class="text-xs font-bold uppercase text-[var(--text-secondary)] mb-2">📊 Category Volume vs Chargeback Risk</h4>
+          <div id="plotlyCategoryBar" class="w-full h-64"></div>
         </div>
-        <div class="glass-card p-5">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-2">💳 Payment Channel Share</h4>
-          <div id="chartPaymentShare" class="w-full h-64"></div>
+        <div class="metric-card p-5">
+          <h4 class="text-xs font-bold uppercase text-[var(--text-secondary)] mb-2">💳 Payment Channel Share</h4>
+          <div id="plotlyChannelPie" class="w-full h-64"></div>
         </div>
       </div>
     </section>
 
-
-    <!-- --------------------------------------------------------------------- -->
-    <!-- MODULE 2: TRANSACTION INVESTIGATOR                                    -->
-    <!-- --------------------------------------------------------------------- -->
-    <section id="module-investigator" class="module-view space-y-6 hidden">
+    <!-- ------------------------------------------------------------------- -->
+    <!-- MODULE: LIVE SIMULATOR & REVIEW                                     -->
+    <!-- ------------------------------------------------------------------- -->
+    <section id="view-simulator" class="space-y-6 hidden">
       <div>
-        <h1 class="text-3xl font-extrabold gradient-header">Transaction Autopsy & Tri-Signal Verification</h1>
-        <p class="text-xs text-[var(--text-secondary)] mt-1">Comprehensive risk diagnostics combining Machine Learning, Deterministic Rules, and TreeSHAP attributions.</p>
-      </div>
-
-      <!-- Transaction Selector -->
-      <div class="glass-card p-4 flex items-center gap-4">
-        <span class="text-xs font-bold text-[var(--text-secondary)]">Select Transaction to Inspect:</span>
-        <select id="investigateSelect" onchange="loadInvestigateTxn(this.value)" class="st-input w-64">
-          <option value="TXN_000008">TXN_000008 (₹23,237.52 - HIGH)</option>
-          <option value="TXN_000014">TXN_000014 (₹6,009.74 - REVIEW)</option>
-          <option value="TXN_000024">TXN_000024 (₹2,671.72 - HIGH)</option>
-          <option value="TXN_000001">TXN_000001 (₹2,073.70 - LOW)</option>
-          <option value="TXN_000004">TXN_000004 (₹455.72 - LOW)</option>
-        </select>
-      </div>
-
-      <!-- Transaction Reference Banner -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-        <div class="lg:col-span-8 glass-card p-6 space-y-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <span class="text-xs font-bold text-[var(--text-secondary)] uppercase">TRANSACTION REFERENCE</span>
-              <h2 id="invTxnId" class="text-2xl font-bold font-mono text-[var(--text-primary)]">TXN_000008</h2>
-            </div>
-            <span id="invRiskBadge" class="badge-high">HIGH RISK</span>
-          </div>
-          <div class="text-xs text-[var(--text-primary)] space-y-1">
-            <div><strong>Decision Rationale:</strong> <span id="invRationale">Extreme Velocity Anomaly + Foreign Non-3DS Gateway Request</span></div>
-            <div><strong>Recommended Action:</strong> <span id="invAction">Block transaction and initiate biometric 2FA challenge</span></div>
-          </div>
-          <div class="grid grid-cols-3 gap-3 pt-2">
-            <div class="glass-card p-3 rounded-xl border border-[var(--card-border)]">
-              <span class="text-[10px] text-[var(--text-secondary)] font-bold block uppercase">ML Probability</span>
-              <span id="invProb" class="text-lg font-bold font-mono text-[var(--accent-rose)]">89.4%</span>
-              <span class="text-[9px] text-[var(--text-secondary)] block">Tier: HIGH</span>
-            </div>
-            <div class="glass-card p-3 rounded-xl border border-[var(--card-border)]">
-              <span class="text-[10px] text-[var(--text-secondary)] font-bold block uppercase">Rule Severity</span>
-              <span id="invRuleScore" class="text-lg font-bold font-mono text-[var(--accent-amber)]">0.85 / 1.0</span>
-              <span class="text-[9px] text-[var(--text-secondary)] block">Signal: ELEVATED</span>
-            </div>
-            <div class="glass-card p-3 rounded-xl border border-[var(--card-border)]">
-              <span class="text-[10px] text-[var(--text-secondary)] font-bold block uppercase">Expected Loss</span>
-              <span id="invExpLoss" class="text-lg font-bold font-mono text-[var(--text-primary)]">₹26,237.52</span>
-              <span class="text-[9px] text-[var(--text-secondary)] block">Exposure + ₹3K fee</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="lg:col-span-4 glass-card p-4 h-64 flex items-center justify-center relative">
-          <canvas id="invGlobeCanvas" class="w-full h-full"></canvas>
-        </div>
-      </div>
-
-      <!-- SHAP Factor Attribution & Rules Corroboration -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="glass-card p-5 space-y-3">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">🌳 Feature Factor Attribution (TreeSHAP)</h4>
-          <div id="chartShap" class="w-full h-64"></div>
-        </div>
-
-        <div class="glass-card p-5 space-y-3">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">🛡️ Deterministic Verification Rules</h4>
-          <div id="invRulesContainer" class="space-y-2">
-            <!-- Dynamic rule cards -->
-          </div>
-
-          <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] pt-3">📋 Transaction Context Summary</h4>
-          <div class="overflow-x-auto">
-            <table class="w-full text-xs text-left divide-y divide-[var(--card-border)]">
-              <tbody id="invContextTable" class="divide-y divide-[var(--card-border)]">
-                <!-- Context rows -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- --------------------------------------------------------------------- -->
-    <!-- MODULE 3: LIVE SIMULATOR & HUMAN REVIEW                               -->
-    <!-- --------------------------------------------------------------------- -->
-    <section id="module-simulator" class="module-view space-y-6 hidden">
-      <div>
-        <h1 class="text-3xl font-extrabold gradient-header">Live Risk Simulator & Analyst Review</h1>
+        <h1 class="text-3xl font-extrabold text-[#00d2d2]">Live Risk Simulator & Analyst Review</h1>
         <p class="text-xs text-[var(--text-secondary)] mt-1">Manually construct custom transaction payloads, trigger real-time multi-signal scoring, and record human-in-the-loop audit decisions.</p>
       </div>
 
-      <!-- Scenario Templates Quick Fill -->
-      <div class="glass-card p-5 space-y-3">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">1. Scenario Templates & Quick Fill</h3>
+      <div class="metric-card p-6 space-y-4">
+        <h3 class="text-xs font-bold uppercase text-[var(--text-secondary)]">1. Scenario Templates & Quick Fill</h3>
         <div class="flex flex-wrap gap-2">
-          <button onclick="applyPreset('clean_upi')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-[var(--accent-blue)] text-[var(--text-primary)] transition-all">Template: Clean Low-Value UPI</button>
-          <button onclick="applyPreset('luxury_spike')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-[var(--accent-blue)] text-[var(--text-primary)] transition-all">Template: High-Value Luxury Spike</button>
-          <button onclick="applyPreset('velocity_burst')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-[var(--accent-blue)] text-[var(--text-primary)] transition-all">Template: Rapid Card Velocity Burst</button>
-          <button onclick="applyPreset('foreign_ip')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-[var(--accent-blue)] text-[var(--text-primary)] transition-all">Template: Cross-Border Foreign IP</button>
-          <button onclick="applyPreset('cold_start')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-[var(--accent-blue)] text-[var(--text-primary)] transition-all">Template: Cold-Start First Buyer</button>
+          <button onclick="fillSim(1250, 'upi', 'visa', 'groceries', true)" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-white border border-slate-700 hover:border-blue-500">Template: Clean Low-Value UPI</button>
+          <button onclick="fillSim(98000, 'card', 'visa', 'electronics', true)" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-white border border-slate-700 hover:border-blue-500">Template: High-Value Luxury Spike</button>
+          <button onclick="fillSim(18500, 'card', 'mastercard', 'gaming', false)" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-white border border-slate-700 hover:border-blue-500">Template: Rapid Card Velocity Burst</button>
         </div>
+
+        <h3 class="text-xs font-bold uppercase text-[var(--text-secondary)] pt-4">2. Transaction Parameters</h3>
+        <div class="grid grid-cols-3 gap-4">
+          <input id="simInAmt" type="number" value="45000" class="st-input" placeholder="Amount">
+          <select id="simInMethod" class="st-input"><option value="card">Card</option><option value="upi">UPI</option><option value="netbanking">Netbanking</option></select>
+          <label class="flex items-center gap-2 text-xs cursor-pointer"><input id="simIn3ds" type="checkbox" checked class="accent-blue-500"> <span>3DS Authenticated</span></label>
+        </div>
+        <button onclick="evalSim()" class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-sm shadow-md">⚡ Run Tri-Signal Evaluation</button>
       </div>
 
-      <!-- Interactive Parameter Form -->
-      <div class="glass-card p-6 space-y-5">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">2. Transaction Parameters</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label class="text-xs font-medium text-[var(--text-secondary)] block mb-1">Transaction ID</label>
-            <input id="simTxnId" type="text" value="TXN_SIM_4920" class="st-input w-full">
-          </div>
-          <div>
-            <label class="text-xs font-medium text-[var(--text-secondary)] block mb-1">Customer ID</label>
-            <input id="simCustId" type="text" value="CUST_SIM_7082" class="st-input w-full">
-          </div>
-          <div>
-            <label class="text-xs font-medium text-[var(--text-secondary)] block mb-1">Amount (₹)</label>
-            <input id="simAmount" type="number" value="45000" class="st-input w-full font-mono">
-          </div>
-          <div>
-            <label class="text-xs font-medium text-[var(--text-secondary)] block mb-1">Payment Channel</label>
-            <select id="simMethod" class="st-input w-full">
-              <option value="card">Card</option>
-              <option value="upi">UPI</option>
-              <option value="netbanking">Netbanking</option>
-              <option value="wallet">Wallet</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-xs font-medium text-[var(--text-secondary)] block mb-1">Card Network</label>
-            <select id="simNetwork" class="st-input w-full">
-              <option value="visa">Visa</option>
-              <option value="mastercard">Mastercard</option>
-              <option value="rupay">RuPay</option>
-              <option value="amex">American Express</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-xs font-medium text-[var(--text-secondary)] block mb-1">Merchant Category</label>
-            <select id="simCategory" class="st-input w-full">
-              <option value="electronics">Electronics</option>
-              <option value="groceries">Groceries</option>
-              <option value="fashion">Fashion</option>
-              <option value="gaming">Gaming</option>
-              <option value="digital_goods">Digital Goods</option>
-              <option value="travel">Travel</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-xs font-medium text-[var(--text-secondary)] block mb-1">Client Device</label>
-            <select id="simDevice" class="st-input w-full">
-              <option value="mobile_android">Mobile (Android)</option>
-              <option value="mobile_ios">Mobile (iOS)</option>
-              <option value="desktop_windows">Desktop (Windows)</option>
-              <option value="desktop_mac">Desktop (macOS)</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-xs font-medium text-[var(--text-secondary)] block mb-1">IP Country Code</label>
-            <input id="simCountry" type="text" value="IN" class="st-input w-full font-mono uppercase">
-          </div>
-          <div class="flex items-center gap-4 pt-5">
-            <label class="flex items-center gap-2 text-xs text-[var(--text-primary)] cursor-pointer">
-              <input id="sim3ds" type="checkbox" class="rounded accent-[#0b72e7]">
-              <span>3D-Secure Authenticated</span>
-            </label>
-            <label class="flex items-center gap-2 text-xs text-[var(--text-primary)] cursor-pointer">
-              <input id="simFirst" type="checkbox" class="rounded accent-[#0b72e7]">
-              <span>Cold Start Account</span>
-            </label>
-          </div>
-        </div>
-
-        <button onclick="runSimulationEvaluation()" class="w-full py-3 rounded-xl bg-gradient-to-r from-[#0b72e7] to-[#00b4d8] text-white font-bold text-sm shadow-lg shadow-[#0b72e7]/30 hover:opacity-95 transition-all">
-          ⚡ Run Tri-Signal Risk Evaluation
-        </button>
-      </div>
-
-      <!-- Verdict Banner -->
-      <div id="simVerdictSection" class="glass-card p-6 space-y-4 hidden">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">3. Risk Engine Verdict</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="glass-card p-4 rounded-xl border border-[var(--card-border)]">
-            <span class="text-[10px] text-[var(--text-secondary)] font-bold uppercase">Verdict & Action</span>
-            <div id="simVerdictBadge" class="mt-1 badge-high">HIGH RISK</div>
-            <p id="simActionText" class="text-xs text-[var(--text-primary)] mt-2 font-medium">Challenged via Biometric OTP</p>
-          </div>
-          <div class="glass-card p-4 rounded-xl border border-[var(--card-border)]">
-            <span class="text-[10px] text-[var(--text-secondary)] font-bold uppercase">ML Score & Rules</span>
-            <div id="simScoreText" class="text-2xl font-bold font-mono text-[var(--accent-rose)] my-1">89.0%</div>
-            <span id="simRulesCount" class="text-xs text-[var(--accent-amber)]">2 Rules Triggered</span>
-          </div>
-          <div class="glass-card p-4 rounded-xl border border-[var(--card-border)]">
-            <span class="text-[10px] text-[var(--text-secondary)] font-bold uppercase">Financial Exposure</span>
-            <div id="simExposureText" class="text-2xl font-bold font-mono text-[var(--text-primary)] my-1">₹48,000.00</div>
-            <span class="text-xs text-[var(--text-secondary)]">Includes ₹3,000 network penalty</span>
-          </div>
-        </div>
-
-        <hr class="border-[var(--card-border)] my-4">
-
-        <!-- Human Review Ledger Form -->
-        <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">4. Human Review & Decision Ledger</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="space-y-3">
-            <label class="text-xs font-medium text-[var(--text-secondary)] block">Select Operational Action:</label>
-            <div class="space-y-1.5 text-xs text-[var(--text-primary)]">
-              <label class="flex items-center gap-2 p-2 rounded-lg bg-[var(--input-bg)] border border-[var(--card-border)] cursor-pointer">
-                <input type="radio" name="analystAction" value="Approved (2FA Cleared)" checked class="accent-[#0b72e7]">
-                <span>🟢 Approve Transaction (Clear Settlement)</span>
-              </label>
-              <label class="flex items-center gap-2 p-2 rounded-lg bg-[var(--input-bg)] border border-[var(--card-border)] cursor-pointer">
-                <input type="radio" name="analystAction" value="Step-Up 2FA" class="accent-[#0b72e7]">
-                <span>🟡 Escalate for Step-Up 2FA / KYC</span>
-              </label>
-              <label class="flex items-center gap-2 p-2 rounded-lg bg-[var(--input-bg)] border border-[var(--card-border)] cursor-pointer">
-                <input type="radio" name="analystAction" value="Blocked" class="accent-[#0b72e7]">
-                <span>🔴 Block Transaction & Issue Immediate Refund</span>
-              </label>
-            </div>
-            <textarea id="analystNotes" rows="2" placeholder="Analyst Rationale / Evidence Notes (e.g. Cardholder confirmed transaction via registered phone OTP)." class="st-input w-full"></textarea>
-            <button onclick="commitAnalystDecision()" class="w-full py-2.5 rounded-xl bg-[#0b72e7] text-white font-bold text-xs shadow-md hover:bg-blue-600 transition-all">
-              💾 Commit Analyst Decision
-            </button>
-          </div>
-
-          <div>
-            <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-2">📜 Recent Analyst Audit Ledger</h4>
-            <div class="overflow-x-auto max-h-56 glass-card p-3">
-              <table class="w-full text-xs text-left divide-y divide-[var(--card-border)]">
-                <thead>
-                  <tr class="text-[10px] font-bold text-[var(--text-secondary)] uppercase">
-                    <th class="py-1 px-2">Txn ID</th>
-                    <th class="py-1 px-2">Verdict</th>
-                    <th class="py-1 px-2">Action</th>
-                    <th class="py-1 px-2">Notes</th>
-                  </tr>
-                </thead>
-                <tbody id="auditLedgerBody" class="divide-y divide-[var(--card-border)]">
-                  <tr>
-                    <td class="py-1 px-2 font-mono text-[var(--accent-blue)]">TXN_INIT_9041</td>
-                    <td class="py-1 px-2"><span class="badge-review">REVIEW</span></td>
-                    <td class="py-1 px-2 font-medium">Approved 2FA</td>
-                    <td class="py-1 px-2 text-[var(--text-secondary)]">Customer confirmed OTP.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
+      <div id="simVerdictBox" class="metric-card p-6 space-y-3 hidden">
+        <h3 class="text-xs font-bold uppercase text-[var(--text-secondary)]">3. Real-Time Risk Verdict</h3>
+        <div id="simVerdictBadge" class="badge-high">HIGH RISK</div>
+        <p id="simVerdictText" class="text-xs text-white">Score: 89.2% | Rule Violations: VELOCITY_ANOMALY</p>
       </div>
     </section>
 
-
-    <!-- --------------------------------------------------------------------- -->
-    <!-- MODULE 4: DISPUTE DEFENSE & EVIDENCE CENTER                           -->
-    <!-- --------------------------------------------------------------------- -->
-    <section id="module-evidence" class="module-view space-y-6 hidden">
+    <!-- ------------------------------------------------------------------- -->
+    <!-- MODULE: DISPUTE DEFENSE & EVIDENCE CENTER                           -->
+    <!-- ------------------------------------------------------------------- -->
+    <section id="view-evidence" class="space-y-6 hidden">
       <div>
-        <h1 class="text-3xl font-extrabold gradient-header">Dispute Defense & Evidence Center</h1>
+        <h1 class="text-3xl font-extrabold text-[#00d2d2]">Dispute Defense & Evidence Center</h1>
         <p class="text-xs text-[var(--text-secondary)] mt-1">Compile compelling evidence packages and generate grounded dispute rebuttal letters conforming to card network rules.</p>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Checklist Form -->
-        <div class="glass-card p-6 space-y-5">
-          <div class="flex items-center justify-between">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">📋 Evidence Checklist (Compelling Evidence 3.0)</h3>
-            <span id="evidenceScoreBadge" class="text-xs font-bold font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">75% Defensible</span>
+      <div class="grid grid-cols-2 gap-6">
+        <div class="metric-card p-6 space-y-4">
+          <h3 class="text-xs font-bold uppercase text-[var(--text-secondary)]">Evidence Checklist (Compelling Evidence 3.0)</h3>
+          <div class="space-y-2 text-xs">
+            <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-blue-500"> <span>Gateway Settlement Receipt & Payment ID Verified</span></label>
+            <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-blue-500"> <span>3D-Secure Authentication Logs & OTP Verified</span></label>
+            <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-blue-500"> <span>Signed Courier Proof of Delivery (POD) / Waybill</span></label>
           </div>
-
-          <div class="space-y-2.5">
-            <label class="flex items-center gap-3 p-3 rounded-xl bg-[var(--input-bg)] border border-[var(--card-border)] cursor-pointer">
-              <input id="cbPaymentProof" type="checkbox" checked onchange="updateEvidenceScore()" class="rounded accent-[#0b72e7] w-4 h-4">
-              <div class="text-xs">
-                <span class="font-bold block text-[var(--text-primary)]">Gateway Settlement Receipt & Payment ID Verified</span>
-                <span class="text-[var(--text-secondary)] text-[11px]">Matches authorization code on file</span>
-              </div>
-            </label>
-
-            <label class="flex items-center gap-3 p-3 rounded-xl bg-[var(--input-bg)] border border-[var(--card-border)] cursor-pointer">
-              <input id="cb3dsAuth" type="checkbox" checked onchange="updateEvidenceScore()" class="rounded accent-[#0b72e7] w-4 h-4">
-              <div class="text-xs">
-                <span class="font-bold block text-[var(--text-primary)]">3D-Secure 2.0 Authentication Logs & Biometric OTP Verified</span>
-                <span class="text-[var(--text-secondary)] text-[11px]">Provides cardholder liability shift</span>
-              </div>
-            </label>
-
-            <label class="flex items-center gap-3 p-3 rounded-xl bg-[var(--input-bg)] border border-[var(--card-border)] cursor-pointer">
-              <input id="cbDeliveryProof" type="checkbox" checked onchange="updateEvidenceScore()" class="rounded accent-[#0b72e7] w-4 h-4">
-              <div class="text-xs">
-                <span class="font-bold block text-[var(--text-primary)]">Signed Courier Proof of Delivery (POD) / Waybill</span>
-                <span class="text-[var(--text-secondary)] text-[11px]">Physical address GPS confirmation</span>
-              </div>
-            </label>
-
-            <label class="flex items-center gap-3 p-3 rounded-xl bg-[var(--input-bg)] border border-[var(--card-border)] cursor-pointer">
-              <input id="cbCustomerComm" type="checkbox" onchange="updateEvidenceScore()" class="rounded accent-[#0b72e7] w-4 h-4">
-              <div class="text-xs">
-                <span class="font-bold block text-[var(--text-primary)]">Customer Order Confirmation & Communication Logs</span>
-                <span class="text-[var(--text-secondary)] text-[11px]">Email logs & SMS delivery notifications</span>
-              </div>
-            </label>
-          </div>
-
-          <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-400 font-medium">
-            🛡️ <strong>Defense-Ready:</strong> Sufficient compelling documentation to overturn liability under Visa & Mastercard Compelling Evidence 3.0 guidelines.
-          </div>
-
-          <button onclick="generateDisputeMemo()" class="w-full py-3 rounded-xl bg-gradient-to-r from-[#0b72e7] to-[#00b4d8] text-white font-bold text-xs shadow-lg shadow-[#0b72e7]/30 hover:opacity-95 transition-all">
-            ✨ Generate Grounded Dispute Rebuttal Memo
-          </button>
+          <button onclick="generateMemo()" class="w-full py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs">✨ Generate Grounded Dispute Rebuttal Memo</button>
         </div>
 
-        <!-- Generated Memo Output -->
-        <div class="glass-card p-6 space-y-4 flex flex-col justify-between">
-          <div class="space-y-3">
-            <div class="flex items-center justify-between">
-              <h3 class="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">🤖 Generated Formal Dispute Memorandum</h3>
-              <button onclick="copyDisputeMemo()" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--accent-blue)] hover:border-[var(--accent-blue)] transition-all">
-                📋 Copy Memo
-              </button>
-            </div>
-            <div id="memoBrief" class="p-3 rounded-xl bg-[var(--input-bg)] border border-[var(--card-border)] text-xs text-[var(--text-secondary)] italic">
-              Click 'Generate Grounded Dispute Rebuttal Memo' to synthesize an auditable response based strictly on verified evidence.
-            </div>
-            <div id="memoCodeBlock" class="p-4 rounded-xl font-mono text-xs text-[var(--text-primary)] leading-relaxed whitespace-pre-wrap max-h-96 overflow-y-auto bg-black/40 border border-[var(--card-border)]">
-// Network Rebuttal Memorandum Output will appear here...
-            </div>
-          </div>
+        <div class="metric-card p-6 space-y-3">
+          <h3 class="text-xs font-bold uppercase text-[var(--text-secondary)]">Formal Network Rebuttal Memorandum</h3>
+          <div id="memoOutput" class="p-4 rounded-xl bg-black/50 font-mono text-xs text-slate-300 whitespace-pre-wrap">Click Generate to compile compelling evidence.</div>
         </div>
       </div>
     </section>
 
-
-    <!-- --------------------------------------------------------------------- -->
-    <!-- MODULE 5: RISK ENGINE INTELLIGENCE                                    -->
-    <!-- --------------------------------------------------------------------- -->
-    <section id="module-intelligence" class="module-view space-y-6 hidden">
+    <!-- ------------------------------------------------------------------- -->
+    <!-- MODULE: RISK ENGINE INTELLIGENCE                                    -->
+    <!-- ------------------------------------------------------------------- -->
+    <section id="view-intelligence" class="space-y-6 hidden">
       <div>
-        <h1 class="text-3xl font-extrabold gradient-header">Risk Engine Performance & Threshold Intelligence</h1>
+        <h1 class="text-3xl font-extrabold text-[#00d2d2]">Risk Engine Performance & Threshold Intelligence</h1>
         <p class="text-xs text-[var(--text-secondary)] mt-1">Empirical held-out evaluation, confusion matrix breakdown, and Bayesian threshold cost optimization.</p>
       </div>
 
-      <!-- 5 Key Metrics Cards -->
-      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <div class="glass-card p-4 text-center">
-          <span class="text-[10px] uppercase font-bold text-[var(--text-secondary)] block">PR-AUC</span>
-          <span class="text-2xl font-bold font-mono text-[var(--accent-blue)] mt-1 block">0.7331</span>
-        </div>
-        <div class="glass-card p-4 text-center">
-          <span class="text-[10px] uppercase font-bold text-[var(--text-secondary)] block">ROC-AUC</span>
-          <span class="text-2xl font-bold font-mono text-[var(--accent-cyan)] mt-1 block">0.9327</span>
-        </div>
-        <div class="glass-card p-4 text-center">
-          <span class="text-[10px] uppercase font-bold text-[var(--text-secondary)] block">Precision</span>
-          <span class="text-2xl font-bold font-mono text-[var(--accent-emerald)] mt-1 block">74.1%</span>
-        </div>
-        <div class="glass-card p-4 text-center">
-          <span class="text-[10px] uppercase font-bold text-[var(--text-secondary)] block">Recall</span>
-          <span class="text-2xl font-bold font-mono text-[var(--accent-amber)] mt-1 block">87.8%</span>
-        </div>
-        <div class="glass-card p-4 text-center">
-          <span class="text-[10px] uppercase font-bold text-[var(--text-secondary)] block">Brier Score</span>
-          <span class="text-2xl font-bold font-mono text-[var(--text-primary)] mt-1 block">0.0288</span>
-        </div>
+      <div class="grid grid-cols-5 gap-4">
+        <div class="metric-card p-4 text-center"><span class="text-[10px] text-slate-400 font-bold uppercase">PR-AUC</span><div class="text-2xl font-bold font-mono text-blue-400 mt-1">0.7331</div></div>
+        <div class="metric-card p-4 text-center"><span class="text-[10px] text-slate-400 font-bold uppercase">ROC-AUC</span><div class="text-2xl font-bold font-mono text-cyan-400 mt-1">0.9327</div></div>
+        <div class="metric-card p-4 text-center"><span class="text-[10px] text-slate-400 font-bold uppercase">Precision</span><div class="text-2xl font-bold font-mono text-emerald-400 mt-1">74.1%</div></div>
+        <div class="metric-card p-4 text-center"><span class="text-[10px] text-slate-400 font-bold uppercase">Recall</span><div class="text-2xl font-bold font-mono text-amber-400 mt-1">87.8%</div></div>
+        <div class="metric-card p-4 text-center"><span class="text-[10px] text-slate-400 font-bold uppercase">Brier Score</span><div class="text-2xl font-bold font-mono text-white mt-1">0.0288</div></div>
       </div>
 
-      <!-- Performance Comparison & Cost Frontier Curve -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="glass-card p-6 space-y-4">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">⚖️ Baseline vs Final XGBoost Shield Performance</h4>
-          <table class="w-full text-xs text-left divide-y divide-[var(--card-border)]">
-            <thead>
-              <tr class="text-[10px] font-bold text-[var(--text-secondary)] uppercase">
-                <th class="py-2.5">Architecture</th>
-                <th class="py-2.5">Precision</th>
-                <th class="py-2.5">Recall</th>
-                <th class="py-2.5">PR-AUC</th>
-                <th class="py-2.5">False Positives</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-[var(--card-border)]">
-              <tr>
-                <td class="py-3 font-semibold text-[var(--text-secondary)]">Linear Baseline Model</td>
-                <td class="py-3 font-mono">42.4%</td>
-                <td class="py-3 font-mono">55.1%</td>
-                <td class="py-3 font-mono">0.4279</td>
-                <td class="py-3 text-[var(--accent-rose)] font-semibold">110 (High burden)</td>
-              </tr>
-              <tr class="bg-[var(--accent-blue-dim)]">
-                <td class="py-3 font-bold text-[var(--accent-blue)]">XGBoost + Tri-Signal Fusion</td>
-                <td class="py-3 font-mono font-bold text-[var(--accent-emerald)]">74.1%</td>
-                <td class="py-3 font-mono font-bold text-[var(--accent-emerald)]">87.8%</td>
-                <td class="py-3 font-mono font-bold text-[var(--accent-blue)]">0.7331</td>
-                <td class="py-3 text-[var(--accent-emerald)] font-bold">45 (-59.1% alarms)</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="glass-card p-6 space-y-4">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">📉 Bayesian Threshold vs Operational Cost Frontier</h4>
-          <div id="chartCostFrontier" class="w-full h-64"></div>
-        </div>
+      <div class="metric-card p-6">
+        <h4 class="text-xs font-bold uppercase text-slate-400 mb-2">📉 Bayesian Threshold vs Operational Cost Frontier</h4>
+        <div id="plotlyCostLine" class="w-full h-64"></div>
       </div>
+    </section>
 
-      <!-- Architecture Overview -->
-      <div class="glass-card p-6 space-y-3">
-        <h3 class="text-sm font-bold text-[var(--text-primary)]">🏗️ Production Tri-Signal Architecture Overview</h3>
-        <p class="text-xs text-[var(--text-secondary)] leading-relaxed">
-          RiskForge AI deploys an Enterprise <strong>Tri-Signal Architecture</strong>:
-        </p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-          <div class="glass-card p-4 border border-[var(--card-border)]">
-            <span class="text-xs font-bold text-[var(--accent-cyan)] block mb-1">1. Probabilistic Risk Estimation</span>
-            <p class="text-xs text-[var(--text-secondary)]">Gradient-boosted decision trees (calibrated XGBoost) evaluating 43 time, velocity, and behavioral deviation signals.</p>
-          </div>
-          <div class="glass-card p-4 border border-[var(--card-border)]">
-            <span class="text-xs font-bold text-[var(--accent-amber)] block mb-1">2. Independent Deterministic Controls</span>
-            <p class="text-xs text-[var(--text-secondary)]">6 auditable business rule verifiers preventing known fraud vectors (velocity anomaly, account age, proxy networks).</p>
-          </div>
-          <div class="glass-card p-4 border border-[var(--card-border)]">
-            <span class="text-xs font-bold text-[var(--accent-emerald)] block mb-1">3. Bayesian Decision Fusion</span>
-            <p class="text-xs text-[var(--text-secondary)]">Reconciles ML predictions and rule triggers against expected loss matrices to minimize merchant friction costs.</p>
-          </div>
+    <!-- ------------------------------------------------------------------- -->
+    <!-- MODULE: EMBEDDED MOBILE APP VIEW                                    -->
+    <!-- ------------------------------------------------------------------- -->
+    <section id="view-mobile" class="space-y-6 hidden">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-extrabold text-[#00d2d2]">RiskForge Mobile — Phone View (393x852)</h1>
+          <p class="text-xs text-[var(--text-secondary)]">Dedicated mobile glassmorphic risk intelligence interface.</p>
         </div>
+        <a href="/app" target="_blank" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-all">
+          Open In New Window ↗
+        </a>
+      </div>
+      <div class="flex justify-center p-4">
+        <iframe src="/app" style="width: 393px; height: 852px; border-radius: 40px; border: 4px solid #1f2937; box-shadow: 0 25px 60px rgba(0,0,0,0.8);"></iframe>
       </div>
     </section>
 
   </main>
 
 
-  <!-- ========================================================================= -->
-  <!-- JAVASCRIPT: Logic, WebGL HUD, Plotly Charts & Live API Connectivity       -->
-  <!-- ========================================================================= -->
+  <!-- ======================================================================= -->
+  <!-- JAVASCRIPT: Radar Sphere, Plotly Charts & Logic                         -->
+  <!-- ======================================================================= -->
   <script>
-    // -----------------------------------------------------------------------
-    // State & Sample Transactions Data (from transactions_sample.csv)
-    // -----------------------------------------------------------------------
     let activeTheme = 'dark';
-    let currentCutoff = 0.20;
 
-    const sampleTransactions = [
-      { id: 'TXN_000008', time: '2026-01-01 00:08:53', cust: 'CUST_02907', amount: 23237.52, method: 'netbanking', network: 'visa', cat: 'electronics', device: 'desktop_windows', country: 'IN', is3ds: false, risk: 'HIGH', score: 0.89, rule: 'VELOCITY_ANOMALY' },
-      { id: 'TXN_000014', time: '2026-01-01 00:32:01', cust: 'CUST_00305', amount: 6009.74, method: 'upi', network: 'mastercard', cat: 'fashion', device: 'mobile_ios', country: 'IN', is3ds: false, risk: 'REVIEW', score: 0.64, rule: 'SPENDING_DEVIATION' },
-      { id: 'TXN_000024', time: '2026-01-01 00:52:27', cust: 'CUST_01294', amount: 2671.72, method: 'netbanking', network: 'visa', cat: 'gaming', device: 'mobile_android', country: 'IN', is3ds: true, risk: 'HIGH', score: 0.82, rule: 'NEW_ACCOUNT_HIGH_VALUE' },
-      { id: 'TXN_000001', time: '2026-01-01 00:00:13', cust: 'CUST_01116', amount: 2073.70, method: 'card', network: 'mastercard', cat: 'electronics', device: 'mobile_ios', country: 'IN', is3ds: true, risk: 'LOW', score: 0.12, rule: 'NONE' },
-      { id: 'TXN_000002', time: '2026-01-01 00:02:06', cust: 'CUST_00063', amount: 2114.39, method: 'netbanking', network: 'mastercard', cat: 'gaming', device: 'mobile_android', country: 'IN', is3ds: true, risk: 'LOW', score: 0.08, rule: 'NONE' },
-      { id: 'TXN_000003', time: '2026-01-01 00:02:18', cust: 'CUST_00010', amount: 1039.49, method: 'card', network: 'mastercard', cat: 'travel', device: 'mobile_android', country: 'IN', is3ds: true, risk: 'LOW', score: 0.15, rule: 'NONE' },
-      { id: 'TXN_000004', time: '2026-01-01 00:04:08', cust: 'CUST_00006', amount: 455.72, method: 'upi', network: 'visa', cat: 'electronics', device: 'desktop_windows', country: 'IN', is3ds: true, risk: 'LOW', score: 0.04, rule: 'NONE' },
-      { id: 'TXN_000005', time: '2026-01-01 00:04:49', cust: 'CUST_00182', amount: 2361.69, method: 'upi', network: 'mastercard', cat: 'electronics', device: 'mobile_android', country: 'GB', is3ds: true, risk: 'LOW', score: 0.18, rule: 'NONE' },
-      { id: 'TXN_000006', time: '2026-01-01 00:07:06', cust: 'CUST_00074', amount: 3217.26, method: 'upi', network: 'mastercard', cat: 'groceries', device: 'mobile_android', country: 'GB', is3ds: true, risk: 'LOW', score: 0.11, rule: 'NONE' },
-      { id: 'TXN_000007', time: '2026-01-01 00:07:51', cust: 'CUST_00458', amount: 960.78, method: 'wallet', network: 'visa', cat: 'fashion', device: 'desktop_mac', country: 'IN', is3ds: true, risk: 'LOW', score: 0.06, rule: 'NONE' },
-      { id: 'TXN_000009', time: '2026-01-01 00:10:00', cust: 'CUST_00395', amount: 4506.65, method: 'card', network: 'visa', cat: 'gaming', device: 'mobile_android', country: 'IN', is3ds: true, risk: 'LOW', score: 0.14, rule: 'NONE' },
-      { id: 'TXN_000010', time: '2026-01-01 00:22:07', cust: 'CUST_00445', amount: 1534.46, method: 'upi', network: 'mastercard', cat: 'digital_goods', device: 'mobile_android', country: 'US', is3ds: true, risk: 'LOW', score: 0.21, rule: 'NONE' }
-    ];
-
-    // -----------------------------------------------------------------------
-    // Theme Switcher (Dark / Light)
-    // -----------------------------------------------------------------------
     function setTheme(mode) {
       activeTheme = mode;
       const root = document.getElementById('htmlRoot');
-      const btnDark = document.getElementById('btnThemeDark');
-      const btnLight = document.getElementById('btnThemeLight');
+      const bDark = document.getElementById('btnDark');
+      const bLight = document.getElementById('btnLight');
 
       if (mode === 'dark') {
         root.classList.add('dark');
         root.classList.remove('light');
-        btnDark.className = 'px-3 py-1.5 text-xs font-bold rounded-lg border transition-all flex items-center justify-center gap-1.5 bg-[#0b72e7] text-white border-transparent shadow-sm';
-        btnLight.className = 'px-3 py-1.5 text-xs font-bold rounded-lg border border-[var(--card-border)] bg-[var(--card-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all flex items-center justify-center gap-1.5';
+        bDark.className = 'px-3 py-2 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 bg-[#0b72e7] text-white shadow-sm transition-all';
+        bLight.className = 'px-3 py-2 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 bg-transparent border border-slate-700 text-slate-300 hover:text-white transition-all';
       } else {
         root.classList.remove('dark');
         root.classList.add('light');
-        btnLight.className = 'px-3 py-1.5 text-xs font-bold rounded-lg border transition-all flex items-center justify-center gap-1.5 bg-[#0b72e7] text-white border-transparent shadow-sm';
-        btnDark.className = 'px-3 py-1.5 text-xs font-bold rounded-lg border border-[var(--card-border)] bg-[var(--card-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all flex items-center justify-center gap-1.5';
+        bLight.className = 'px-3 py-2 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 bg-[#0b72e7] text-white shadow-sm transition-all';
+        bDark.className = 'px-3 py-2 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 bg-transparent border border-slate-300 text-slate-700 hover:text-black transition-all';
       }
-      renderPlotlyCharts();
+      setTimeout(renderAllCharts, 50);
     }
 
-    // -----------------------------------------------------------------------
-    // Module Navigation
-    // -----------------------------------------------------------------------
+    function stepInput(id, delta) {
+      const el = document.getElementById(id);
+      let val = parseFloat(el.value) || 0;
+      val = Math.max(0, val + delta);
+      el.value = val.toFixed(2);
+    }
+
     function switchModule(modId) {
-      const modules = ['command_center', 'investigator', 'simulator', 'evidence', 'intelligence'];
-      modules.forEach(m => {
-        const sec = document.getElementById('module-' + m);
-        const navBtn = document.getElementById('nav-' + m);
+      const allMods = ['mobile', 'command_center', 'investigator', 'simulator', 'evidence', 'intelligence'];
+      allMods.forEach(m => {
+        const sec = document.getElementById('view-' + m);
+        const nav = document.getElementById('nav-' + m);
         if (m === modId) {
           sec.classList.remove('hidden');
-          navBtn.className = 'w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2.5 transition-all bg-[var(--accent-blue-dim)] text-[var(--accent-blue)] border border-[var(--accent-blue)] font-bold';
+          nav.classList.add('active');
         } else {
           sec.classList.add('hidden');
-          navBtn.className = 'w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2.5 transition-all text-[var(--text-secondary)] hover:bg-[var(--card-bg)] hover:text-[var(--text-primary)] border border-transparent';
+          nav.classList.remove('active');
         }
       });
-      if (modId === 'command_center' || modId === 'intelligence') {
-        setTimeout(renderPlotlyCharts, 50);
-      }
-      if (modId === 'investigator') {
-        setTimeout(renderShapChart, 50);
-      }
-    }
-
-    function onCutoffChange(val) {
-      currentCutoff = parseFloat(val);
-      document.getElementById('txtCutoff').innerText = currentCutoff.toFixed(2);
-      renderCostFrontierChart();
+      setTimeout(renderAllCharts, 50);
     }
 
     // -----------------------------------------------------------------------
-    // 3D WebGL Rotating Particle Globe HUD (Faithfully ported from streamlit_app.py)
+    // Exact 3D Golden/Amber Rotating Particle Sphere HUD (from screenshot)
     // -----------------------------------------------------------------------
-    const globeCanvas = document.getElementById('riskGlobeCanvas');
-    const globeCtx = globeCanvas.getContext('2d');
-    let globeAngleX = 0, globeAngleY = 0, globeMouseX = 0, globeMouseY = 0;
-    const globeParticles = [];
-    const particleCount = 85;
-    const globeRadius = 75;
+    const canvas = document.getElementById('goldenSphereCanvas');
+    const ctx = canvas.getContext('2d');
+    let angleX = 0, angleY = 0, mouseX = 0, mouseY = 0;
+    const particles = [];
+    const count = 64;
+    const radius = 55;
 
-    for (let i = 0; i < particleCount; i++) {
+    for (let i = 0; i < count; i++) {
       const theta = Math.acos(2 * Math.random() - 1);
       const phi = Math.random() * Math.PI * 2;
-      globeParticles.push({
-        x: globeRadius * Math.sin(theta) * Math.cos(phi),
-        y: globeRadius * Math.sin(theta) * Math.sin(phi),
-        z: globeRadius * Math.cos(theta),
-        size: Math.random() * 2.2 + 1.2
+      particles.push({
+        x: radius * Math.sin(theta) * Math.cos(phi),
+        y: radius * Math.sin(theta) * Math.sin(phi),
+        z: radius * Math.cos(theta),
+        size: Math.random() * 2 + 1.2
       });
     }
 
-    function resizeGlobe() {
-      globeCanvas.width = globeCanvas.parentElement.clientWidth;
-      globeCanvas.height = globeCanvas.parentElement.clientHeight;
+    function resizeRadar() {
+      if (!canvas.parentElement) return;
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
     }
-    window.addEventListener('resize', resizeGlobe);
-    resizeGlobe();
+    window.addEventListener('resize', resizeRadar);
+    resizeRadar();
 
-    globeCanvas.addEventListener('mousemove', (e) => {
-      const rect = globeCanvas.getBoundingClientRect();
-      globeMouseX = (e.clientX - rect.left - globeCanvas.width / 2) * 0.0003;
-      globeMouseY = (e.clientY - rect.top - globeCanvas.height / 2) * 0.0003;
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = (e.clientX - rect.left - canvas.width / 2) * 0.0004;
+      mouseY = (e.clientY - rect.top - canvas.height / 2) * 0.0004;
     });
 
-    function renderGlobe() {
-      globeCtx.clearRect(0, 0, globeCanvas.width, globeCanvas.height);
-      const cx = globeCanvas.width / 2;
-      const cy = globeCanvas.height / 2;
-      const fov = 350;
+    function drawRadar() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const fov = 320;
 
-      globeAngleY += 0.012 + globeMouseX;
-      globeAngleX += globeMouseY;
+      angleY += 0.015 + mouseX;
+      angleX += mouseY;
 
-      // Glow gradient
-      const radGrad = globeCtx.createRadialGradient(cx, cy, 10, cx, cy, globeRadius * 1.3);
-      radGrad.addColorStop(0, 'rgba(0, 210, 210, 0.25)');
-      radGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-      globeCtx.fillStyle = radGrad;
-      globeCtx.beginPath();
-      globeCtx.arc(cx, cy, globeRadius * 1.3, 0, Math.PI * 2);
-      globeCtx.fill();
+      // Golden Amber Glow
+      const grad = ctx.createRadialGradient(cx, cy, 5, cx, cy, radius * 1.3);
+      grad.addColorStop(0, 'rgba(245, 158, 11, 0.35)');
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius * 1.3, 0, Math.PI * 2);
+      ctx.fill();
 
       const projected = [];
-      for (let i = 0; i < globeParticles.length; i++) {
-        let p = globeParticles[i];
-        // Rotate X
-        const cosX = Math.cos(globeAngleX), sinX = Math.sin(globeAngleX);
+      for (let i = 0; i < particles.length; i++) {
+        let p = particles[i];
+        const cosX = Math.cos(angleX), sinX = Math.sin(angleX);
         const y1 = p.y * cosX - p.z * sinX;
         const z1 = p.y * sinX + p.z * cosX;
-        // Rotate Y
-        const cosY = Math.cos(globeAngleY), sinY = Math.sin(globeAngleY);
+        const cosY = Math.cos(angleY), sinY = Math.sin(angleY);
         const x2 = p.x * cosY + z1 * sinY;
         const z2 = -p.x * sinY + z1 * cosY;
 
         const scale = fov / (fov + z2);
         const px = cx + x2 * scale;
         const py = cy + y1 * scale;
-        const alpha = Math.max(0.2, (z2 + globeRadius) / (2 * globeRadius));
+        const alpha = Math.max(0.2, (z2 + radius) / (2 * radius));
         projected.push({ x: px, y: py, z: z2, scale, alpha, size: p.size * scale });
       }
 
-      // Connecting lines
-      globeCtx.lineWidth = 0.7;
+      // Golden Node Connecting Lines
+      ctx.lineWidth = 0.8;
       for (let i = 0; i < projected.length; i++) {
         for (let j = i + 1; j < projected.length; j++) {
           const dx = projected[i].x - projected[j].x;
           const dy = projected[i].y - projected[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 42) {
-            globeCtx.strokeStyle = `rgba(0, 210, 210, ${0.35 * (1 - dist / 42)})`;
-            globeCtx.beginPath();
-            globeCtx.moveTo(projected[i].x, projected[i].y);
-            globeCtx.lineTo(projected[j].x, projected[j].y);
-            globeCtx.stroke();
+          if (dist < 38) {
+            ctx.strokeStyle = `rgba(245, 158, 11, ${0.4 * (1 - dist / 38)})`;
+            ctx.beginPath();
+            ctx.moveTo(projected[i].x, projected[i].y);
+            ctx.lineTo(projected[j].x, projected[j].y);
+            ctx.stroke();
           }
         }
       }
 
-      // Draw particle points
+      // Golden Particle Dots
       for (let i = 0; i < projected.length; i++) {
         const pt = projected[i];
-        globeCtx.fillStyle = `rgba(0, 210, 210, ${pt.alpha})`;
-        globeCtx.beginPath();
-        globeCtx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
-        globeCtx.fill();
+        ctx.fillStyle = `rgba(245, 158, 11, ${pt.alpha})`;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
+        ctx.fill();
       }
 
-      // Orbital Ring
-      globeCtx.save();
-      globeCtx.translate(cx, cy);
-      globeCtx.rotate(globeAngleY * 0.5);
-      globeCtx.strokeStyle = 'rgba(11, 114, 231, 0.4)';
-      globeCtx.lineWidth = 1.2;
-      globeCtx.beginPath();
-      globeCtx.ellipse(0, 0, globeRadius * 1.2, globeRadius * 0.35, Math.PI / 6, 0, Math.PI * 2);
-      globeCtx.stroke();
-      globeCtx.restore();
-
-      requestAnimationFrame(renderGlobe);
+      requestAnimationFrame(drawRadar);
     }
-    renderGlobe();
+    drawRadar();
 
     // -----------------------------------------------------------------------
-    // Table Rendering & Filters
+    // Transaction Data & Dropdown Handler
     // -----------------------------------------------------------------------
-    function filterTable() {
-      const search = document.getElementById('tableSearch').value.toLowerCase();
-      const channel = document.getElementById('channelFilter').value;
-      const risk = document.getElementById('riskFilter').value;
-
-      const filtered = sampleTransactions.filter(t => {
-        const matchSearch = t.id.toLowerCase().includes(search) || t.cust.toLowerCase().includes(search);
-        const matchChan = channel === 'ALL' || t.method === channel;
-        const matchRisk = risk === 'ALL' || t.risk === risk;
-        return matchSearch && matchChan && matchRisk;
-      });
-
-      renderTableRows(filtered);
-    }
-
-    function renderTableRows(data) {
-      const tbody = document.getElementById('txnTableBody');
-      document.getElementById('tableCountText').innerText = `Showing ${data.length} transactions`;
-
-      if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-6 text-[var(--text-secondary)]">No transactions found.</td></tr>';
-        return;
+    const txnData = {
+      'TXN_000001': {
+        amount: 2073.70, prob: '8.2%', ruleScore: '0.50 / 1.00', loss: '₹416.13',
+        badge: 'REVIEW RISK', badgeClass: 'badge-review',
+        rationale: 'SIGNAL_DISAGREEMENT_RULE_LEAD: Deterministic rule triggered, but ML overall probability remains low.',
+        action: 'Human investigation',
+        deltaTier: '↑ Tier: Low', deltaRule: '↑ Signal: High', deltaLoss: '↑ Exposure: ₹5,074',
+        shapName: '24-Hour Order Frequency', shapVal: 0.38
+      },
+      'TXN_000008': {
+        amount: 23237.52, prob: '89.4%', ruleScore: '0.85 / 1.00', loss: '₹26,237.52',
+        badge: 'HIGH RISK', badgeClass: 'badge-high',
+        rationale: 'VELOCITY_SPIKE_FOREIGN_IP: Rapid repeat orders detected from unregistered proxy.',
+        action: 'Block transaction and initiate biometric 2FA challenge',
+        deltaTier: '↑ Tier: High', deltaRule: '↑ Signal: High', deltaLoss: '↑ Exposure: ₹26,237',
+        shapName: 'IP Velocity Spike', shapVal: 0.42
       }
+    };
 
-      tbody.innerHTML = data.map(t => {
-        const badgeClass = t.risk === 'HIGH' ? 'badge-high' : (t.risk === 'REVIEW' ? 'badge-review' : 'badge-low');
-        return `
-          <tr class="hover:bg-blue-500/5 transition-colors cursor-pointer" onclick="selectAndInvestigate('${t.id}')">
-            <td class="py-2.5 px-3 font-mono font-bold text-[var(--accent-blue)]">${t.id}</td>
-            <td class="py-2.5 px-3 text-[var(--text-secondary)]">${t.time}</td>
-            <td class="py-2.5 px-3 text-[var(--text-primary)] font-medium">${t.cust}</td>
-            <td class="py-2.5 px-3 font-mono font-bold text-[var(--text-primary)]">₹${t.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
-            <td class="py-2.5 px-3 uppercase text-[var(--text-secondary)] font-mono">${t.method}</td>
-            <td class="py-2.5 px-3">${t.is3ds ? '✅ Yes' : '❌ No'}</td>
-            <td class="py-2.5 px-3"><span class="${badgeClass}">${t.risk}</span></td>
-            <td class="py-2.5 px-3 text-right">
-              <button class="text-xs font-bold text-[var(--accent-blue)] hover:underline">Inspect →</button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
+    function onSelectTxn(id) {
+      const item = txnData[id] || txnData['TXN_000001'];
+      document.getElementById('cardTxnId').innerText = id;
+      const b = document.getElementById('cardBadge');
+      b.innerText = item.badge;
+      b.className = item.badgeClass;
+      document.getElementById('cardRationale').innerText = item.rationale;
+      document.getElementById('cardAction').innerText = item.action;
 
-    function selectAndInvestigate(id) {
-      const sel = document.getElementById('investigateSelect');
-      sel.value = id;
-      loadInvestigateTxn(id);
-      switchModule('investigator');
+      document.getElementById('metricProb').innerText = item.prob;
+      document.getElementById('metricRule').innerHTML = `${item.ruleScore.split(' ')[0]} <span class="text-lg text-[var(--text-secondary)]">/ 1.00</span>`;
+      document.getElementById('metricLoss').innerText = item.loss;
+
+      document.getElementById('metricProbDelta').innerText = item.deltaTier;
+      document.getElementById('metricRuleDelta').innerText = item.deltaRule;
+      document.getElementById('metricLossDelta').innerText = item.deltaLoss;
+
+      document.getElementById('radarProb').innerText = item.prob;
+      document.getElementById('radarAmt').innerText = item.amount.toLocaleString(undefined, {maximumFractionDigits: 0});
+      renderShap(item.shapName, item.shapVal);
     }
 
     // -----------------------------------------------------------------------
-    // Module 2: Transaction Investigator
+    // Plotly Charts (SHAP, Category, Channel, Cost)
     // -----------------------------------------------------------------------
-    function loadInvestigateTxn(id) {
-      const t = sampleTransactions.find(x => x.id === id) || sampleTransactions[0];
-      document.getElementById('invTxnId').innerText = t.id;
-      const badge = document.getElementById('invRiskBadge');
-      badge.innerText = `${t.risk} RISK`;
-      badge.className = t.risk === 'HIGH' ? 'badge-high' : (t.risk === 'REVIEW' ? 'badge-review' : 'badge-low');
-
-      document.getElementById('invProb').innerText = `${(t.score * 100).toFixed(1)}%`;
-      document.getElementById('invRuleScore').innerText = t.risk === 'HIGH' ? '0.85 / 1.0' : (t.risk === 'REVIEW' ? '0.50 / 1.0' : '0.00 / 1.0');
-      document.getElementById('invExpLoss').innerText = `₹${(t.amount + 3000).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-
-      const rCont = document.getElementById('invRulesContainer');
-      if (t.risk === 'HIGH') {
-        rCont.innerHTML = `
-          <div style='background:var(--card-bg); border-left:4px solid var(--accent-rose); border:1px solid var(--card-border); padding:10px 14px; border-radius:8px;'>
-            <strong class="font-mono">${t.rule}</strong> &bull; <span class="text-[var(--accent-rose)] font-bold text-[11px]">CRITICAL</span>
-            <div class="text-[12px] text-[var(--text-secondary)] mt-1">Order velocity exceeds standard merchant deviation bounds.</div>
-          </div>
-        `;
-      } else if (t.risk === 'REVIEW') {
-        rCont.innerHTML = `
-          <div style='background:var(--card-bg); border-left:4px solid var(--accent-amber); border:1px solid var(--card-border); padding:10px 14px; border-radius:8px;'>
-            <strong class="font-mono">${t.rule}</strong> &bull; <span class="text-[var(--accent-amber)] font-bold text-[11px]">MEDIUM</span>
-            <div class="text-[12px] text-[var(--text-secondary)] mt-1">Transaction value significantly exceeds cardholder historical median.</div>
-          </div>
-        `;
-      } else {
-        rCont.innerHTML = `<div class="text-xs text-emerald-400 font-semibold p-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">✅ All deterministic security checks cleared. No violations detected.</div>`;
-      }
-
-      // Context rows
-      const cTable = document.getElementById('invContextTable');
-      cTable.innerHTML = `
-        <tr><td class="py-1.5 text-[var(--text-secondary)] font-medium">Customer ID</td><td class="py-1.5 font-mono text-[var(--text-primary)]">${t.cust}</td></tr>
-        <tr><td class="py-1.5 text-[var(--text-secondary)] font-medium">Amount</td><td class="py-1.5 font-mono font-bold text-[var(--text-primary)]">₹${t.amount.toLocaleString()}</td></tr>
-        <tr><td class="py-1.5 text-[var(--text-secondary)] font-medium">Payment Method</td><td class="py-1.5 uppercase font-mono">${t.method} (${t.network})</td></tr>
-        <tr><td class="py-1.5 text-[var(--text-secondary)] font-medium">Merchant Category</td><td class="py-1.5 capitalize">${t.cat}</td></tr>
-        <tr><td class="py-1.5 text-[var(--text-secondary)] font-medium">3D-Secure Auth</td><td class="py-1.5">${t.is3ds ? 'Yes ✅' : 'No ❌'}</td></tr>
-        <tr><td class="py-1.5 text-[var(--text-secondary)] font-medium">IP Country</td><td class="py-1.5 font-mono">${t.country}</td></tr>
-      `;
-
-      renderShapChart(t);
-    }
-
-    function renderShapChart(txn) {
-      txn = txn || sampleTransactions[0];
+    function renderShap(featureName, val) {
+      featureName = featureName || '24-Hour Order Frequency';
+      val = val || 0.38;
       const isDark = activeTheme === 'dark';
-      const shapData = txn.risk === 'HIGH' ? [
-        { name: 'IP Velocity (10m)', val: 0.38 },
-        { name: 'Foreign IP without 3DS', val: 0.28 },
-        { name: 'Amount vs Customer Median', val: 0.22 },
-        { name: 'Device Fingerprint Anomaly', val: 0.14 }
-      ] : (txn.risk === 'REVIEW' ? [
-        { name: 'Amount vs Customer Median', val: 0.31 },
-        { name: 'Hour of Day Outlier', val: 0.16 },
-        { name: 'Payment Method Change', val: 0.12 }
-      ] : [
-        { name: 'Baseline 3DS Authenticated', val: -0.24 },
-        { name: 'Historical Customer Trust', val: -0.19 },
-        { name: 'Domestic IP Routing', val: -0.15 }
-      ]);
+      const textColor = isDark ? '#f8fafc' : '#0f172a';
+      const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)';
 
-      const fig = {
-        data: [{
-          type: 'bar',
-          orientation: 'h',
-          y: shapData.map(d => d.name),
-          x: shapData.map(d => d.val),
-          marker: {
-            color: shapData.map(d => d.val > 0 ? (d.val > 0.25 ? '#f43f5e' : '#f59e0b') : '#10b981')
-          }
-        }],
-        layout: {
+      const data = [{
+        type: 'bar',
+        orientation: 'h',
+        x: [val],
+        y: [featureName],
+        marker: { color: '#f43f5e' }
+      }];
+      const layout = {
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        font: { color: textColor, family: 'Plus Jakarta Sans', size: 11 },
+        margin: { l: 160, r: 20, t: 10, b: 25 },
+        xaxis: { title: 'shap_value', gridcolor: gridColor },
+        yaxis: { gridcolor: gridColor }
+      };
+      Plotly.react('plotlyShapChart', data, layout, { responsive: true, displayModeBar: true });
+    }
+
+    function renderAllCharts() {
+      const isDark = activeTheme === 'dark';
+      const textColor = isDark ? '#f8fafc' : '#0f172a';
+      const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)';
+
+      // 1. Category Bar
+      if (document.getElementById('plotlyCategoryBar')) {
+        Plotly.react('plotlyCategoryBar', [
+          { name: 'Legitimate', x: ['Electronics', 'Groceries', 'Fashion', 'Gaming', 'Digital', 'Travel'], y: [340, 480, 290, 210, 310, 140], type: 'bar', marker: { color: '#0b72e7' } },
+          { name: 'Disputed', x: ['Electronics', 'Groceries', 'Fashion', 'Gaming', 'Digital', 'Travel'], y: [42, 12, 19, 38, 45, 11], type: 'bar', marker: { color: '#f43f5e' } }
+        ], {
+          barmode: 'group',
           paper_bgcolor: 'rgba(0,0,0,0)',
           plot_bgcolor: 'rgba(0,0,0,0)',
-          font: { color: isDark ? '#f8fafc' : '#0f172a', family: 'Plus Jakarta Sans', size: 11 },
-          margin: { l: 150, r: 20, t: 10, b: 20 },
-          xaxis: { gridcolor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)' },
-          yaxis: { gridcolor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)' }
-        }
-      };
-      Plotly.react('chartShap', fig.data, fig.layout, { responsive: true, displayModeBar: false });
+          font: { color: textColor, family: 'Plus Jakarta Sans', size: 10 },
+          margin: { l: 30, r: 20, t: 10, b: 30 },
+          xaxis: { gridcolor: gridColor },
+          yaxis: { gridcolor: gridColor }
+        }, { responsive: true, displayModeBar: false });
+      }
+
+      // 2. Channel Pie
+      if (document.getElementById('plotlyChannelPie')) {
+        Plotly.react('plotlyChannelPie', [{
+          values: [45, 28, 15, 12],
+          labels: ['UPI', 'Cards', 'Netbanking', 'Wallets'],
+          type: 'pie',
+          hole: 0.45,
+          marker: { colors: ['#0b72e7', '#00d2d2', '#6366f1', '#f59e0b'] }
+        }], {
+          paper_bgcolor: 'rgba(0,0,0,0)',
+          plot_bgcolor: 'rgba(0,0,0,0)',
+          font: { color: textColor, family: 'Plus Jakarta Sans', size: 10 },
+          margin: { l: 20, r: 20, t: 10, b: 20 }
+        }, { responsive: true, displayModeBar: false });
+      }
+
+      // 3. Cost Line
+      if (document.getElementById('plotlyCostLine')) {
+        const taus = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50];
+        const costs = taus.map(t => Math.round(18000 + 42000 * Math.pow(t - 0.20, 2)));
+        Plotly.react('plotlyCostLine', [{
+          x: taus, y: costs, type: 'scatter', mode: 'lines+markers', line: { color: '#0b72e7', width: 2.5 }, marker: { color: '#00d2d2' }
+        }], {
+          paper_bgcolor: 'rgba(0,0,0,0)',
+          plot_bgcolor: 'rgba(0,0,0,0)',
+          font: { color: textColor, family: 'Plus Jakarta Sans', size: 10 },
+          margin: { l: 50, r: 20, t: 10, b: 35 },
+          xaxis: { title: 'Decision Cutoff (τ)', gridcolor: gridColor },
+          yaxis: { title: 'Cost (INR)', gridcolor: gridColor }
+        }, { responsive: true, displayModeBar: false });
+      }
+
+      renderShap();
     }
 
     // -----------------------------------------------------------------------
-    // Module 3: Live Simulator Form & Quick Fill
+    // Live Simulator & Dispute Helpers
     // -----------------------------------------------------------------------
-    function applyPreset(type) {
-      if (type === 'clean_upi') {
-        document.getElementById('simAmount').value = 1250;
-        document.getElementById('simMethod').value = 'upi';
-        document.getElementById('simNetwork').value = 'visa';
-        document.getElementById('simCategory').value = 'groceries';
-        document.getElementById('simCountry').value = 'IN';
-        document.getElementById('sim3ds').checked = true;
-        document.getElementById('simFirst').checked = false;
-      } else if (type === 'luxury_spike') {
-        document.getElementById('simAmount').value = 98000;
-        document.getElementById('simMethod').value = 'card';
-        document.getElementById('simNetwork').value = 'visa';
-        document.getElementById('simCategory').value = 'electronics';
-        document.getElementById('simCountry').value = 'IN';
-        document.getElementById('sim3ds').checked = true;
-        document.getElementById('simFirst').checked = false;
-      } else if (type === 'velocity_burst') {
-        document.getElementById('simAmount').value = 18500;
-        document.getElementById('simMethod').value = 'card';
-        document.getElementById('simNetwork').value = 'mastercard';
-        document.getElementById('simCategory').value = 'gaming';
-        document.getElementById('simCountry').value = 'IN';
-        document.getElementById('sim3ds').checked = false;
-        document.getElementById('simFirst').checked = false;
-      } else if (type === 'foreign_ip') {
-        document.getElementById('simAmount').value = 45000;
-        document.getElementById('simMethod').value = 'card';
-        document.getElementById('simNetwork').value = 'amex';
-        document.getElementById('simCategory').value = 'digital_goods';
-        document.getElementById('simCountry').value = 'US';
-        document.getElementById('sim3ds').checked = false;
-        document.getElementById('simFirst').checked = false;
-      } else if (type === 'cold_start') {
-        document.getElementById('simAmount').value = 24000;
-        document.getElementById('simMethod').value = 'card';
-        document.getElementById('simNetwork').value = 'rupay';
-        document.getElementById('simCategory').value = 'fashion';
-        document.getElementById('simCountry').value = 'IN';
-        document.getElementById('sim3ds').checked = true;
-        document.getElementById('simFirst').checked = true;
-      }
+    function fillSim(amt, method, net, cat, is3ds) {
+      document.getElementById('simInAmt').value = amt;
+      document.getElementById('simInMethod').value = method;
+      document.getElementById('simIn3ds').checked = is3ds;
     }
 
-    async function runSimulationEvaluation() {
-      const payload = {
-        transaction_id: document.getElementById('simTxnId').value,
-        amount: parseFloat(document.getElementById('simAmount').value),
-        customer_id: document.getElementById('simCustId').value,
-        payment_method: document.getElementById('simMethod').value,
-        card_network: document.getElementById('simNetwork').value,
-        merchant_category: document.getElementById('simCategory').value,
-        device_type: document.getElementById('simDevice').value,
-        ip_country: document.getElementById('simCountry').value,
-        is_3ds_authenticated: document.getElementById('sim3ds').checked
-      };
-
-      try {
-        const res = await fetch('/api/v1/evaluate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          displaySimVerdict(data);
-          return;
-        }
-      } catch (err) {
-        console.warn('API error, executing client-side rule evaluation:', err);
-      }
-
-      // Offline deterministic fallback calculation
-      const isHigh = payload.amount > 40000 && !payload.is_3ds_authenticated;
-      const isReview = payload.amount > 20000 || !payload.is_3ds_authenticated;
-      const state = isHigh ? 'HIGH' : (isReview ? 'REVIEW' : 'LOW');
-      const score = isHigh ? 0.89 : (isReview ? 0.58 : 0.08);
-
-      displaySimVerdict({
-        risk_band: state,
-        risk_score: score,
-        operational_state: state,
-        recommended_action: state === 'HIGH' ? 'Block and initiate 2FA verification' : (state === 'REVIEW' ? 'Manual review queue' : 'Clear settlement'),
-        expected_loss: payload.amount * score + (isHigh ? 3000 : 0),
-        triggered_rules: isHigh ? [{ rule_id: 'VELOCITY_HIGH_VAL', severity: 'HIGH' }] : []
-      });
-    }
-
-    function displaySimVerdict(data) {
-      document.getElementById('simVerdictSection').classList.remove('hidden');
+    async function evalSim() {
+      const amt = parseFloat(document.getElementById('simInAmt').value);
+      const is3ds = document.getElementById('simIn3ds').checked;
+      const box = document.getElementById('simVerdictBox');
+      box.classList.remove('hidden');
       const badge = document.getElementById('simVerdictBadge');
-      badge.innerText = `${data.operational_state} RISK`;
-      badge.className = data.operational_state === 'HIGH' ? 'badge-high' : (data.operational_state === 'REVIEW' ? 'badge-review' : 'badge-low');
+      const text = document.getElementById('simVerdictText');
 
-      document.getElementById('simActionText').innerText = data.recommended_action || 'Processed via decision matrix';
-      document.getElementById('simScoreText').innerText = `${((data.risk_score || 0.5) * 100).toFixed(1)}%`;
-      document.getElementById('simRulesCount').innerText = `${(data.triggered_rules || []).length} Rules Triggered`;
-      document.getElementById('simExposureText').innerText = `₹${((data.expected_loss || 0)).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-    }
-
-    function commitAnalystDecision() {
-      const radios = document.getElementsByName('analystAction');
-      let act = 'Approved';
-      for (let r of radios) { if (r.checked) act = r.value; }
-      const notes = document.getElementById('analystNotes').value || 'Standard review executed.';
-      const txnId = document.getElementById('simTxnId').value;
-
-      const tbody = document.getElementById('auditLedgerBody');
-      const newRow = `
-        <tr>
-          <td class="py-1 px-2 font-mono text-[var(--accent-blue)]">${txnId}</td>
-          <td class="py-1 px-2"><span class="badge-review">DECIDED</span></td>
-          <td class="py-1 px-2 font-medium">${act}</td>
-          <td class="py-1 px-2 text-[var(--text-secondary)]">${notes}</td>
-        </tr>
-      `;
-      tbody.innerHTML = newRow + tbody.innerHTML;
-      alert(`Decision committed successfully for ${txnId}!`);
-    }
-
-    // -----------------------------------------------------------------------
-    // Module 4: Dispute Defense & Evidence Generator
-    // -----------------------------------------------------------------------
-    function updateEvidenceScore() {
-      let score = 0;
-      if (document.getElementById('cbPaymentProof').checked) score += 25;
-      if (document.getElementById('cb3dsAuth').checked) score += 25;
-      if (document.getElementById('cbDeliveryProof').checked) score += 25;
-      if (document.getElementById('cbCustomerComm').checked) score += 25;
-
-      const badge = document.getElementById('evidenceScoreBadge');
-      badge.innerText = `${score}% Defensible`;
-    }
-
-    async function generateDisputeMemo() {
-      const codeBlock = document.getElementById('memoCodeBlock');
-      const brief = document.getElementById('memoBrief');
-      codeBlock.innerText = '// Calling Grounded AI Dispute Responder...';
-
-      const payload = {
-        dispute_id: 'DSP_RZP_9041',
-        transaction_id: 'TXN_000008',
-        dispute_reason: 'fraudulent',
-        amount: 23237.52,
-        customer_name: 'CUST_02907',
-        payment_proof: document.getElementById('cbPaymentProof').checked,
-        three_ds_auth: document.getElementById('cb3dsAuth').checked,
-        delivery_proof: document.getElementById('cbDeliveryProof').checked,
-        customer_communication: document.getElementById('cbCustomerComm').checked
-      };
-
-      try {
-        const res = await fetch('/api/v1/evidence/represent', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          brief.innerHTML = `<strong>Executive Case Brief:</strong><br>${data.case_summary || 'Evidence verified according to Visa CE3.0 standards.'}`;
-          codeBlock.innerText = data.dispute_memo || data.dispute_letter || 'Draft completed.';
-          return;
-        }
-      } catch (err) {
-        console.warn('Backend unavailable, rendering deterministic rebuttal letter:', err);
+      if (amt > 40000 && !is3ds) {
+        badge.innerText = 'HIGH RISK';
+        badge.className = 'badge-high';
+        text.innerText = 'Score: 91.4% | Triggered: VELOCITY_ANOMALY, HIGH_VALUE_NON_3DS';
+      } else {
+        badge.innerText = 'LOW RISK';
+        badge.className = 'badge-low';
+        text.innerText = 'Score: 12.0% | All deterministic rules passed';
       }
-
-      brief.innerHTML = `<strong>Executive Case Brief:</strong><br>Case contested under Visa Compelling Evidence 3.0. Cardholder authenticated via 3DS OTP and physical courier signature logged.`;
-      codeBlock.innerText = `# FORMAL DISPUTE REBUTTAL MEMORANDUM\nCase Reference: DSP_RZP_9041\nTransaction Reference: TXN_000008\nDispute Amount: INR 23,237.52\nNetwork Standards: Visa Compelling Evidence 3.0 & Mastercard CE\n\nDear Chargeback Arbitration Committee,\n\nWe hereby contest dispute #DSP_RZP_9041 on behalf of the merchant. Verified records confirm that the transaction was authenticated using two-factor 3D-Secure protocols, shifting fraud liability to the card issuer.\n\nATTACHED COMPELLING EVIDENCE:\n1. Gateway Authorization & Settlement Receipt (Payment ID: pay_RZP9041)\n2. 3D-Secure 2.0 Biometric/OTP Authentication Audit Trail\n3. Signed Proof of Delivery (POD) matching cardholder shipping address\n\nUnder network chargeback remediation rules, liability is formally shifted. We respectfully request immediate case dismissal.\n\nSincerely,\nRiskForge Dispute Operations Team`;
     }
 
-    function copyDisputeMemo() {
-      const txt = document.getElementById('memoCodeBlock').innerText;
-      navigator.clipboard.writeText(txt);
-      alert('Dispute Memorandum copied to clipboard!');
+    function generateMemo() {
+      document.getElementById('memoOutput').innerText = `# FORMAL DISPUTE REBUTTAL MEMORANDUM\nCase Reference: DSP_9041\nNetwork Standards: Visa Compelling Evidence 3.0 & Mastercard CE\n\nCardholder authenticated via 3DS OTP and physical courier POD signed at billing address. Fraud liability shifted to issuer.`;
     }
 
-    // -----------------------------------------------------------------------
-    // Plotly Charts Rendering
-    // -----------------------------------------------------------------------
-    function renderPlotlyCharts() {
-      const isDark = activeTheme === 'dark';
-      const textColor = isDark ? '#f8fafc' : '#0f172a';
-      const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)';
-
-      // 1. Category Volume vs Risk
-      const catData = [
-        { name: 'Legitimate', x: ['Electronics', 'Groceries', 'Fashion', 'Gaming', 'Digital', 'Travel'], y: [340, 480, 290, 210, 310, 140], type: 'bar', marker: { color: '#0b72e7' } },
-        { name: 'Disputed', x: ['Electronics', 'Groceries', 'Fashion', 'Gaming', 'Digital', 'Travel'], y: [42, 12, 19, 38, 45, 11], type: 'bar', marker: { color: '#f43f5e' } }
-      ];
-      Plotly.react('chartCategoryVolume', catData, {
-        barmode: 'group',
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        plot_bgcolor: 'rgba(0,0,0,0)',
-        font: { color: textColor, family: 'Plus Jakarta Sans', size: 11 },
-        margin: { l: 30, r: 20, t: 10, b: 30 },
-        xaxis: { gridcolor: gridColor },
-        yaxis: { gridcolor: gridColor },
-        legend: { orientation: 'h', y: 1.1 }
-      }, { responsive: true, displayModeBar: false });
-
-      // 2. Payment Channel Share Donut
-      const pieData = [{
-        values: [45, 28, 15, 12],
-        labels: ['UPI', 'Cards', 'Netbanking', 'Wallets'],
-        type: 'pie',
-        hole: 0.45,
-        marker: { colors: ['#0b72e7', '#00d2d2', '#6366f1', '#f59e0b'] }
-      }];
-      Plotly.react('chartPaymentShare', pieData, {
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        plot_bgcolor: 'rgba(0,0,0,0)',
-        font: { color: textColor, family: 'Plus Jakarta Sans', size: 11 },
-        margin: { l: 20, r: 20, t: 10, b: 20 }
-      }, { responsive: true, displayModeBar: false });
-
-      // 3. Bayesian Cost Curve
-      renderCostFrontierChart();
-    }
-
-    function renderCostFrontierChart() {
-      const isDark = activeTheme === 'dark';
-      const textColor = isDark ? '#f8fafc' : '#0f172a';
-      const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)';
-
-      const taus = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90];
-      const costs = taus.map(t => Math.round(18000 + 42000 * Math.pow(t - 0.20, 2) + (t > 0.45 ? (t - 0.45) * 85000 : 0)));
-
-      const costData = [{
-        x: taus,
-        y: costs,
-        type: 'scatter',
-        mode: 'lines+markers',
-        line: { color: '#0b72e7', width: 2.5 },
-        marker: { size: 6, color: '#00d2d2' },
-        name: 'Total Expected Cost'
-      }];
-
-      Plotly.react('chartCostFrontier', costData, {
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        plot_bgcolor: 'rgba(0,0,0,0)',
-        font: { color: textColor, family: 'Plus Jakarta Sans', size: 11 },
-        margin: { l: 50, r: 20, t: 10, b: 35 },
-        xaxis: { title: 'Decision Cutoff (τ)', gridcolor: gridColor },
-        yaxis: { title: 'Cost (INR)', gridcolor: gridColor },
-        shapes: [{
-          type: 'line',
-          x0: currentCutoff,
-          x1: currentCutoff,
-          y0: 0,
-          y1: Math.max(...costs),
-          line: { color: '#10b981', width: 2, dash: 'dash' }
-        }],
-        annotations: [{
-          x: currentCutoff,
-          y: Math.max(...costs) * 0.95,
-          text: `Active τ* = ${currentCutoff.toFixed(2)}`,
-          showarrow: false,
-          font: { color: '#10b981', size: 10, family: 'JetBrains Mono' }
-        }]
-      }, { responsive: true, displayModeBar: false });
-    }
-
-    // -----------------------------------------------------------------------
-    // Initializer
-    // -----------------------------------------------------------------------
+    // Init on load
     window.addEventListener('DOMContentLoaded', () => {
-      renderTableRows(sampleTransactions);
-      renderPlotlyCharts();
-      loadInvestigateTxn('TXN_000008');
+      onSelectTxn('TXN_000001');
+      setTimeout(renderAllCharts, 100);
     });
   </script>
 </body>
