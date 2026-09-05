@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Razorpay RiskForge AI — Mobile Risk Intelligence</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+    :root {
+      --bg-slate: #030712;
+      --card-glass: rgba(17, 24, 39, 0.65);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-glow: rgba(0, 210, 210, 0.3);
+      --neon-cyan: #00d2d2;
+      --neon-violet: #8b5cf6;
+      --electric-amber: #f59e0b;
+      --electric-rose: #f43f5e;
+      --emerald-accent: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-slate);
+      color: #f8fafc;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Glassmorphic Cards */
+    .glass-card {
+      background: var(--card-glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card-glow {
+      border-color: rgba(0, 210, 210, 0.35);
+      box-shadow: 0 0 25px rgba(0, 210, 210, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    /* Ambient Glow Orbs */
+    .glow-orb-cyan {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(0, 210, 210, 0.18) 0%, rgba(0, 210, 210, 0) 70%);
+      filter: blur(40px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-orb-violet {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.18) 0%, rgba(139, 92, 246, 0) 70%);
+      filter: blur(50px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-orb-amber {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0) 70%);
+      filter: blur(45px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Mobile Frame Device Simulator */
+    .mobile-viewport {
+      width: 100%;
+      max-width: 393px;
+      min-height: 852px;
+      height: 100vh;
+      margin: 0 auto;
+      position: relative;
+      background: #030712;
+      overflow-y: auto;
+      overflow-x: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 210, 210, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (min-width: 640px) {
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: radial-gradient(circle at 50% 10%, #0c1538 0%, #030712 100%);
+        padding: 24px;
+      }
+      .mobile-viewport {
+        border-radius: 48px;
+        height: 852px;
+        border: 4px solid #1f2937;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1), 0 30px 80px rgba(0, 0, 0, 0.9), 0 0 50px rgba(0, 210, 210, 0.15);
+      }
+    }
+
+    /* Hide scrollbar */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Animated Risk Badges */
+    .badge-high {
+      background: rgba(244, 63, 94, 0.18);
+      color: #f43f5e;
+      border: 1px solid rgba(244, 63, 94, 0.4);
+    }
+    .badge-review {
+      background: rgba(245, 158, 11, 0.18);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+    .badge-low {
+      background: rgba(16, 185, 129, 0.18);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    /* Pulse dot */
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
+      animation: pulseAnim 2s infinite;
+    }
+    @keyframes pulseAnim {
+      0% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 4px #10b981; }
+      50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 14px #10b981; }
+      100% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 4px #10b981; }
+    }
+
+    /* Sliders */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 9999px;
+      height: 6px;
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #00d2d2;
+      box-shadow: 0 0 10px #00d2d2;
+      cursor: pointer;
+    }
+
+    /* 3D Canvas Container */
+    #isometricCanvasContainer {
+      width: 100%;
+      height: 170px;
+      position: relative;
+      cursor: grab;
+    }
+  </style>
+</head>
+<body class="selection:bg-cyan-500 selection:text-white">
+
+  <!-- Mobile Viewport Container (393 x 852 standard iPhone 15/16 Pro portrait) -->
+  <div class="mobile-viewport no-scrollbar">
+
+    <!-- Ambient Orbs -->
+    <div class="glow-orb-cyan -top-12 -left-16"></div>
+    <div class="glow-orb-violet top-1/3 -right-20"></div>
+    <div class="glow-orb-amber -bottom-10 left-10"></div>
+
+    <!-- 1. Top Dynamic Island & Status Bar -->
+    <div class="w-full pt-3 px-6 pb-2 flex justify-between items-center z-30 sticky top-0 bg-[#030712]/80 backdrop-blur-md">
+      <div class="text-[13px] font-semibold tracking-tight text-slate-300">9:41</div>
+      <!-- Dynamic Pill -->
+      <div class="w-24 h-5 bg-black rounded-full flex items-center justify-center gap-1.5 border border-white/10 shadow-inner">
+        <div class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></div>
+        <span class="text-[9px] font-mono text-cyan-300 font-bold uppercase tracking-wider">SECURE</span>
+      </div>
+      <div class="flex items-center gap-1.5 text-xs text-slate-300">
+        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L12 22l7.03-4.39C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9z"/></svg>
+        <span class="text-[11px] font-mono">5G</span>
+      </div>
+    </div>
+
+    <!-- App Header -->
+    <div class="px-5 pt-1 pb-3 flex justify-between items-center z-20">
+      <div>
+        <div class="flex items-center gap-2">
+          <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="rounded-lg shadow-lg shadow-blue-500/30">
+            <rect width="100" height="100" rx="22" fill="#0B72E7"/>
+            <path d="M28 72L50 24H72L42 72H28Z" fill="#00D2D2"/>
+            <path d="M46 72L68 24H76L54 72H46Z" fill="#FFFFFF" fill-opacity="0.95"/>
+            <path d="M38 52H68L62 64H32L38 52Z" fill="#02042B" fill-opacity="0.3"/>
+          </svg>
+          <div class="leading-tight">
+            <div class="text-[15px] font-black tracking-tight">
+              <span class="text-[#0B72E7]">Razorpay</span> <span class="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">RiskForge</span>
+            </div>
+          </div>
+        </div>
+        <p class="text-[10px] text-slate-400 font-medium pl-9 tracking-wide uppercase">Enterprise Dispute Defense Core</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="pulse-dot"></div>
+        <span id="backendStatusTag" class="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-500/30">LIVE API</span>
+      </div>
+    </div>
+
+    <!-- 2. Floating 3D Isometric Glowing Core -->
+    <div class="px-5 pb-2 relative z-20">
+      <div class="glass-card p-3 relative overflow-hidden glass-card-glow">
+        <div id="isometricCanvasContainer"></div>
+        <!-- Overlay Badges -->
+        <div class="absolute bottom-3 left-4 right-4 flex justify-between items-center pointer-events-none">
+          <div class="bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+            <span>VERIFICATION ENGINE ACTIVE</span>
+          </div>
+          <div class="bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 text-[10px] font-mono text-amber-300">
+            <span>&tau;* = 0.20</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Area (Screen Switcher) -->
+    <div class="flex-1 px-5 pb-24 z-20">
+
+      <!-- ============================================================ -->
+      <!-- SCREEN 1: LIVE RISK TELEMETRY -->
+      <!-- ============================================================ -->
+      <div id="screenTelemetry" class="space-y-4">
+
+        <!-- Floating Key Metrics Cards -->
+        <div class="grid grid-cols-3 gap-2.5">
+          <!-- Metric 1: Fraud Prevented -->
+          <div class="glass-card p-3 text-left relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-12 h-12 bg-cyan-500/10 rounded-bl-full pointer-events-none"></div>
+            <p class="text-[9px] font-mono font-semibold uppercase tracking-wider text-slate-400">Prevented</p>
+            <h3 class="text-base font-extrabold text-cyan-300 mt-0.5 tracking-tight">$428.5K</h3>
+            <span class="text-[9px] font-semibold text-emerald-400 flex items-center gap-0.5 mt-0.5">
+              &uarr; 32.4%
+            </span>
+          </div>
+
+          <!-- Metric 2: Verification Cost -->
+          <div class="glass-card p-3 text-left relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-12 h-12 bg-violet-500/10 rounded-bl-full pointer-events-none"></div>
+            <p class="text-[9px] font-mono font-semibold uppercase tracking-wider text-slate-400">Friction Cost</p>
+            <h3 class="text-base font-extrabold text-violet-300 mt-0.5 tracking-tight">$3.85K</h3>
+            <span class="text-[9px] text-slate-400 mt-0.5 block font-mono">0.89% vol</span>
+          </div>
+
+          <!-- Metric 3: Active Threat Level -->
+          <div class="glass-card p-3 text-left relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-12 h-12 bg-amber-500/10 rounded-bl-full pointer-events-none"></div>
+            <p class="text-[9px] font-mono font-semibold uppercase tracking-wider text-slate-400">Threat Level</p>
+            <h3 class="text-base font-extrabold text-amber-400 mt-0.5 tracking-tight">ELEVATED</h3>
+            <span class="text-[9px] text-amber-300/80 mt-0.5 block font-mono">Index 0.42</span>
+          </div>
+        </div>
+
+        <!-- Interactive Spline Trendline Chart Card -->
+        <div class="glass-card p-4">
+          <div class="flex justify-between items-center mb-2">
+            <div>
+              <h4 class="text-xs font-bold text-slate-200">Live Risk Telemetry Spline</h4>
+              <p class="text-[10px] text-slate-400">Legitimate Volume vs. Shield Deflections</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-[9px] font-mono text-cyan-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Legit</span>
+              <span class="text-[9px] font-mono text-amber-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Deflected</span>
+            </div>
+          </div>
+
+          <!-- SVG Dual-Spline Curve Chart -->
+          <div class="w-full h-32 relative">
+            <svg viewBox="0 0 320 120" class="w-full h-full overflow-visible">
+              <defs>
+                <linearGradient id="cyanGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#00d2d2" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#00d2d2" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="amberGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+
+              <!-- Grid lines -->
+              <line x1="0" y1="30" x2="320" y2="30" stroke="rgba(255,255,255,0.04)" stroke-dasharray="2,2"/>
+              <line x1="0" y1="70" x2="320" y2="70" stroke="rgba(255,255,255,0.04)" stroke-dasharray="2,2"/>
+              <line x1="0" y1="110" x2="320" y2="110" stroke="rgba(255,255,255,0.08)"/>
+
+              <!-- Area Under Legit Curve -->
+              <path d="M 0,90 Q 60,30 120,65 T 240,40 T 320,70 L 320,110 L 0,110 Z" fill="url(#cyanGrad)"/>
+              <!-- Area Under Threat Curve -->
+              <path d="M 0,105 Q 60,85 120,50 T 240,80 T 320,55 L 320,110 L 0,110 Z" fill="url(#amberGrad)"/>
+
+              <!-- Legit Spline Curve (Cyan) -->
+              <path d="M 0,90 Q 60,30 120,65 T 240,40 T 320,70" fill="none" stroke="#00d2d2" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- Threat Spline Curve (Amber) -->
+              <path d="M 0,105 Q 60,85 120,50 T 240,80 T 320,55" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>
+
+              <!-- Interactive Highlight Node -->
+              <circle cx="120" cy="50" r="5" fill="#f59e0b" stroke="#ffffff" stroke-width="2" class="animate-ping"/>
+              <circle cx="120" cy="50" r="4" fill="#f59e0b" stroke="#ffffff" stroke-width="2"/>
+            </svg>
+            <div class="flex justify-between text-[9px] font-mono text-slate-500 mt-1">
+              <span>00:00</span>
+              <span>06:00</span>
+              <span>12:00</span>
+              <span>18:00</span>
+              <span>Live</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Incoming Feed -->
+        <div>
+          <div class="flex justify-between items-center mb-2 px-1">
+            <h4 class="text-xs font-bold text-slate-200">Live Threat Stream</h4>
+            <span class="text-[10px] font-mono text-cyan-400 cursor-pointer hover:underline" onclick="fetchLiveTelemetry()">Refresh</span>
+          </div>
+
+          <div id="incomingFeedContainer" class="space-y-2">
+            <!-- Feed Item 1 (High) -->
+            <div class="glass-card p-3 flex justify-between items-center hover:border-rose-500/50 cursor-pointer" onclick="inspectTxn('TXN_9042', 2499.00, 0.89, 'HIGH')">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-slate-200">Alex Vance <span class="text-[10px] font-mono text-slate-500">&bull; TXN_9042</span></div>
+                  <div class="text-[10px] text-slate-400">Card &bull; 4242 &bull; Electronics &bull; US IP</div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs font-bold text-slate-200">$2,499.00</div>
+                <span class="inline-block mt-0.5 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full badge-high">HIGH 89%</span>
+              </div>
+            </div>
+
+            <!-- Feed Item 2 (Review) -->
+            <div class="glass-card p-3 flex justify-between items-center hover:border-amber-500/50 cursor-pointer" onclick="inspectTxn('TXN_9040', 1850.00, 0.62, 'REVIEW')">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-slate-200">Elena Rostova <span class="text-[10px] font-mono text-slate-500">&bull; TXN_9040</span></div>
+                  <div class="text-[10px] text-slate-400">Card &bull; 8812 &bull; Gaming &bull; SG IP</div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs font-bold text-slate-200">$1,850.00</div>
+                <span class="inline-block mt-0.5 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full badge-review">REVIEW 62%</span>
+              </div>
+            </div>
+
+            <!-- Feed Item 3 (Low) -->
+            <div class="glass-card p-3 flex justify-between items-center hover:border-emerald-500/50 cursor-pointer" onclick="inspectTxn('TXN_9041', 420.00, 0.14, 'LOW')">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-slate-200">Siddharth N. <span class="text-[10px] font-mono text-slate-500">&bull; TXN_9041</span></div>
+                  <div class="text-[10px] text-slate-400">UPI &bull; HDFC &bull; Groceries &bull; IN IP</div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs font-bold text-slate-200">$420.00</div>
+                <span class="inline-block mt-0.5 text-[9px] font-mono font-bold px-2 py-0.5 rounded-full badge-low">LOW 14%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- SCREEN 2: EXPLAINABLE AI (XAI) INSPECTOR -->
+      <!-- ============================================================ -->
+      <div id="screenXAI" class="space-y-4 hidden">
+        <!-- Drilldown Transaction Header -->
+        <div class="glass-card p-4 relative overflow-hidden">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-[10px] font-mono text-slate-400">ACTIVE INVESTIGATION</span>
+              <h3 id="xaiTxnId" class="text-base font-bold font-mono text-white mt-0.5">TXN_9042</h3>
+              <p id="xaiTxnSub" class="text-[11px] text-slate-400 mt-0.5">Customer: Alex Vance &bull; Amount: $2,499.00</p>
+            </div>
+            <span id="xaiRiskBadge" class="badge-high text-[10px] font-mono font-bold px-2.5 py-1 rounded-full">HIGH RISK 89%</span>
+          </div>
+
+          <!-- Quick Metrics Bar -->
+          <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-white/5">
+            <div>
+              <span class="text-[10px] text-slate-400">Expected Loss</span>
+              <div id="xaiExpectedLoss" class="text-sm font-bold font-mono text-rose-400">$2,799.00</div>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400">Rule Severity Score</span>
+              <div class="text-sm font-bold font-mono text-amber-400">0.85 / 1.00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SHAP-Based Factor Attribution -->
+        <div class="glass-card p-4">
+          <div class="flex justify-between items-center mb-3">
+            <h4 class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+              <span class="text-cyan-400">&bull;</span> SHAP Risk Drivers
+            </h4>
+            <span class="text-[9px] font-mono text-slate-400">TreeExplainer Model</span>
+          </div>
+
+          <div class="space-y-3">
+            <!-- Factor 1 -->
+            <div>
+              <div class="flex justify-between text-[11px] mb-1">
+                <span class="font-medium text-slate-300">IP Velocity Spike (6h Burst)</span>
+                <span class="font-mono text-rose-400 font-bold">+0.38</span>
+              </div>
+              <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                <div class="bg-gradient-to-r from-amber-500 to-rose-500 h-full rounded-full" style="width: 76%"></div>
+              </div>
+            </div>
+
+            <!-- Factor 2 -->
+            <div>
+              <div class="flex justify-between text-[11px] mb-1">
+                <span class="font-medium text-slate-300">Proxy / Anonymous VPN Detected</span>
+                <span class="font-mono text-rose-400 font-bold">+0.29</span>
+              </div>
+              <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                <div class="bg-gradient-to-r from-amber-500 to-rose-500 h-full rounded-full" style="width: 58%"></div>
+              </div>
+            </div>
+
+            <!-- Factor 3 -->
+            <div>
+              <div class="flex justify-between text-[11px] mb-1">
+                <span class="font-medium text-slate-300">Behavioral Amount Mismatch (4.8x)</span>
+                <span class="font-mono text-amber-400 font-bold">+0.24</span>
+              </div>
+              <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                <div class="bg-amber-500 h-full rounded-full" style="width: 48%"></div>
+              </div>
+            </div>
+
+            <!-- Factor 4 (Protective) -->
+            <div>
+              <div class="flex justify-between text-[11px] mb-1">
+                <span class="font-medium text-slate-300">Device Reputation Token</span>
+                <span class="font-mono text-emerald-400 font-bold">-0.15</span>
+              </div>
+              <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                <div class="bg-emerald-400 h-full rounded-full" style="width: 30%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cost-Benefit Trade-off Slider -->
+        <div class="glass-card p-4">
+          <div class="flex justify-between items-center mb-1">
+            <h4 class="text-xs font-bold text-slate-200">Friction vs. Loss Prevention</h4>
+            <span id="sliderValueText" class="text-[11px] font-mono text-cyan-400 font-bold">&tau; = 0.20</span>
+          </div>
+          <p class="text-[10px] text-slate-400 mb-3">Balance customer drop-off friction against chargeback penalties</p>
+
+          <input type="range" id="tradeoffSlider" min="0.05" max="0.80" step="0.05" value="0.20" class="w-full" oninput="updateTradeoffSlider(this.value)">
+
+          <div class="flex justify-between text-[9px] font-mono text-slate-500 mt-1">
+            <span>Aggressive (&tau;=0.05)</span>
+            <span>Balanced (&tau;=0.20)</span>
+            <span>Permissive (&tau;=0.80)</span>
+          </div>
+
+          <!-- Dynamic Output Card -->
+          <div class="mt-3 p-2.5 rounded-xl bg-white/[0.03] border border-white/5 flex justify-between items-center text-xs">
+            <div>
+              <span class="text-[10px] text-slate-400 block">Projected Queue Friction</span>
+              <span id="queueLoadEstimate" class="font-mono font-bold text-slate-200">2.9% review load</span>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] text-slate-400 block">Net Expected Savings</span>
+              <span id="savingsEstimate" class="font-mono font-bold text-cyan-300">+$2,675.00 / 6k txns</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- SCREEN 3: EVIDENCE & REPRESENTMENT ENGINE -->
+      <!-- ============================================================ -->
+      <div id="screenEvidence" class="space-y-4 hidden">
+        <!-- Network Readiness Gauge Card -->
+        <div class="glass-card p-4 relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-[10px] font-mono text-slate-400">DISPUTE REPRESENTMENT</span>
+              <h3 class="text-sm font-bold text-white mt-0.5">Card Network Readiness</h3>
+              <p class="text-[10px] text-slate-400">Visa Compelling Evidence 3.0 Standard</p>
+            </div>
+            <!-- Circular Readiness Meter -->
+            <div class="relative w-16 h-16 flex items-center justify-center">
+              <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                <path class="text-slate-800" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                <path id="readinessCircle" class="text-cyan-400" stroke-dasharray="92, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              </svg>
+              <span id="readinessScoreText" class="absolute text-xs font-mono font-extrabold text-cyan-300">92%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Auto-Compiled Evidence Checklist -->
+        <div class="glass-card p-4">
+          <h4 class="text-xs font-bold text-slate-200 mb-2">Auto-Compiled Evidence Package</h4>
+          <div class="space-y-2.5">
+            <label class="flex items-center justify-between text-xs p-2 rounded-xl bg-white/[0.02] border border-white/5 cursor-pointer">
+              <span class="flex items-center gap-2 text-slate-300">
+                <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Gateway Settlement & Payment ID
+              </span>
+              <input type="checkbox" checked class="accent-cyan-400 w-4 h-4" onchange="calculateReadiness()">
+            </label>
+
+            <label class="flex items-center justify-between text-xs p-2 rounded-xl bg-white/[0.02] border border-white/5 cursor-pointer">
+              <span class="flex items-center gap-2 text-slate-300">
+                <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                3DS 2.2 Frictionless OTP Log
+              </span>
+              <input type="checkbox" checked class="accent-cyan-400 w-4 h-4" onchange="calculateReadiness()">
+            </label>
+
+            <label class="flex items-center justify-between text-xs p-2 rounded-xl bg-white/[0.02] border border-white/5 cursor-pointer">
+              <span class="flex items-center gap-2 text-slate-300">
+                <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Signed Courier Waybill (POD)
+              </span>
+              <input type="checkbox" checked class="accent-cyan-400 w-4 h-4" onchange="calculateReadiness()">
+            </label>
+
+            <label class="flex items-center justify-between text-xs p-2 rounded-xl bg-white/[0.02] border border-white/5 cursor-pointer">
+              <span class="flex items-center gap-2 text-slate-300">
+                <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Customer Order Comms & Chat
+              </span>
+              <input type="checkbox" class="accent-cyan-400 w-4 h-4" onchange="calculateReadiness()">
+            </label>
+          </div>
+        </div>
+
+        <!-- Action Buttons ("Biometric Challenge", "Auto-Deflect", "Accept Risk") -->
+        <div class="space-y-2">
+          <!-- 1. Auto-Deflect (Primary) -->
+          <button onclick="triggerAction('Auto-Deflect')" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 active:scale-95 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            Auto-Deflect (File Instant Dispute Defense)
+          </button>
+
+          <!-- 2-Column Secondary Buttons -->
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="triggerAction('Biometric Challenge')" class="py-2.5 px-3 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/40 text-amber-300 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 004 11a7.96 7.96 0 00.99 3.868"/></svg>
+              Biometric Step-Up
+            </button>
+
+            <button onclick="triggerAction('Accept Risk')" class="py-2.5 px-3 rounded-xl bg-white/5 border border-white/10 hover:border-rose-500/40 text-rose-300 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              Accept Risk
+            </button>
+          </div>
+        </div>
+
+        <!-- Generated Memo Drawer -->
+        <div id="memoContainer" class="glass-card p-3 text-[11px] font-mono text-slate-300 bg-black/40 border border-cyan-500/20 max-h-36 overflow-y-auto hidden">
+          <p class="text-cyan-400 font-bold mb-1">[DEFENSE MEMO READY]</p>
+          <p id="memoContentText">Cardholder authenticated via 3D-Secure 2.2 OTP with courier delivery signature verified on 2026-03-01. Chargeback liability shift under Visa Core Rules Section 5.2.</p>
+        </div>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- SCREEN 4: COST-OPTIMIZATION SETTINGS -->
+      <!-- ============================================================ -->
+      <div id="screenCost" class="space-y-4 hidden">
+        <div class="glass-card p-4">
+          <h4 class="text-xs font-bold text-slate-200 mb-1">Cost-Optimization Matrix</h4>
+          <p class="text-[10px] text-slate-400 mb-3">Adjust parameters to calibrate Bayesian threshold &tau;*</p>
+
+          <div class="space-y-3">
+            <!-- Slider 1 -->
+            <div>
+              <div class="flex justify-between text-[11px] mb-1">
+                <span class="text-slate-300">Manual Investigation Cost</span>
+                <span id="txtInvCost" class="font-mono text-cyan-300 font-bold">$50.00</span>
+              </div>
+              <input type="range" min="10" max="150" value="50" class="w-full" oninput="updateCostMatrix(this.value, null)">
+            </div>
+
+            <!-- Slider 2 -->
+            <div>
+              <div class="flex justify-between text-[11px] mb-1">
+                <span class="text-slate-300">Card Network Dispute Fee</span>
+                <span id="txtPenaltyFee" class="font-mono text-rose-300 font-bold">$3,000</span>
+              </div>
+              <input type="range" min="500" max="5000" step="250" value="3000" class="w-full" oninput="updateCostMatrix(null, this.value)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Optimization Curve Breakdown -->
+        <div class="glass-card p-4">
+          <div class="flex justify-between items-center mb-2">
+            <h4 class="text-xs font-bold text-slate-200">Bayesian Cost Frontier</h4>
+            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-500/30">Optimal &tau;* = 0.20</span>
+          </div>
+
+          <div class="p-3 rounded-xl bg-white/[0.03] border border-white/5 space-y-2 text-xs">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Total Operational Cost</span>
+              <span id="totalCostDisplay" class="font-mono font-bold text-white">$1,767.17</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Avoidable Dispute Recovery</span>
+              <span class="font-mono font-bold text-emerald-400">+$2,675.31</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">False Positive Reduction</span>
+              <span class="font-mono font-bold text-cyan-300">59.1% saved</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 3. Bottom Floating Mobile Navigation Dock (iOS Tab Bar Style) -->
+    <div class="fixed bottom-0 left-0 right-0 max-w-[393px] mx-auto px-4 pb-4 z-40">
+      <div class="glass-card px-3 py-2 flex justify-around items-center border border-white/10 shadow-2xl bg-[#030712]/90 backdrop-blur-2xl rounded-2xl">
+        <!-- Tab 1: Telemetry -->
+        <button id="navBtnTelemetry" onclick="switchScreen('Telemetry')" class="flex flex-col items-center gap-1 text-cyan-400 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          <span class="text-[9px] font-semibold">Telemetry</span>
+        </button>
+
+        <!-- Tab 2: XAI Inspector -->
+        <button id="navBtnXAI" onclick="switchScreen('XAI')" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <span class="text-[9px] font-semibold">XAI Drill</span>
+        </button>
+
+        <!-- Tab 3: Evidence -->
+        <button id="navBtnEvidence" onclick="switchScreen('Evidence')" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span class="text-[9px] font-semibold">Evidence</span>
+        </button>
+
+        <!-- Tab 4: Cost Matrix -->
+        <button id="navBtnCost" onclick="switchScreen('Cost')" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          <span class="text-[9px] font-semibold">Settings</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Toast Notification Banner -->
+    <div id="actionToast" class="fixed top-14 left-0 right-0 max-w-[360px] mx-auto p-3 rounded-2xl bg-cyan-950/90 border border-cyan-400/40 text-cyan-200 text-xs font-semibold shadow-2xl flex items-center gap-2 z-50 transform -translate-y-24 transition-all duration-300 pointer-events-none">
+      <svg class="w-4 h-4 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      <span id="toastMsg">Action executed.</span>
+    </div>
+
+  </div>
+
+  <!-- 4. Interactive Three.js 3D Isometric Glowing Core Implementation -->
+  <script>
+    let scene, camera, renderer, isometricGroup, centralCore, threatRing, particlesMesh;
+    let targetColor = new THREE.Color(0x00d2d2);
+
+    function initIsometricCore() {
+      const container = document.getElementById('isometricCanvasContainer');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      scene = new THREE.Scene();
+
+      // Isometric Orthographic / Close-Perspective Camera
+      camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 1000);
+      camera.position.set(18, 16, 22);
+      camera.lookAt(0, 0, 0);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(renderer.domElement);
+
+      isometricGroup = new THREE.Group();
+      scene.add(isometricGroup);
+
+      // 1. Layered Isometric Base Platform (Obsidian Glass Block)
+      const baseGeo = new THREE.BoxGeometry(10, 0.8, 10);
+      const baseMat = new THREE.MeshStandardMaterial({
+        color: 0x0c1527,
+        roughness: 0.2,
+        metalness: 0.9,
+        wireframe: false
+      });
+      const baseMesh = new THREE.Mesh(baseGeo, baseMat);
+      baseMesh.position.y = -2;
+      isometricGroup.add(baseMesh);
+
+      // Base Neon Edge Glow
+      const edges = new THREE.EdgesGeometry(baseGeo);
+      const edgeMat = new THREE.LineBasicMaterial({ color: 0x00d2d2, linewidth: 2 });
+      const edgeLines = new THREE.LineSegments(edges, edgeMat);
+      baseMesh.add(edgeLines);
+
+      // 2. Central Floating Glowing Core (Rotating Isometric Diamond/Octahedron)
+      const coreGeo = new THREE.OctahedronGeometry(2.4, 0);
+      const coreMat = new THREE.MeshStandardMaterial({
+        color: 0x00d2d2,
+        emissive: 0x00a3a3,
+        emissiveIntensity: 0.6,
+        roughness: 0.1,
+        metalness: 0.8,
+        wireframe: true
+      });
+      centralCore = new THREE.Mesh(coreGeo, coreMat);
+      centralCore.position.y = 0.5;
+      isometricGroup.add(centralCore);
+
+      // Inner Core Solid
+      const innerCoreGeo = new THREE.BoxGeometry(1.6, 1.6, 1.6);
+      const innerCoreMat = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        emissive: 0x00d2d2,
+        emissiveIntensity: 0.8,
+        roughness: 0.3
+      });
+      const innerCore = new THREE.Mesh(innerCoreGeo, innerCoreMat);
+      centralCore.add(innerCore);
+
+      // 3. Floating Orbital Threat Ring
+      const ringGeo = new THREE.TorusGeometry(4.6, 0.08, 16, 64);
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0x8b5cf6, transparent: true, opacity: 0.8 });
+      threatRing = new THREE.Mesh(ringGeo, ringMat);
+      threatRing.rotation.x = Math.PI / 3;
+      isometricGroup.add(threatRing);
+
+      // 4. Ambient Floating Particle Dust
+      const partCount = 45;
+      const partGeo = new THREE.BufferGeometry();
+      const posArr = new Float32Array(partCount * 3);
+      for (let i = 0; i < partCount * 3; i += 3) {
+        posArr[i] = (Math.random() - 0.5) * 12;
+        posArr[i + 1] = (Math.random() - 0.5) * 6 + 1;
+        posArr[i + 2] = (Math.random() - 0.5) * 12;
+      }
+      partGeo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
+      const partMat = new THREE.PointsMaterial({ size: 0.15, color: 0x00d2d2, transparent: true, opacity: 0.7 });
+      particlesMesh = new THREE.Points(partGeo, partMat);
+      isometricGroup.add(particlesMesh);
+
+      // Lighting
+      const ambLight = new THREE.AmbientLight(0xffffff, 0.7);
+      scene.add(ambLight);
+
+      const dirLight = new THREE.DirectionalLight(0x00d2d2, 1.5);
+      dirLight.position.set(10, 20, 10);
+      scene.add(dirLight);
+
+      const purpleLight = new THREE.PointLight(0x8b5cf6, 2, 25);
+      purpleLight.position.set(-10, 5, -10);
+      scene.add(purpleLight);
+
+      // Interaction listeners
+      let mouseX = 0, mouseY = 0;
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 0.5;
+        mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * 0.5;
+      });
+
+      // Animation Loop
+      let clock = new THREE.Clock();
+      function animate() {
+        requestAnimationFrame(animate);
+        const elapsedTime = clock.getElapsedTime();
+
+        // Levitation
+        centralCore.position.y = 0.5 + Math.sin(elapsedTime * 2) * 0.25;
+        centralCore.rotation.y += 0.015;
+        centralCore.rotation.x += 0.008;
+
+        // Rings rotation
+        threatRing.rotation.z -= 0.012;
+        threatRing.rotation.y += 0.006;
+
+        // Particles drift
+        particlesMesh.rotation.y += 0.002;
+
+        // Gyroscope tilt
+        isometricGroup.rotation.y = mouseX;
+        isometricGroup.rotation.x = mouseY * 0.5;
+
+        // Smooth Color Transition
+        centralCore.material.color.lerp(targetColor, 0.05);
+        centralCore.material.emissive.lerp(targetColor, 0.05);
+
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      });
+    }
+
+    // Function to change 3D core color based on risk
+    function update3DCoreColor(state) {
+      if (!centralCore) return;
+      if (state === 'HIGH') {
+        targetColor = new THREE.Color(0xf43f5e); // Neon Crimson
+      } else if (state === 'REVIEW') {
+        targetColor = new THREE.Color(0xf59e0b); // Electric Amber
+      } else {
+        targetColor = new THREE.Color(0x00d2d2); // Neon Cyan
+      }
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // Screen Navigation & Interactions
+    // ────────────────────────────────────────────────────────────────────
+    function switchScreen(screenName) {
+      const screens = ['Telemetry', 'XAI', 'Evidence', 'Cost'];
+      screens.forEach(s => {
+        const el = document.getElementById('screen' + s);
+        const btn = document.getElementById('navBtn' + s);
+        if (s === screenName) {
+          el.classList.remove('hidden');
+          btn.classList.add('text-cyan-400');
+          btn.classList.remove('text-slate-400');
+        } else {
+          el.classList.add('hidden');
+          btn.classList.remove('text-cyan-400');
+          btn.classList.add('text-slate-400');
+        }
+      });
+    }
+
+    function inspectTxn(id, amount, score, band) {
+      document.getElementById('xaiTxnId').innerText = id;
+      document.getElementById('xaiTxnSub').innerText = `Amount: $${amount.toFixed(2)}`;
+      const badge = document.getElementById('xaiRiskBadge');
+      badge.innerText = `${band} RISK ${(score * 100).toFixed(0)}%`;
+      badge.className = band === 'HIGH' ? 'badge-high' : (band === 'REVIEW' ? 'badge-review' : 'badge-low');
+      badge.classList.add('text-[10px]', 'font-mono', 'font-bold', 'px-2.5', 'py-1', 'rounded-full');
+
+      document.getElementById('xaiExpectedLoss').innerText = `$${(amount + 300).toFixed(2)}`;
+      update3DCoreColor(band);
+      switchScreen('XAI');
+      showToast(`Inspecting transaction ${id}`);
+    }
+
+    function updateTradeoffSlider(val) {
+      const num = parseFloat(val);
+      document.getElementById('sliderValueText').innerText = `\u03C4 = ${num.toFixed(2)}`;
+      const revLoad = Math.max(0.8, (1.0 - Math.pow(num, 0.7)) * 4.2).toFixed(1);
+      document.getElementById('queueLoadEstimate').innerText = `${revLoad}% review load`;
+      const netSavings = Math.round(2675 - (num - 0.20) * 1200);
+      document.getElementById('savingsEstimate').innerText = `+$${netSavings}.00 / 6k txns`;
+    }
+
+    function calculateReadiness() {
+      const cbs = document.querySelectorAll('#screenEvidence input[type=checkbox]');
+      let count = 0;
+      cbs.forEach(cb => { if (cb.checked) count++; });
+      const score = Math.round((count / cbs.length) * 100);
+      document.getElementById('readinessScoreText').innerText = score + '%';
+      document.getElementById('readinessCircle').setAttribute('stroke-dasharray', `${score}, 100`);
+    }
+
+    function triggerAction(actionName) {
+      const memo = document.getElementById('memoContainer');
+      memo.classList.remove('hidden');
+      showToast(`Executed '${actionName}' successfully`);
+    }
+
+    function updateCostMatrix(invCost, penalty) {
+      if (invCost) document.getElementById('txtInvCost').innerText = `$${invCost}.00`;
+      if (penalty) document.getElementById('txtPenaltyFee').innerText = `$${penalty}`;
+      const total = (1767 + (invCost ? invCost * 1.5 : 0)).toFixed(2);
+      document.getElementById('totalCostDisplay').innerText = `$${total}`;
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('actionToast');
+      document.getElementById('toastMsg').innerText = msg;
+      toast.classList.remove('-translate-y-24');
+      toast.classList.add('translate-y-0');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0');
+        toast.classList.add('-translate-y-24');
+      }, 2500);
+    }
+
+    async function fetchLiveTelemetry() {
+      try {
+        const res = await fetch('http://localhost:8000/api/v1/telemetry');
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('backendStatusTag').innerText = 'BACKEND CONNECTED';
+          showToast('Live telemetry refreshed from API');
+        }
+      } catch (err) {
+        showToast('Running on local intelligence core');
+      }
+    }
+
+    // Initialize 3D on load
+    window.addEventListener('DOMContentLoaded', () => {
+      initIsometricCore();
+      fetchLiveTelemetry();
+    });
+  </script>
+</body>
+</html>

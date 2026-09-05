@@ -26,6 +26,7 @@ import numpy as np
 import pandas as pd
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
 from src.ai.responder import GroundedCaseResponder
@@ -139,6 +140,16 @@ class CostMatrixRequest(BaseModel):
 # ────────────────────────────────────────────────────────────────────
 # API Endpoints
 # ────────────────────────────────────────────────────────────────────
+
+@app.get("/", response_class=HTMLResponse)
+def root_dashboard():
+    """Serve the 3D glassmorphic RiskForge AI dashboard."""
+    mobile_file = PROJECT_ROOT / "riskforge_mobile.html"
+    if mobile_file.exists():
+        with open(mobile_file, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    return HTMLResponse("<h1>Razorpay RiskForge AI</h1><p>Risk & Dispute Intelligence Platform active.</p>")
+
 
 @app.get("/api/v1/health")
 def health_check():
