@@ -8,7 +8,7 @@
 - **Explainability Engine:** TreeSHAP (`shap.TreeExplainer`) for fast per-prediction attribution.
 - **Verification Engine:** Deterministic Rule Registry (6 auditable rule checks).
 - **Decision Engine:** Deterministic Multi-Signal Fusion Matrix with Cost Optimization.
-- **License:** Proprietary / Razorpay Buildathon Submission (Defense-Only)
+- **License:** Proprietary / Enterprise Defense-Only
 
 ---
 

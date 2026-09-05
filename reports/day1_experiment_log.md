@@ -14,7 +14,7 @@
 | **Val (15%)** | 6,000 | 2026-02-12 08:13:28.337242732 | 2026-02-21 10:57:29.365429724 | 145 | 2.42% |
 | **Frozen Test (15%)** | 6,000 | 2026-02-21 11:02:32.031124202 | 2026-03-02 10:35:07.833662134 | 147 | 2.45% |
 
-*Note: In compliance with buildathon rules, the Frozen Test partition remains untouched and will only be evaluated once during Day 4.*
+*Note: In compliance with strict evaluation protocols, the Frozen Test partition remains untouched and will only be evaluated once during final model validation.*
 
 ---
 
