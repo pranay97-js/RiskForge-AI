@@ -1,0 +1,14 @@
+-r requirements.txt
+
+# Visualization & Local Dashboard
+matplotlib>=3.9.0
+plotly>=5.22.0
+streamlit>=1.37.0
+
+# Scientific & Explainability Stack
+scipy>=1.14.0
+shap>=0.46.0
+
+# Testing & CI
+pytest>=8.3.0
+

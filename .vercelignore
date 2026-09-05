@@ -1,0 +1,14 @@
+# Version Control & CI
+.git
+.github
+.pytest_cache
+
+# Local Artifacts & Testing
+tests
+reports
+data
+evaluation
+scratch
+*.log
+streamlit_app.py
+api

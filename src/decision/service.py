@@ -56,9 +56,15 @@ class RiskDecisionService:
         amount = float(transaction.get("amount", 0.0))
         txn_id = str(transaction.get("transaction_id", "TXN_UNKNOWN"))
 
+        txn_copy = dict(transaction)
+        if "timestamp" not in txn_copy or not txn_copy["timestamp"]:
+            from datetime import datetime
+            txn_copy["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         # 1. ML Scoring
-        df = pd.DataFrame([transaction])
+        df = pd.DataFrame([txn_copy])
         ml_prob = float(self.predictor.predict_proba(df)[0])
+
 
         # 2. Rule Evaluation
         # Pass enriched feature dict to rules, preserving explicit transaction inputs

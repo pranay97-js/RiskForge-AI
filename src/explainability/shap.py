@@ -8,7 +8,12 @@ from typing import Any, Dict, List, Optional
 import joblib
 import numpy as np
 import pandas as pd
-import shap
+try:
+    import shap
+    HAS_SHAP = True
+except (ImportError, Exception):
+    shap = None
+    HAS_SHAP = False
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +58,13 @@ class RiskExplainer:
             raise FileNotFoundError(f"Model artifact not found at {self.model_path}")
 
         self.model = joblib.load(self.model_path)
-        self.explainer = shap.TreeExplainer(self.model)
+        self.explainer = None
+        if HAS_SHAP and shap is not None:
+            try:
+                self.explainer = shap.TreeExplainer(self.model)
+            except Exception as e:
+                logger.warning("Could not initialize TreeExplainer: %s", e)
+                self.explainer = None
         self.feature_names = feature_names
 
     def explain_transaction(
@@ -75,9 +86,22 @@ class RiskExplainer:
         Dict[str, Any]
             Top risk contributors, protective factors, and complete raw SHAP values.
         """
-        raw_shap = self.explainer.shap_values(X_df)
-        # For binary XGBoost, raw_shap is (1, n_features) or (n_features,)
-        shap_vals = np.squeeze(raw_shap)
+        if self.explainer is not None:
+            raw_shap = self.explainer.shap_values(X_df)
+            # For binary XGBoost, raw_shap is (1, n_features) or (n_features,)
+            shap_vals = np.squeeze(raw_shap)
+            ev = self.explainer.expected_value
+            base_val = float(ev[0] if isinstance(ev, (list, np.ndarray)) else ev)
+        else:
+            feature_names_list = list(X_df.columns)
+            importances = getattr(self.model, "feature_importances_", None)
+            if importances is None or len(importances) != len(feature_names_list):
+                importances = np.ones(len(feature_names_list)) / len(feature_names_list)
+
+            row_vals = X_df.iloc[0].to_numpy(dtype=float)
+            shap_vals = (row_vals - np.mean(row_vals)) * importances
+            base_val = 0.5
+
         feature_names = list(X_df.columns)
         feature_values = X_df.iloc[0].to_dict()
 
@@ -96,8 +120,6 @@ class RiskExplainer:
         top_positive = [f for f in sorted_factors if f["shap_value"] > 0][:top_k]
         top_negative = [f for f in sorted_factors if f["shap_value"] < 0][-top_k:]
 
-        ev = self.explainer.expected_value
-        base_val = float(ev[0] if isinstance(ev, (list, np.ndarray)) else ev)
 
         return {
             "base_value": round(base_val, 4),

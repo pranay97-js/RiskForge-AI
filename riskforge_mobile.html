@@ -943,7 +943,7 @@
 
     async function fetchLiveTelemetry() {
       try {
-        const res = await fetch('http://localhost:8000/api/v1/telemetry');
+        const res = await fetch('/api/v1/telemetry');
         if (res.ok) {
           const data = await res.json();
           document.getElementById('backendStatusTag').innerText = 'BACKEND CONNECTED';
