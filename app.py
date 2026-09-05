@@ -151,17 +151,25 @@ class CostMatrixRequest(BaseModel):
 # ────────────────────────────────────────────────────────────────────
 
 @app.get("/", response_class=HTMLResponse)
+@app.get("/website", response_class=HTMLResponse)
+def website_dashboard():
+    """Serve the finalized desktop website of RiskForge AI."""
+    website_file = PROJECT_ROOT / "index.html"
+    if website_file.exists():
+        with open(website_file, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    return HTMLResponse("<h1>Razorpay RiskForge AI</h1><p>Desktop Platform active.</p>")
+
+
 @app.get("/app", response_class=HTMLResponse)
 @app.get("/mobile", response_class=HTMLResponse)
-@app.get("/website", response_class=HTMLResponse)
-def root_dashboard():
-    """Serve the finalized 3D glassmorphic RiskForge AI platform."""
-    for filename in ["index.html", "riskforge_mobile.html"]:
-        candidate = PROJECT_ROOT / filename
-        if candidate.exists():
-            with open(candidate, "r", encoding="utf-8") as f:
-                return HTMLResponse(content=f.read())
-    return HTMLResponse("<h1>Razorpay RiskForge AI</h1><p>Risk & Dispute Intelligence Platform active.</p>")
+def mobile_dashboard():
+    """Serve the mobile app version of RiskForge AI."""
+    mobile_file = PROJECT_ROOT / "riskforge_mobile.html"
+    if mobile_file.exists():
+        with open(mobile_file, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    return HTMLResponse("<h1>Razorpay RiskForge AI</h1><p>Mobile App active.</p>")
 
 
 @app.get("/api/v1/health")
