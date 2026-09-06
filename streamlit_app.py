@@ -165,15 +165,59 @@ st.markdown(
         background-color: transparent !important;
     }}
 
-    /* Hide Streamlit Deploy button and header menu */
-    .stDeployButton, [data-testid="stAppDeployButton"], div[data-testid="stToolbar"], #MainMenu, header[data-testid="stHeader"] button {{
+    /* ONLY Hide Streamlit Deploy button, while strictly keeping sidebar hamburger and MainMenu intact */
+    .stDeployButton,
+    [data-testid="stAppDeployButton"],
+    button[data-testid="stAppDeployButton"],
+    div[data-testid="stAppDeployButton"] {{
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
         pointer-events: none !important;
         width: 0 !important;
         height: 0 !important;
-        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }}
+
+    /* Ensure the sidebar hamburger / collapse / expand button is ALWAYS visible, clickable and never gets lost */
+    [data-testid="collapsedControl"],
+    [data-testid="collapsedControl"] button,
+    [data-testid="stSidebarCollapseButton"],
+    button[data-testid="stSidebarCollapseButton"] {{
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        z-index: 999999 !important;
+    }}
+
+    /* Prominently style the hamburger button so it is easy to find and click at all times */
+    [data-testid="collapsedControl"] {{
+        position: fixed !important;
+        top: 0.65rem !important;
+        left: 0.75rem !important;
+        z-index: 999999 !important;
+        background-color: var(--card-bg, #0f172a) !important;
+        border: 1px solid var(--card-border, rgba(255, 255, 255, 0.2)) !important;
+        border-radius: 8px !important;
+        padding: 4px 6px !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+        transition: all 0.2s ease !important;
+    }}
+
+    [data-testid="collapsedControl"]:hover {{
+        background-color: var(--primary, #3b82f6) !important;
+        border-color: #60a5fa !important;
+    }}
+
+    [data-testid="collapsedControl"] button {{
+        color: var(--text-primary, #ffffff) !important;
+    }}
+
+    [data-testid="collapsedControl"] svg {{
+        fill: var(--text-primary, #ffffff) !important;
+        stroke: var(--text-primary, #ffffff) !important;
     }}
 
     /* Sidebar Styling */
