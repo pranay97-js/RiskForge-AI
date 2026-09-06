@@ -763,7 +763,7 @@ if nav_choice == "📱 RiskForge Mobile (Mobile 393x852 View)":
     if mobile_file.exists():
         with open(mobile_file, "r", encoding="utf-8") as f:
             mobile_html = f.read()
-        components.html(mobile_html, height=890, scrolling=True)
+        components.html(mobile_html, height=940, scrolling=True)
     else:
         st.error("riskforge_mobile.html file not found.")
 

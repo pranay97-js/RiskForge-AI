@@ -11,9 +11,9 @@
 
     :root {
       --bg-slate: #030712;
-      --card-glass: rgba(17, 24, 39, 0.65);
+      --card-glass: rgba(17, 24, 39, 0.72);
       --card-border: rgba(255, 255, 255, 0.08);
-      --card-border-glow: rgba(0, 210, 210, 0.3);
+      --card-border-glow: rgba(0, 210, 210, 0.35);
       --neon-cyan: #00d2d2;
       --neon-violet: #8b5cf6;
       --electric-amber: #f59e0b;
@@ -34,6 +34,7 @@
       overflow-x: hidden;
       margin: 0;
       padding: 0;
+      min-height: 100vh;
     }
 
     .font-mono {
@@ -88,8 +89,7 @@
     .mobile-viewport {
       width: 100%;
       max-width: 393px;
-      min-height: 852px;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0 auto;
       position: relative;
       background: #030712;
@@ -99,22 +99,37 @@
       box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 210, 210, 0.1);
       display: flex;
       flex-direction: column;
+      transition: max-width 0.3s ease;
     }
 
     @media (min-width: 640px) {
       body {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         min-height: 100vh;
         background: radial-gradient(circle at 50% 10%, #0c1538 0%, #030712 100%);
-        padding: 24px;
+        padding: 20px 16px;
       }
       .mobile-viewport {
-        border-radius: 48px;
+        border-radius: 44px;
+        min-height: 852px;
         height: 852px;
         border: 4px solid #1f2937;
         box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1), 0 30px 80px rgba(0, 0, 0, 0.9), 0 0 50px rgba(0, 210, 210, 0.15);
+      }
+    }
+
+    @media (max-width: 639px) {
+      .mobile-viewport {
+        max-width: 100% !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+      }
+      .device-switch-bar {
+        display: none !important;
       }
     }
 
@@ -159,7 +174,7 @@
       100% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 4px #10b981; }
     }
 
-    /* Sliders */
+    /* Custom Sliders */
     input[type=range] {
       -webkit-appearance: none;
       background: rgba(255, 255, 255, 0.1);
@@ -177,10 +192,25 @@
       cursor: pointer;
     }
 
+    /* Interactive Pills */
+    .filter-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .filter-pill.active {
+      background: rgba(0, 210, 210, 0.15);
+      border-color: rgba(0, 210, 210, 0.5);
+      color: #00d2d2;
+      font-weight: 700;
+    }
+
     /* 3D Canvas Container */
     #isometricCanvasContainer {
       width: 100%;
-      height: 170px;
+      height: 160px;
       position: relative;
       cursor: grab;
     }
@@ -188,17 +218,25 @@
 </head>
 <body class="selection:bg-cyan-500 selection:text-white">
 
-  <!-- Mobile Viewport Container (393 x 852 standard iPhone 15/16 Pro portrait) -->
-  <div class="mobile-viewport no-scrollbar">
+  <!-- Desktop Responsive Device Viewport Switcher -->
+  <div class="device-switch-bar mb-3 hidden sm:flex items-center justify-center gap-2">
+    <span class="text-[11px] font-mono text-slate-400 mr-1">Responsive Viewport:</span>
+    <button onclick="setDeviceWidth('393px')" id="btnWidth393" class="px-3 py-1 text-[11px] font-mono rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold transition-all">📱 iPhone (393px)</button>
+    <button onclick="setDeviceWidth('430px')" id="btnWidth430" class="px-3 py-1 text-[11px] font-mono rounded-full bg-slate-800 text-slate-400 border border-slate-700 hover:text-white transition-all">📲 Max (430px)</button>
+    <button onclick="setDeviceWidth('520px')" id="btnWidthFull" class="px-3 py-1 text-[11px] font-mono rounded-full bg-slate-800 text-slate-400 border border-slate-700 hover:text-white transition-all">💻 Wide (520px)</button>
+  </div>
 
-    <!-- Ambient Orbs -->
+  <!-- Mobile Viewport Container -->
+  <div id="viewportContainer" class="mobile-viewport no-scrollbar">
+
+    <!-- Ambient Glow Orbs -->
     <div class="glow-orb-cyan -top-12 -left-16"></div>
     <div class="glow-orb-violet top-1/3 -right-20"></div>
     <div class="glow-orb-amber -bottom-10 left-10"></div>
 
     <!-- 1. Top Dynamic Island & Status Bar -->
-    <div class="w-full pt-3 px-6 pb-2 flex justify-between items-center z-30 sticky top-0 bg-[#030712]/80 backdrop-blur-md">
-      <div class="text-[13px] font-semibold tracking-tight text-slate-300">9:41</div>
+    <div class="w-full pt-3 px-6 pb-2 flex justify-between items-center z-30 sticky top-0 bg-[#030712]/85 backdrop-blur-md">
+      <div id="clockDisplay" class="text-[13px] font-semibold tracking-tight text-slate-300">09:41</div>
       <!-- Dynamic Pill -->
       <div class="w-24 h-5 bg-black rounded-full flex items-center justify-center gap-1.5 border border-white/10 shadow-inner">
         <div class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></div>
@@ -230,22 +268,22 @@
       </div>
       <div class="flex items-center gap-2">
         <div class="pulse-dot"></div>
-        <span id="backendStatusTag" class="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-500/30">LIVE API</span>
+        <span id="backendStatusTag" class="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-500/30">ACTIVE</span>
       </div>
     </div>
 
     <!-- 2. Floating 3D Isometric Glowing Core -->
     <div class="px-5 pb-2 relative z-20">
-      <div class="glass-card p-3 relative overflow-hidden glass-card-glow">
+      <div class="glass-card p-2.5 relative overflow-hidden glass-card-glow">
         <div id="isometricCanvasContainer"></div>
         <!-- Overlay Badges -->
-        <div class="absolute bottom-3 left-4 right-4 flex justify-between items-center pointer-events-none">
-          <div class="bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1.5">
+        <div class="absolute bottom-2.5 left-4 right-4 flex justify-between items-center pointer-events-none">
+          <div class="bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 text-[10px] font-mono text-cyan-300 flex items-center gap-1.5">
             <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-            <span>VERIFICATION ENGINE ACTIVE</span>
+            <span id="coreStatusText">CORE SHIELD: ALLOW</span>
           </div>
-          <div class="bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 text-[10px] font-mono text-amber-300">
-            <span>&tau;* = 0.20</span>
+          <div class="bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 text-[10px] font-mono text-amber-300">
+            <span id="activeThresholdDisplay">&tau;* = 0.20</span>
           </div>
         </div>
       </div>
@@ -257,39 +295,53 @@
       <!-- ============================================================ -->
       <!-- SCREEN 1: LIVE RISK TELEMETRY -->
       <!-- ============================================================ -->
-      <div id="screenTelemetry" class="space-y-4">
+      <div id="screenTelemetry" class="space-y-3.5">
 
         <!-- Floating Key Metrics Cards -->
-        <div class="grid grid-cols-3 gap-2.5">
+        <div class="grid grid-cols-3 gap-2">
           <!-- Metric 1: Fraud Prevented -->
-          <div class="glass-card p-3 text-left relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-12 h-12 bg-cyan-500/10 rounded-bl-full pointer-events-none"></div>
+          <div class="glass-card p-2.5 text-left relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-10 h-10 bg-cyan-500/10 rounded-bl-full pointer-events-none"></div>
             <p class="text-[9px] font-mono font-semibold uppercase tracking-wider text-slate-400">Prevented</p>
-            <h3 class="text-base font-extrabold text-cyan-300 mt-0.5 tracking-tight">$428.5K</h3>
+            <h3 id="statPrevented" class="text-sm font-extrabold text-cyan-300 mt-0.5 tracking-tight">$428.5K</h3>
             <span class="text-[9px] font-semibold text-emerald-400 flex items-center gap-0.5 mt-0.5">
               &uarr; 32.4%
             </span>
           </div>
 
-          <!-- Metric 2: Verification Cost -->
-          <div class="glass-card p-3 text-left relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-12 h-12 bg-violet-500/10 rounded-bl-full pointer-events-none"></div>
-            <p class="text-[9px] font-mono font-semibold uppercase tracking-wider text-slate-400">Friction Cost</p>
-            <h3 class="text-base font-extrabold text-violet-300 mt-0.5 tracking-tight">$3.85K</h3>
+          <!-- Metric 2: Friction Cost -->
+          <div class="glass-card p-2.5 text-left relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-10 h-10 bg-violet-500/10 rounded-bl-full pointer-events-none"></div>
+            <p class="text-[9px] font-mono font-semibold uppercase tracking-wider text-slate-400">Friction</p>
+            <h3 id="statFriction" class="text-sm font-extrabold text-violet-300 mt-0.5 tracking-tight">$3.85K</h3>
             <span class="text-[9px] text-slate-400 mt-0.5 block font-mono">0.89% vol</span>
           </div>
 
           <!-- Metric 3: Active Threat Level -->
-          <div class="glass-card p-3 text-left relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-12 h-12 bg-amber-500/10 rounded-bl-full pointer-events-none"></div>
-            <p class="text-[9px] font-mono font-semibold uppercase tracking-wider text-slate-400">Threat Level</p>
-            <h3 class="text-base font-extrabold text-amber-400 mt-0.5 tracking-tight">ELEVATED</h3>
+          <div class="glass-card p-2.5 text-left relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-10 h-10 bg-amber-500/10 rounded-bl-full pointer-events-none"></div>
+            <p class="text-[9px] font-mono font-semibold uppercase tracking-wider text-slate-400">Threat</p>
+            <h3 id="statThreat" class="text-sm font-extrabold text-amber-400 mt-0.5 tracking-tight">ELEVATED</h3>
             <span class="text-[9px] text-amber-300/80 mt-0.5 block font-mono">Index 0.42</span>
           </div>
         </div>
 
+        <!-- Quick Simulator Banner Button -->
+        <div onclick="switchScreen('Simulator')" class="glass-card p-3 flex items-center justify-between cursor-pointer border-cyan-500/30 hover:border-cyan-400 transition-all bg-gradient-to-r from-cyan-950/40 to-blue-950/40">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300">
+              ⚡
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-white">Interactive Risk Simulator</h4>
+              <p class="text-[10px] text-cyan-300/80">Test live transactions, 3DS & SHAP scoring</p>
+            </div>
+          </div>
+          <span class="text-cyan-400 text-sm font-bold">&rarr;</span>
+        </div>
+
         <!-- Interactive Spline Trendline Chart Card -->
-        <div class="glass-card p-4">
+        <div class="glass-card p-3.5">
           <div class="flex justify-between items-center mb-2">
             <div>
               <h4 class="text-xs font-bold text-slate-200">Live Risk Telemetry Spline</h4>
@@ -302,7 +354,7 @@
           </div>
 
           <!-- SVG Dual-Spline Curve Chart -->
-          <div class="w-full h-32 relative">
+          <div class="w-full h-28 relative">
             <svg viewBox="0 0 320 120" class="w-full h-full overflow-visible">
               <defs>
                 <linearGradient id="cyanGrad" x1="0" y1="0" x2="0" y2="1">
@@ -315,22 +367,16 @@
                 </linearGradient>
               </defs>
 
-              <!-- Grid lines -->
               <line x1="0" y1="30" x2="320" y2="30" stroke="rgba(255,255,255,0.04)" stroke-dasharray="2,2"/>
               <line x1="0" y1="70" x2="320" y2="70" stroke="rgba(255,255,255,0.04)" stroke-dasharray="2,2"/>
               <line x1="0" y1="110" x2="320" y2="110" stroke="rgba(255,255,255,0.08)"/>
 
-              <!-- Area Under Legit Curve -->
               <path d="M 0,90 Q 60,30 120,65 T 240,40 T 320,70 L 320,110 L 0,110 Z" fill="url(#cyanGrad)"/>
-              <!-- Area Under Threat Curve -->
               <path d="M 0,105 Q 60,85 120,50 T 240,80 T 320,55 L 320,110 L 0,110 Z" fill="url(#amberGrad)"/>
 
-              <!-- Legit Spline Curve (Cyan) -->
               <path d="M 0,90 Q 60,30 120,65 T 240,40 T 320,70" fill="none" stroke="#00d2d2" stroke-width="2.5" stroke-linecap="round"/>
-              <!-- Threat Spline Curve (Amber) -->
               <path d="M 0,105 Q 60,85 120,50 T 240,80 T 320,55" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>
 
-              <!-- Interactive Highlight Node -->
               <circle cx="120" cy="50" r="5" fill="#f59e0b" stroke="#ffffff" stroke-width="2" class="animate-ping"/>
               <circle cx="120" cy="50" r="4" fill="#f59e0b" stroke="#ffffff" stroke-width="2"/>
             </svg>
@@ -348,19 +394,19 @@
         <div>
           <div class="flex justify-between items-center mb-2 px-1">
             <h4 class="text-xs font-bold text-slate-200">Live Threat Stream</h4>
-            <span class="text-[10px] font-mono text-cyan-400 cursor-pointer hover:underline" onclick="fetchLiveTelemetry()">Refresh</span>
+            <span class="text-[10px] font-mono text-cyan-400 cursor-pointer hover:underline" onclick="simulateNewIncoming()">+ Simulate New</span>
           </div>
 
           <div id="incomingFeedContainer" class="space-y-2">
             <!-- Feed Item 1 (High) -->
-            <div class="glass-card p-3 flex justify-between items-center hover:border-rose-500/50 cursor-pointer" onclick="inspectTxn('TXN_9042', 2499.00, 0.89, 'HIGH')">
+            <div class="glass-card p-3 flex justify-between items-center hover:border-rose-500/50 cursor-pointer transition-all" onclick="inspectTxn('TXN_9042', 2499.00, 0.89, 'HIGH', false, 'card', 'US')">
               <div class="flex items-center gap-2.5">
                 <div class="w-8 h-8 rounded-xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                 </div>
                 <div>
                   <div class="text-xs font-bold text-slate-200">Alex Vance <span class="text-[10px] font-mono text-slate-500">&bull; TXN_9042</span></div>
-                  <div class="text-[10px] text-slate-400">Card &bull; 4242 &bull; Electronics &bull; US IP</div>
+                  <div class="text-[10px] text-slate-400">Card &bull; 4242 &bull; Electronics &bull; US IP &bull; 3DS Failed</div>
                 </div>
               </div>
               <div class="text-right">
@@ -370,14 +416,14 @@
             </div>
 
             <!-- Feed Item 2 (Review) -->
-            <div class="glass-card p-3 flex justify-between items-center hover:border-amber-500/50 cursor-pointer" onclick="inspectTxn('TXN_9040', 1850.00, 0.62, 'REVIEW')">
+            <div class="glass-card p-3 flex justify-between items-center hover:border-amber-500/50 cursor-pointer transition-all" onclick="inspectTxn('TXN_9040', 1850.00, 0.62, 'REVIEW', true, 'card', 'SG')">
               <div class="flex items-center gap-2.5">
                 <div class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 </div>
                 <div>
                   <div class="text-xs font-bold text-slate-200">Elena Rostova <span class="text-[10px] font-mono text-slate-500">&bull; TXN_9040</span></div>
-                  <div class="text-[10px] text-slate-400">Card &bull; 8812 &bull; Gaming &bull; SG IP</div>
+                  <div class="text-[10px] text-slate-400">Card &bull; 8812 &bull; Gaming &bull; SG IP &bull; Velocity Spike</div>
                 </div>
               </div>
               <div class="text-right">
@@ -387,14 +433,14 @@
             </div>
 
             <!-- Feed Item 3 (Low) -->
-            <div class="glass-card p-3 flex justify-between items-center hover:border-emerald-500/50 cursor-pointer" onclick="inspectTxn('TXN_9041', 420.00, 0.14, 'LOW')">
+            <div class="glass-card p-3 flex justify-between items-center hover:border-emerald-500/50 cursor-pointer transition-all" onclick="inspectTxn('TXN_9041', 420.00, 0.14, 'LOW', true, 'upi', 'IN')">
               <div class="flex items-center gap-2.5">
                 <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 </div>
                 <div>
                   <div class="text-xs font-bold text-slate-200">Siddharth N. <span class="text-[10px] font-mono text-slate-500">&bull; TXN_9041</span></div>
-                  <div class="text-[10px] text-slate-400">UPI &bull; HDFC &bull; Groceries &bull; IN IP</div>
+                  <div class="text-[10px] text-slate-400">UPI &bull; HDFC &bull; Groceries &bull; IN IP &bull; 3DS OTP Passed</div>
                 </div>
               </div>
               <div class="text-right">
@@ -408,16 +454,134 @@
 
 
       <!-- ============================================================ -->
-      <!-- SCREEN 2: EXPLAINABLE AI (XAI) INSPECTOR -->
+      <!-- SCREEN 2: INTERACTIVE RISK SIMULATOR -->
       <!-- ============================================================ -->
-      <div id="screenXAI" class="space-y-4 hidden">
+      <div id="screenSimulator" class="space-y-3.5 hidden">
+        <!-- Preset Scenario Selector -->
+        <div class="glass-card p-3.5">
+          <span class="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-wider block mb-1.5">Quick Presets</span>
+          <div class="grid grid-cols-3 gap-1.5">
+            <button onclick="applyPreset('attack')" class="p-2 rounded-xl bg-rose-500/10 border border-rose-500/30 hover:border-rose-400 text-left">
+              <span class="text-[10px] font-bold text-rose-400 block">🚨 Takeover</span>
+              <span class="text-[9px] text-slate-400 block font-mono">$2,499</span>
+            </button>
+            <button onclick="applyPreset('velocity')" class="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 hover:border-amber-400 text-left">
+              <span class="text-[10px] font-bold text-amber-400 block">⚠️ Velocity</span>
+              <span class="text-[9px] text-slate-400 block font-mono">$580</span>
+            </button>
+            <button onclick="applyPreset('trusted')" class="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 hover:border-emerald-400 text-left">
+              <span class="text-[10px] font-bold text-emerald-400 block">✅ Trusted</span>
+              <span class="text-[9px] text-slate-400 block font-mono">$85</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Simulator Form Controls -->
+        <div class="glass-card p-3.5 space-y-3">
+          <!-- Amount Slider -->
+          <div>
+            <div class="flex justify-between items-center text-xs mb-1">
+              <span class="text-slate-300 font-medium">Transaction Amount ($)</span>
+              <span id="simAmountText" class="font-mono text-cyan-300 font-extrabold text-sm">$2,499.00</span>
+            </div>
+            <input type="range" id="simAmount" min="10" max="8000" step="25" value="2499" class="w-full" oninput="onSimInputChanged()">
+          </div>
+
+          <!-- 3DS Status Toggle -->
+          <div>
+            <span class="text-[11px] text-slate-300 font-medium block mb-1">3D-Secure 2.2 Status</span>
+            <div class="grid grid-cols-2 gap-2">
+              <button id="pill3dsTrue" onclick="setSim3DS(true)" class="filter-pill p-2 rounded-xl text-center text-xs font-semibold">
+                🛡️ 3DS Authenticated
+              </button>
+              <button id="pill3dsFalse" onclick="setSim3DS(false)" class="filter-pill active p-2 rounded-xl text-center text-xs font-semibold">
+                ⚠️ No 3DS / Bypass
+              </button>
+            </div>
+          </div>
+
+          <!-- Payment Method -->
+          <div>
+            <span class="text-[11px] text-slate-300 font-medium block mb-1">Payment Method</span>
+            <div class="grid grid-cols-4 gap-1.5 text-[11px]">
+              <button onclick="setSimMethod('card')" id="pmCard" class="filter-pill active py-1.5 rounded-lg text-center font-mono">Card</button>
+              <button onclick="setSimMethod('upi')" id="pmUpi" class="filter-pill py-1.5 rounded-lg text-center font-mono">UPI</button>
+              <button onclick="setSimMethod('netbanking')" id="pmNb" class="filter-pill py-1.5 rounded-lg text-center font-mono">NetBank</button>
+              <button onclick="setSimMethod('wallet')" id="pmWallet" class="filter-pill py-1.5 rounded-lg text-center font-mono">Wallet</button>
+            </div>
+          </div>
+
+          <!-- IP Location & Device -->
+          <div>
+            <span class="text-[11px] text-slate-300 font-medium block mb-1">IP Location & Device</span>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <select id="simCountry" class="bg-slate-900/80 border border-white/10 rounded-xl p-2 text-slate-200 text-xs font-mono outline-none" onchange="onSimInputChanged()">
+                <option value="US">US (High Geo Velocity)</option>
+                <option value="IN">IN (Domestic Normal)</option>
+                <option value="SG">SG (Cross-Border SG)</option>
+                <option value="PROXY">TOR / Proxy IP Node</option>
+              </select>
+              <select id="simDevice" class="bg-slate-900/80 border border-white/10 rounded-xl p-2 text-slate-200 text-xs font-mono outline-none" onchange="onSimInputChanged()">
+                <option value="mobile_ios">iPhone (iOS 18)</option>
+                <option value="mobile_android">Android (Samsung)</option>
+                <option value="desktop_windows">Windows Desktop</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Evaluate Button -->
+          <button onclick="runSimulation()" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/25 active:scale-95 transition-all">
+            <span>⚡</span>
+            <span>RUN TRI-SIGNAL DECISION INFERENCE</span>
+          </button>
+        </div>
+
+        <!-- Simulation Result Live Display -->
+        <div id="simResultBox" class="glass-card p-3.5 relative overflow-hidden border-rose-500/30">
+          <div class="flex justify-between items-center mb-2">
+            <div>
+              <span class="text-[9px] font-mono text-slate-400">CALCULATED OPERATIONAL STATE</span>
+              <h4 id="simDecisionTitle" class="text-sm font-extrabold text-rose-400">BLOCK & DEFLECT</h4>
+            </div>
+            <div class="text-right">
+              <span id="simRiskScoreText" class="text-base font-black font-mono text-rose-400">89.4%</span>
+              <span class="text-[9px] text-slate-400 block font-mono">Risk Probability</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 py-2 border-y border-white/5 text-xs">
+            <div>
+              <span class="text-[10px] text-slate-400">Expected Loss</span>
+              <div id="simExpectedLoss" class="font-mono font-bold text-rose-300">$2,799.00</div>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400">Triggered Rules</span>
+              <div id="simRuleCount" class="font-mono font-bold text-amber-300">2 Rules Flagged</div>
+            </div>
+          </div>
+
+          <div class="mt-2.5 flex items-center justify-between text-[11px]">
+            <span class="text-slate-400">Deep Drilldown:</span>
+            <div class="flex gap-2">
+              <button onclick="switchScreen('XAI')" class="text-cyan-400 font-bold hover:underline">SHAP Factors &rarr;</button>
+              <button onclick="switchScreen('Evidence')" class="text-emerald-400 font-bold hover:underline">Dispute Memo &rarr;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ============================================================ -->
+      <!-- SCREEN 3: EXPLAINABLE AI (XAI) INSPECTOR -->
+      <!-- ============================================================ -->
+      <div id="screenXAI" class="space-y-3.5 hidden">
         <!-- Drilldown Transaction Header -->
-        <div class="glass-card p-4 relative overflow-hidden">
+        <div class="glass-card p-3.5 relative overflow-hidden">
           <div class="flex justify-between items-start">
             <div>
               <span class="text-[10px] font-mono text-slate-400">ACTIVE INVESTIGATION</span>
               <h3 id="xaiTxnId" class="text-base font-bold font-mono text-white mt-0.5">TXN_9042</h3>
-              <p id="xaiTxnSub" class="text-[11px] text-slate-400 mt-0.5">Customer: Alex Vance &bull; Amount: $2,499.00</p>
+              <p id="xaiTxnSub" class="text-[11px] text-slate-400 mt-0.5">Amount: $2,499.00 &bull; Card &bull; US IP</p>
             </div>
             <span id="xaiRiskBadge" class="badge-high text-[10px] font-mono font-bold px-2.5 py-1 rounded-full">HIGH RISK 89%</span>
           </div>
@@ -430,87 +594,87 @@
             </div>
             <div>
               <span class="text-[10px] text-slate-400">Rule Severity Score</span>
-              <div class="text-sm font-bold font-mono text-amber-400">0.85 / 1.00</div>
+              <div id="xaiRuleSeverity" class="text-sm font-bold font-mono text-amber-400">0.85 / 1.00</div>
             </div>
           </div>
         </div>
 
         <!-- SHAP-Based Factor Attribution -->
-        <div class="glass-card p-4">
-          <div class="flex justify-between items-center mb-3">
+        <div class="glass-card p-3.5">
+          <div class="flex justify-between items-center mb-2.5">
             <h4 class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
               <span class="text-cyan-400">&bull;</span> SHAP Risk Drivers
             </h4>
             <span class="text-[9px] font-mono text-slate-400">TreeExplainer Model</span>
           </div>
 
-          <div class="space-y-3">
+          <div id="shapBarsContainer" class="space-y-2.5">
             <!-- Factor 1 -->
             <div>
               <div class="flex justify-between text-[11px] mb-1">
-                <span class="font-medium text-slate-300">IP Velocity Spike (6h Burst)</span>
-                <span class="font-mono text-rose-400 font-bold">+0.38</span>
+                <span id="shapFactor1Name" class="font-medium text-slate-300">IP Velocity Spike (6h Burst)</span>
+                <span id="shapFactor1Val" class="font-mono text-rose-400 font-bold">+0.38</span>
               </div>
               <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                <div class="bg-gradient-to-r from-amber-500 to-rose-500 h-full rounded-full" style="width: 76%"></div>
+                <div id="shapFactor1Bar" class="bg-gradient-to-r from-amber-500 to-rose-500 h-full rounded-full" style="width: 76%"></div>
               </div>
             </div>
 
             <!-- Factor 2 -->
             <div>
               <div class="flex justify-between text-[11px] mb-1">
-                <span class="font-medium text-slate-300">Proxy / Anonymous VPN Detected</span>
-                <span class="font-mono text-rose-400 font-bold">+0.29</span>
+                <span id="shapFactor2Name" class="font-medium text-slate-300">Proxy / Anonymous VPN Detected</span>
+                <span id="shapFactor2Val" class="font-mono text-rose-400 font-bold">+0.29</span>
               </div>
               <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                <div class="bg-gradient-to-r from-amber-500 to-rose-500 h-full rounded-full" style="width: 58%"></div>
+                <div id="shapFactor2Bar" class="bg-gradient-to-r from-amber-500 to-rose-500 h-full rounded-full" style="width: 58%"></div>
               </div>
             </div>
 
             <!-- Factor 3 -->
             <div>
               <div class="flex justify-between text-[11px] mb-1">
-                <span class="font-medium text-slate-300">Behavioral Amount Mismatch (4.8x)</span>
-                <span class="font-mono text-amber-400 font-bold">+0.24</span>
+                <span id="shapFactor3Name" class="font-medium text-slate-300">Behavioral Amount Mismatch (4.8x)</span>
+                <span id="shapFactor3Val" class="font-mono text-amber-400 font-bold">+0.24</span>
               </div>
               <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                <div class="bg-amber-500 h-full rounded-full" style="width: 48%"></div>
+                <div id="shapFactor3Bar" class="bg-amber-500 h-full rounded-full" style="width: 48%"></div>
               </div>
             </div>
 
             <!-- Factor 4 (Protective) -->
             <div>
               <div class="flex justify-between text-[11px] mb-1">
-                <span class="font-medium text-slate-300">Device Reputation Token</span>
-                <span class="font-mono text-emerald-400 font-bold">-0.15</span>
+                <span id="shapFactor4Name" class="font-medium text-slate-300">Device Reputation Token</span>
+                <span id="shapFactor4Val" class="font-mono text-emerald-400 font-bold">-0.15</span>
               </div>
               <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                <div class="bg-emerald-400 h-full rounded-full" style="width: 30%"></div>
+                <div id="shapFactor4Bar" class="bg-emerald-400 h-full rounded-full" style="width: 30%"></div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Cost-Benefit Trade-off Slider -->
-        <div class="glass-card p-4">
+        <div class="glass-card p-3.5">
           <div class="flex justify-between items-center mb-1">
             <h4 class="text-xs font-bold text-slate-200">Friction vs. Loss Prevention</h4>
             <span id="sliderValueText" class="text-[11px] font-mono text-cyan-400 font-bold">&tau; = 0.20</span>
           </div>
-          <p class="text-[10px] text-slate-400 mb-3">Balance customer drop-off friction against chargeback penalties</p>
+          <p class="text-[10px] text-slate-400 mb-2.5">Calibrate review threshold &tau; to balance customer friction with fraud deflection</p>
 
           <input type="range" id="tradeoffSlider" min="0.05" max="0.80" step="0.05" value="0.20" class="w-full" oninput="updateTradeoffSlider(this.value)">
 
           <div class="flex justify-between text-[9px] font-mono text-slate-500 mt-1">
-            <span>Aggressive (&tau;=0.05)</span>
-            <span>Balanced (&tau;=0.20)</span>
-            <span>Permissive (&tau;=0.80)</span>
+            <span>Aggressive (0.05)</span>
+            <span>Balanced (0.20)</span>
+            <span>Permissive (0.80)</span>
           </div>
 
           <!-- Dynamic Output Card -->
-          <div class="mt-3 p-2.5 rounded-xl bg-white/[0.03] border border-white/5 flex justify-between items-center text-xs">
+          <div class="mt-2.5 p-2 rounded-xl bg-white/[0.03] border border-white/5 flex justify-between items-center text-xs">
             <div>
-              <span class="text-[10px] text-slate-400 block">Projected Queue Friction</span>
+              <span class="text-[10px] text-slate-400 block">Queue Friction</span>
               <span id="queueLoadEstimate" class="font-mono font-bold text-slate-200">2.9% review load</span>
             </div>
             <div class="text-right">
@@ -523,11 +687,11 @@
 
 
       <!-- ============================================================ -->
-      <!-- SCREEN 3: EVIDENCE & REPRESENTMENT ENGINE -->
+      <!-- SCREEN 4: EVIDENCE & REPRESENTMENT ENGINE -->
       <!-- ============================================================ -->
-      <div id="screenEvidence" class="space-y-4 hidden">
+      <div id="screenEvidence" class="space-y-3.5 hidden">
         <!-- Network Readiness Gauge Card -->
-        <div class="glass-card p-4 relative overflow-hidden">
+        <div class="glass-card p-3.5 relative overflow-hidden">
           <div class="flex items-center justify-between">
             <div>
               <span class="text-[10px] font-mono text-slate-400">DISPUTE REPRESENTMENT</span>
@@ -535,63 +699,63 @@
               <p class="text-[10px] text-slate-400">Visa Compelling Evidence 3.0 Standard</p>
             </div>
             <!-- Circular Readiness Meter -->
-            <div class="relative w-16 h-16 flex items-center justify-center">
+            <div class="relative w-14 h-14 flex items-center justify-center">
               <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
                 <path class="text-slate-800" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                <path id="readinessCircle" class="text-cyan-400" stroke-dasharray="92, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                <path id="readinessCircle" class="text-cyan-400" stroke-dasharray="75, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
               </svg>
-              <span id="readinessScoreText" class="absolute text-xs font-mono font-extrabold text-cyan-300">92%</span>
+              <span id="readinessScoreText" class="absolute text-xs font-mono font-extrabold text-cyan-300">75%</span>
             </div>
           </div>
         </div>
 
         <!-- Auto-Compiled Evidence Checklist -->
-        <div class="glass-card p-4">
+        <div class="glass-card p-3.5">
           <h4 class="text-xs font-bold text-slate-200 mb-2">Auto-Compiled Evidence Package</h4>
-          <div class="space-y-2.5">
+          <div class="space-y-2">
             <label class="flex items-center justify-between text-xs p-2 rounded-xl bg-white/[0.02] border border-white/5 cursor-pointer">
               <span class="flex items-center gap-2 text-slate-300">
                 <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 Gateway Settlement & Payment ID
               </span>
-              <input type="checkbox" checked class="accent-cyan-400 w-4 h-4" onchange="calculateReadiness()">
+              <input id="chkProofPayment" type="checkbox" checked class="accent-cyan-400 w-4 h-4" onchange="calculateReadiness()">
             </label>
 
             <label class="flex items-center justify-between text-xs p-2 rounded-xl bg-white/[0.02] border border-white/5 cursor-pointer">
               <span class="flex items-center gap-2 text-slate-300">
                 <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                3DS 2.2 Frictionless OTP Log
+                3DS 2.2 Authentication Logs & OTP
               </span>
-              <input type="checkbox" checked class="accent-cyan-400 w-4 h-4" onchange="calculateReadiness()">
+              <input id="chkProof3ds" type="checkbox" checked class="accent-cyan-400 w-4 h-4" onchange="calculateReadiness()">
             </label>
 
             <label class="flex items-center justify-between text-xs p-2 rounded-xl bg-white/[0.02] border border-white/5 cursor-pointer">
               <span class="flex items-center gap-2 text-slate-300">
                 <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                Signed Courier Waybill (POD)
+                Signed Courier Proof of Delivery (POD)
               </span>
-              <input type="checkbox" checked class="accent-cyan-400 w-4 h-4" onchange="calculateReadiness()">
+              <input id="chkProofDelivery" type="checkbox" checked class="accent-cyan-400 w-4 h-4" onchange="calculateReadiness()">
             </label>
 
             <label class="flex items-center justify-between text-xs p-2 rounded-xl bg-white/[0.02] border border-white/5 cursor-pointer">
               <span class="flex items-center gap-2 text-slate-300">
                 <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                Customer Order Comms & Chat
+                Customer Order Comms & Verification Logs
               </span>
-              <input type="checkbox" class="accent-cyan-400 w-4 h-4" onchange="calculateReadiness()">
+              <input id="chkProofComm" type="checkbox" class="accent-cyan-400 w-4 h-4" onchange="calculateReadiness()">
             </label>
           </div>
         </div>
 
-        <!-- Action Buttons ("Biometric Challenge", "Auto-Deflect", "Accept Risk") -->
+        <!-- Action Buttons -->
         <div class="space-y-2">
-          <!-- 1. Auto-Deflect (Primary) -->
-          <button onclick="triggerAction('Auto-Deflect')" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 active:scale-95 transition-all">
+          <!-- Auto-Deflect Primary -->
+          <button onclick="triggerAction('Auto-Deflect')" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 active:scale-95 transition-all">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            Auto-Deflect (File Instant Dispute Defense)
+            Auto-Deflect (Generate Formal Dispute Memo)
           </button>
 
-          <!-- 2-Column Secondary Buttons -->
+          <!-- 2-Column Buttons -->
           <div class="grid grid-cols-2 gap-2">
             <button onclick="triggerAction('Biometric Challenge')" class="py-2.5 px-3 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/40 text-amber-300 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 004 11a7.96 7.96 0 00.99 3.868"/></svg>
@@ -606,18 +770,21 @@
         </div>
 
         <!-- Generated Memo Drawer -->
-        <div id="memoContainer" class="glass-card p-3 text-[11px] font-mono text-slate-300 bg-black/40 border border-cyan-500/20 max-h-36 overflow-y-auto hidden">
-          <p class="text-cyan-400 font-bold mb-1">[DEFENSE MEMO READY]</p>
-          <p id="memoContentText">Cardholder authenticated via 3D-Secure 2.2 OTP with courier delivery signature verified on 2026-03-01. Chargeback liability shift under Visa Core Rules Section 5.2.</p>
+        <div id="memoContainer" class="glass-card p-3 text-[11px] font-mono text-slate-300 bg-black/50 border border-cyan-500/30 max-h-48 overflow-y-auto">
+          <div class="flex justify-between items-center mb-1.5">
+            <span class="text-cyan-400 font-bold">[FORMAL DISPUTE REBUTTAL MEMO]</span>
+            <button onclick="copyMemoText()" class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 text-[10px] hover:bg-cyan-500/30">Copy Memo</button>
+          </div>
+          <p id="memoContentText" class="text-slate-300 leading-relaxed">Cardholder authenticated via 3D-Secure 2.2 OTP with courier delivery signature verified. Chargeback liability shifted under Visa Core Rules Section 5.2.</p>
         </div>
       </div>
 
 
       <!-- ============================================================ -->
-      <!-- SCREEN 4: COST-OPTIMIZATION SETTINGS -->
+      <!-- SCREEN 5: COST-OPTIMIZATION SETTINGS -->
       <!-- ============================================================ -->
-      <div id="screenCost" class="space-y-4 hidden">
-        <div class="glass-card p-4">
+      <div id="screenCost" class="space-y-3.5 hidden">
+        <div class="glass-card p-3.5">
           <h4 class="text-xs font-bold text-slate-200 mb-1">Cost-Optimization Matrix</h4>
           <p class="text-[10px] text-slate-400 mb-3">Adjust parameters to calibrate Bayesian threshold &tau;*</p>
 
@@ -643,7 +810,7 @@
         </div>
 
         <!-- Optimization Curve Breakdown -->
-        <div class="glass-card p-4">
+        <div class="glass-card p-3.5">
           <div class="flex justify-between items-center mb-2">
             <h4 class="text-xs font-bold text-slate-200">Bayesian Cost Frontier</h4>
             <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-500/30">Optimal &tau;* = 0.20</span>
@@ -668,47 +835,77 @@
 
     </div>
 
-    <!-- 3. Bottom Floating Mobile Navigation Dock (iOS Tab Bar Style) -->
-    <div class="fixed bottom-0 left-0 right-0 max-w-[393px] mx-auto px-4 pb-4 z-40">
-      <div class="glass-card px-3 py-2 flex justify-around items-center border border-white/10 shadow-2xl bg-[#030712]/90 backdrop-blur-2xl rounded-2xl">
+    <!-- 3. Bottom Floating Mobile Navigation Dock (5 Interactive Tabs) -->
+    <div class="fixed bottom-0 left-0 right-0 max-w-[393px] mx-auto px-3 pb-3 z-40" id="dockContainer">
+      <div class="glass-card px-2 py-2 flex justify-around items-center border border-white/10 shadow-2xl bg-[#030712]/95 backdrop-blur-2xl rounded-2xl">
         <!-- Tab 1: Telemetry -->
-        <button id="navBtnTelemetry" onclick="switchScreen('Telemetry')" class="flex flex-col items-center gap-1 text-cyan-400 transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-          <span class="text-[9px] font-semibold">Telemetry</span>
+        <button id="navBtnTelemetry" onclick="switchScreen('Telemetry')" class="flex flex-col items-center gap-0.5 text-cyan-400 transition-colors py-1 px-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          <span class="text-[8.5px] font-semibold">Feed</span>
         </button>
 
-        <!-- Tab 2: XAI Inspector -->
-        <button id="navBtnXAI" onclick="switchScreen('XAI')" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          <span class="text-[9px] font-semibold">XAI Drill</span>
+        <!-- Tab 2: Simulator -->
+        <button id="navBtnSimulator" onclick="switchScreen('Simulator')" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-200 transition-colors py-1 px-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span class="text-[8.5px] font-semibold">Simulate</span>
         </button>
 
-        <!-- Tab 3: Evidence -->
-        <button id="navBtnEvidence" onclick="switchScreen('Evidence')" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-          <span class="text-[9px] font-semibold">Evidence</span>
+        <!-- Tab 3: XAI Drill -->
+        <button id="navBtnXAI" onclick="switchScreen('XAI')" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-200 transition-colors py-1 px-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <span class="text-[8.5px] font-semibold">XAI</span>
         </button>
 
-        <!-- Tab 4: Cost Matrix -->
-        <button id="navBtnCost" onclick="switchScreen('Cost')" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
-          <span class="text-[9px] font-semibold">Settings</span>
+        <!-- Tab 4: Evidence -->
+        <button id="navBtnEvidence" onclick="switchScreen('Evidence')" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-200 transition-colors py-1 px-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span class="text-[8.5px] font-semibold">Evidence</span>
+        </button>
+
+        <!-- Tab 5: Cost Settings -->
+        <button id="navBtnCost" onclick="switchScreen('Cost')" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-200 transition-colors py-1 px-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          <span class="text-[8.5px] font-semibold">Settings</span>
         </button>
       </div>
     </div>
 
     <!-- Toast Notification Banner -->
-    <div id="actionToast" class="fixed top-14 left-0 right-0 max-w-[360px] mx-auto p-3 rounded-2xl bg-cyan-950/90 border border-cyan-400/40 text-cyan-200 text-xs font-semibold shadow-2xl flex items-center gap-2 z-50 transform -translate-y-24 transition-all duration-300 pointer-events-none">
+    <div id="actionToast" class="fixed top-12 left-0 right-0 max-w-[340px] mx-auto p-2.5 rounded-xl bg-cyan-950/95 border border-cyan-400/50 text-cyan-200 text-xs font-semibold shadow-2xl flex items-center gap-2 z-50 transform -translate-y-24 transition-all duration-300 pointer-events-none">
       <svg class="w-4 h-4 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
       <span id="toastMsg">Action executed.</span>
     </div>
 
   </div>
 
-  <!-- 4. Interactive Three.js 3D Isometric Glowing Core Implementation -->
+  <!-- Interactive JavaScript Engine -->
   <script>
+    // ────────────────────────────────────────────────────────────────────
+    // Responsive Device Switcher
+    // ────────────────────────────────────────────────────────────────────
+    function setDeviceWidth(width) {
+      const vp = document.getElementById('viewportContainer');
+      const dock = document.getElementById('dockContainer');
+      vp.style.maxWidth = width;
+      dock.style.maxWidth = width;
+
+      ['393', '430', 'Full'].forEach(id => {
+        const btn = document.getElementById('btnWidth' + id);
+        if (btn) {
+          btn.className = 'px-3 py-1 text-[11px] font-mono rounded-full bg-slate-800 text-slate-400 border border-slate-700 hover:text-white transition-all';
+        }
+      });
+      if (width === '393px') document.getElementById('btnWidth393').className = 'px-3 py-1 text-[11px] font-mono rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold transition-all';
+      if (width === '430px') document.getElementById('btnWidth430').className = 'px-3 py-1 text-[11px] font-mono rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold transition-all';
+      if (width === '520px') document.getElementById('btnWidthFull').className = 'px-3 py-1 text-[11px] font-mono rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold transition-all';
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // Interactive Three.js 3D Isometric Core
+    // ────────────────────────────────────────────────────────────────────
     let scene, camera, renderer, isometricGroup, centralCore, threatRing, particlesMesh;
     let targetColor = new THREE.Color(0x00d2d2);
+    let rotationSpeed = 0.015;
 
     function initIsometricCore() {
       const container = document.getElementById('isometricCanvasContainer');
@@ -717,7 +914,6 @@
 
       scene = new THREE.Scene();
 
-      // Isometric Orthographic / Close-Perspective Camera
       camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 1000);
       camera.position.set(18, 16, 22);
       camera.lookAt(0, 0, 0);
@@ -730,25 +926,20 @@
       isometricGroup = new THREE.Group();
       scene.add(isometricGroup);
 
-      // 1. Layered Isometric Base Platform (Obsidian Glass Block)
+      // Base Platform
       const baseGeo = new THREE.BoxGeometry(10, 0.8, 10);
-      const baseMat = new THREE.MeshStandardMaterial({
-        color: 0x0c1527,
-        roughness: 0.2,
-        metalness: 0.9,
-        wireframe: false
-      });
+      const baseMat = new THREE.MeshStandardMaterial({ color: 0x0c1527, roughness: 0.2, metalness: 0.9 });
       const baseMesh = new THREE.Mesh(baseGeo, baseMat);
       baseMesh.position.y = -2;
       isometricGroup.add(baseMesh);
 
-      // Base Neon Edge Glow
+      // Edge Glow
       const edges = new THREE.EdgesGeometry(baseGeo);
       const edgeMat = new THREE.LineBasicMaterial({ color: 0x00d2d2, linewidth: 2 });
       const edgeLines = new THREE.LineSegments(edges, edgeMat);
       baseMesh.add(edgeLines);
 
-      // 2. Central Floating Glowing Core (Rotating Isometric Diamond/Octahedron)
+      // Central Floating Diamond Core
       const coreGeo = new THREE.OctahedronGeometry(2.4, 0);
       const coreMat = new THREE.MeshStandardMaterial({
         color: 0x00d2d2,
@@ -762,26 +953,20 @@
       centralCore.position.y = 0.5;
       isometricGroup.add(centralCore);
 
-      // Inner Core Solid
-      const innerCoreGeo = new THREE.BoxGeometry(1.6, 1.6, 1.6);
-      const innerCoreMat = new THREE.MeshStandardMaterial({
-        color: 0xffffff,
-        emissive: 0x00d2d2,
-        emissiveIntensity: 0.8,
-        roughness: 0.3
-      });
+      const innerCoreGeo = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+      const innerCoreMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x00d2d2, emissiveIntensity: 0.8, roughness: 0.3 });
       const innerCore = new THREE.Mesh(innerCoreGeo, innerCoreMat);
       centralCore.add(innerCore);
 
-      // 3. Floating Orbital Threat Ring
+      // Floating Orbital Threat Ring
       const ringGeo = new THREE.TorusGeometry(4.6, 0.08, 16, 64);
       const ringMat = new THREE.MeshBasicMaterial({ color: 0x8b5cf6, transparent: true, opacity: 0.8 });
       threatRing = new THREE.Mesh(ringGeo, ringMat);
       threatRing.rotation.x = Math.PI / 3;
       isometricGroup.add(threatRing);
 
-      // 4. Ambient Floating Particle Dust
-      const partCount = 45;
+      // Ambient Floating Particles
+      const partCount = 40;
       const partGeo = new THREE.BufferGeometry();
       const posArr = new Float32Array(partCount * 3);
       for (let i = 0; i < partCount * 3; i += 3) {
@@ -795,9 +980,7 @@
       isometricGroup.add(particlesMesh);
 
       // Lighting
-      const ambLight = new THREE.AmbientLight(0xffffff, 0.7);
-      scene.add(ambLight);
-
+      scene.add(new THREE.AmbientLight(0xffffff, 0.7));
       const dirLight = new THREE.DirectionalLight(0x00d2d2, 1.5);
       dirLight.position.set(10, 20, 10);
       scene.add(dirLight);
@@ -806,7 +989,7 @@
       purpleLight.position.set(-10, 5, -10);
       scene.add(purpleLight);
 
-      // Interaction listeners
+      // Interactive mouse tilt
       let mouseX = 0, mouseY = 0;
       container.addEventListener('mousemove', (e) => {
         const rect = container.getBoundingClientRect();
@@ -820,31 +1003,26 @@
         requestAnimationFrame(animate);
         const elapsedTime = clock.getElapsedTime();
 
-        // Levitation
-        centralCore.position.y = 0.5 + Math.sin(elapsedTime * 2) * 0.25;
-        centralCore.rotation.y += 0.015;
-        centralCore.rotation.x += 0.008;
+        centralCore.position.y = 0.5 + Math.sin(elapsedTime * 2) * 0.22;
+        centralCore.rotation.y += rotationSpeed;
+        centralCore.rotation.x += rotationSpeed * 0.5;
 
-        // Rings rotation
         threatRing.rotation.z -= 0.012;
         threatRing.rotation.y += 0.006;
-
-        // Particles drift
         particlesMesh.rotation.y += 0.002;
 
-        // Gyroscope tilt
         isometricGroup.rotation.y = mouseX;
-        isometricGroup.rotation.x = mouseY * 0.5;
+        isometricGroup.rotation.x = mouseY * 0.4;
 
-        // Smooth Color Transition
-        centralCore.material.color.lerp(targetColor, 0.05);
-        centralCore.material.emissive.lerp(targetColor, 0.05);
+        centralCore.material.color.lerp(targetColor, 0.06);
+        centralCore.material.emissive.lerp(targetColor, 0.06);
 
         renderer.render(scene, camera);
       }
       animate();
 
       window.addEventListener('resize', () => {
+        if (!container || !renderer) return;
         const w = container.clientWidth;
         const h = container.clientHeight;
         camera.aspect = w / h;
@@ -853,79 +1031,355 @@
       });
     }
 
-    // Function to change 3D core color based on risk
     function update3DCoreColor(state) {
       if (!centralCore) return;
-      if (state === 'HIGH') {
-        targetColor = new THREE.Color(0xf43f5e); // Neon Crimson
+      const statusTag = document.getElementById('coreStatusText');
+      if (state === 'HIGH' || state === 'BLOCK') {
+        targetColor = new THREE.Color(0xf43f5e);
+        rotationSpeed = 0.035;
+        if (statusTag) statusTag.innerText = 'CORE SHIELD: DEFLECT (BLOCK)';
       } else if (state === 'REVIEW') {
-        targetColor = new THREE.Color(0xf59e0b); // Electric Amber
+        targetColor = new THREE.Color(0xf59e0b);
+        rotationSpeed = 0.022;
+        if (statusTag) statusTag.innerText = 'CORE SHIELD: 3DS STEP-UP';
       } else {
-        targetColor = new THREE.Color(0x00d2d2); // Neon Cyan
+        targetColor = new THREE.Color(0x00d2d2);
+        rotationSpeed = 0.015;
+        if (statusTag) statusTag.innerText = 'CORE SHIELD: VERIFIED (ALLOW)';
       }
     }
 
     // ────────────────────────────────────────────────────────────────────
-    // Screen Navigation & Interactions
+    // Screen Navigation
     // ────────────────────────────────────────────────────────────────────
     function switchScreen(screenName) {
-      const screens = ['Telemetry', 'XAI', 'Evidence', 'Cost'];
+      const screens = ['Telemetry', 'Simulator', 'XAI', 'Evidence', 'Cost'];
       screens.forEach(s => {
         const el = document.getElementById('screen' + s);
         const btn = document.getElementById('navBtn' + s);
         if (s === screenName) {
-          el.classList.remove('hidden');
-          btn.classList.add('text-cyan-400');
-          btn.classList.remove('text-slate-400');
+          if (el) el.classList.remove('hidden');
+          if (btn) {
+            btn.classList.add('text-cyan-400');
+            btn.classList.remove('text-slate-400');
+          }
         } else {
-          el.classList.add('hidden');
-          btn.classList.remove('text-cyan-400');
-          btn.classList.add('text-slate-400');
+          if (el) el.classList.add('hidden');
+          if (btn) {
+            btn.classList.remove('text-cyan-400');
+            btn.classList.add('text-slate-400');
+          }
         }
       });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function inspectTxn(id, amount, score, band) {
+    // ────────────────────────────────────────────────────────────────────
+    // Active Transaction State & Inspection
+    // ────────────────────────────────────────────────────────────────────
+    let currentTxn = {
+      id: 'TXN_9042',
+      amount: 2499.00,
+      score: 0.894,
+      band: 'HIGH',
+      is3ds: false,
+      method: 'card',
+      country: 'US'
+    };
+
+    function inspectTxn(id, amount, score, band, is3ds, method, country) {
+      currentTxn = { id, amount, score, band, is3ds, method, country };
+      
       document.getElementById('xaiTxnId').innerText = id;
-      document.getElementById('xaiTxnSub').innerText = `Amount: $${amount.toFixed(2)}`;
+      document.getElementById('xaiTxnSub').innerText = `Amount: $${amount.toFixed(2)} \u2022 ${method.toUpperCase()} \u2022 ${country} IP \u2022 3DS: ${is3ds ? 'Passed' : 'Bypass'}`;
+      
       const badge = document.getElementById('xaiRiskBadge');
       badge.innerText = `${band} RISK ${(score * 100).toFixed(0)}%`;
       badge.className = band === 'HIGH' ? 'badge-high' : (band === 'REVIEW' ? 'badge-review' : 'badge-low');
       badge.classList.add('text-[10px]', 'font-mono', 'font-bold', 'px-2.5', 'py-1', 'rounded-full');
 
-      document.getElementById('xaiExpectedLoss').innerText = `$${(amount + 300).toFixed(2)}`;
+      const expectedLoss = (amount * score + 300).toFixed(2);
+      document.getElementById('xaiExpectedLoss').innerText = `$${expectedLoss}`;
+      document.getElementById('xaiRuleSeverity').innerText = band === 'HIGH' ? '0.85 / 1.00' : (band === 'REVIEW' ? '0.50 / 1.00' : '0.10 / 1.00');
+
+      updateShapDrivers(band, amount, is3ds, country);
       update3DCoreColor(band);
+      updateMemoContent();
       switchScreen('XAI');
-      showToast(`Inspecting transaction ${id}`);
+      showToast(`Loaded ${id} telemetry into XAI Inspector`);
     }
 
+    function updateShapDrivers(band, amount, is3ds, country) {
+      const f1Name = document.getElementById('shapFactor1Name');
+      const f1Val = document.getElementById('shapFactor1Val');
+      const f1Bar = document.getElementById('shapFactor1Bar');
+
+      const f2Name = document.getElementById('shapFactor2Name');
+      const f2Val = document.getElementById('shapFactor2Val');
+      const f2Bar = document.getElementById('shapFactor2Bar');
+
+      if (band === 'HIGH') {
+        f1Name.innerText = country === 'PROXY' ? 'Anonymous TOR Proxy Node' : 'High Cross-Border Velocity';
+        f1Val.innerText = '+0.42';
+        f1Bar.style.width = '84%';
+
+        f2Name.innerText = !is3ds ? 'Bypassed 3DS 2.2 Challenge' : 'Amount Deviation (5.2x avg)';
+        f2Val.innerText = '+0.31';
+        f2Bar.style.width = '62%';
+      } else if (band === 'REVIEW') {
+        f1Name.innerText = 'Card Burst Frequency (6h window)';
+        f1Val.innerText = '+0.26';
+        f1Bar.style.width = '52%';
+
+        f2Name.innerText = 'New Merchant Category Pair';
+        f2Val.innerText = '+0.19';
+        f2Bar.style.width = '38%';
+      } else {
+        f1Name.innerText = 'Verified Customer Historical Tenure';
+        f1Val.innerText = '-0.38';
+        f1Val.className = 'font-mono text-emerald-400 font-bold';
+        f1Bar.style.width = '76%';
+        f1Bar.className = 'bg-emerald-500 h-full rounded-full';
+
+        f2Name.innerText = 'Frictionless 3DS Verified Signature';
+        f2Val.innerText = '-0.24';
+        f2Val.className = 'font-mono text-emerald-400 font-bold';
+        f2Bar.style.width = '48%';
+        f2Bar.className = 'bg-emerald-400 h-full rounded-full';
+      }
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // Real-Time Simulator Logic
+    // ────────────────────────────────────────────────────────────────────
+    let simState = {
+      amount: 2499,
+      is3ds: false,
+      method: 'card',
+      country: 'US',
+      device: 'mobile_ios'
+    };
+
+    function onSimInputChanged() {
+      simState.amount = parseFloat(document.getElementById('simAmount').value);
+      document.getElementById('simAmountText').innerText = `$${simState.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+      simState.country = document.getElementById('simCountry').value;
+      simState.device = document.getElementById('simDevice').value;
+    }
+
+    function setSim3DS(val) {
+      simState.is3ds = val;
+      const btnTrue = document.getElementById('pill3dsTrue');
+      const btnFalse = document.getElementById('pill3dsFalse');
+      if (val) {
+        btnTrue.classList.add('active');
+        btnFalse.classList.remove('active');
+      } else {
+        btnFalse.classList.add('active');
+        btnTrue.classList.remove('active');
+      }
+    }
+
+    function setSimMethod(method) {
+      simState.method = method;
+      ['pmCard', 'pmUpi', 'pmNb', 'pmWallet'].forEach(id => {
+        document.getElementById(id).classList.remove('active');
+      });
+      if (method === 'card') document.getElementById('pmCard').classList.add('active');
+      if (method === 'upi') document.getElementById('pmUpi').classList.add('active');
+      if (method === 'netbanking') document.getElementById('pmNb').classList.add('active');
+      if (method === 'wallet') document.getElementById('pmWallet').classList.add('active');
+    }
+
+    function applyPreset(type) {
+      if (type === 'attack') {
+        document.getElementById('simAmount').value = 2499;
+        setSim3DS(false);
+        setSimMethod('card');
+        document.getElementById('simCountry').value = 'US';
+        showToast('Preset applied: High-Risk Card Takeover');
+      } else if (type === 'velocity') {
+        document.getElementById('simAmount').value = 580;
+        setSim3DS(true);
+        setSimMethod('card');
+        document.getElementById('simCountry').value = 'SG';
+        showToast('Preset applied: Velocity Anomaly');
+      } else {
+        document.getElementById('simAmount').value = 85;
+        setSim3DS(true);
+        setSimMethod('upi');
+        document.getElementById('simCountry').value = 'IN';
+        showToast('Preset applied: Trusted Domestic Customer');
+      }
+      onSimInputChanged();
+      runSimulation();
+    }
+
+    function runSimulation() {
+      onSimInputChanged();
+
+      // Tri-Signal Bayesian Scoring Math
+      let riskProb = 0.08;
+      if (simState.amount > 1000) riskProb += 0.28;
+      if (simState.amount > 3000) riskProb += 0.25;
+      if (!simState.is3ds) riskProb += 0.35;
+      if (simState.country === 'PROXY') riskProb += 0.38;
+      if (simState.country === 'US') riskProb += 0.15;
+      if (simState.method === 'upi' && simState.is3ds) riskProb -= 0.18;
+      riskProb = Math.min(0.98, Math.max(0.02, riskProb));
+
+      let band = 'LOW';
+      let decision = 'ALLOW & SETTLE';
+      let ruleCount = 0;
+
+      if (riskProb >= 0.70) {
+        band = 'HIGH';
+        decision = 'BLOCK & DEFLECT';
+        ruleCount = (!simState.is3ds ? 1 : 0) + (simState.amount > 1000 ? 1 : 0) + (simState.country === 'PROXY' ? 1 : 0);
+      } else if (riskProb >= 0.30) {
+        band = 'REVIEW';
+        decision = 'BIOMETRIC 3DS STEP-UP';
+        ruleCount = 1;
+      } else {
+        band = 'LOW';
+        decision = 'ALLOW & SETTLE';
+        ruleCount = 0;
+      }
+
+      const expectedLoss = (simState.amount * riskProb + (riskProb > 0.5 ? 300 : 50)).toFixed(2);
+
+      // Update UI elements
+      const decTitle = document.getElementById('simDecisionTitle');
+      const scoreTxt = document.getElementById('simRiskScoreText');
+      const box = document.getElementById('simResultBox');
+
+      decTitle.innerText = decision;
+      scoreTxt.innerText = `${(riskProb * 100).toFixed(1)}%`;
+      document.getElementById('simExpectedLoss').innerText = `$${expectedLoss}`;
+      document.getElementById('simRuleCount').innerText = `${ruleCount} Rule${ruleCount === 1 ? '' : 's'} Flagged`;
+
+      if (band === 'HIGH') {
+        decTitle.className = 'text-sm font-extrabold text-rose-400';
+        scoreTxt.className = 'text-base font-black font-mono text-rose-400';
+        box.className = 'glass-card p-3.5 relative overflow-hidden border-rose-500/40 shadow-rose-950/30';
+      } else if (band === 'REVIEW') {
+        decTitle.className = 'text-sm font-extrabold text-amber-400';
+        scoreTxt.className = 'text-base font-black font-mono text-amber-400';
+        box.className = 'glass-card p-3.5 relative overflow-hidden border-amber-500/40 shadow-amber-950/30';
+      } else {
+        decTitle.className = 'text-sm font-extrabold text-emerald-400';
+        scoreTxt.className = 'text-base font-black font-mono text-emerald-400';
+        box.className = 'glass-card p-3.5 relative overflow-hidden border-emerald-500/40 shadow-emerald-950/30';
+      }
+
+      // Sync with 3D Core
+      update3DCoreColor(band);
+
+      // Update Active Txn
+      currentTxn = {
+        id: `TXN_SIM_${Math.floor(1000 + Math.random() * 9000)}`,
+        amount: simState.amount,
+        score: riskProb,
+        band: band,
+        is3ds: simState.is3ds,
+        method: simState.method,
+        country: simState.country
+      };
+
+      document.getElementById('xaiTxnId').innerText = currentTxn.id;
+      document.getElementById('xaiTxnSub').innerText = `Amount: $${simState.amount.toFixed(2)} \u2022 ${simState.method.toUpperCase()} \u2022 ${simState.country} IP`;
+      document.getElementById('xaiExpectedLoss').innerText = `$${expectedLoss}`;
+      updateShapDrivers(band, simState.amount, simState.is3ds, simState.country);
+      updateMemoContent();
+
+      showToast(`Inference completed: ${decision}`);
+    }
+
+    function simulateNewIncoming() {
+      const randomAmounts = [320, 1450, 4890, 85, 2150];
+      const randomCountries = ['IN', 'SG', 'US', 'PROXY'];
+      const amt = randomAmounts[Math.floor(Math.random() * randomAmounts.length)];
+      const c = randomCountries[Math.floor(Math.random() * randomCountries.length)];
+      const id = `TXN_${Math.floor(9000 + Math.random() * 999)}`;
+      const is3ds = amt < 500;
+      const score = amt > 1000 ? 0.84 : (amt > 400 ? 0.58 : 0.12);
+      const band = score > 0.7 ? 'HIGH' : (score > 0.3 ? 'REVIEW' : 'LOW');
+
+      inspectTxn(id, amt, score, band, is3ds, 'card', c);
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // Evidence & Rebuttal Memo Generator
+    // ────────────────────────────────────────────────────────────────────
+    function calculateReadiness() {
+      const cbs = [
+        document.getElementById('chkProofPayment'),
+        document.getElementById('chkProof3ds'),
+        document.getElementById('chkProofDelivery'),
+        document.getElementById('chkProofComm')
+      ];
+      let checked = 0;
+      cbs.forEach(cb => { if (cb && cb.checked) checked++; });
+      const score = Math.round((checked / cbs.length) * 100);
+
+      document.getElementById('readinessScoreText').innerText = score + '%';
+      document.getElementById('readinessCircle').setAttribute('stroke-dasharray', `${score}, 100`);
+
+      const circle = document.getElementById('readinessCircle');
+      if (score >= 75) {
+        circle.setAttribute('class', 'text-cyan-400');
+      } else if (score >= 50) {
+        circle.setAttribute('class', 'text-amber-400');
+      } else {
+        circle.setAttribute('class', 'text-rose-400');
+      }
+      updateMemoContent();
+    }
+
+    function updateMemoContent() {
+      const memo = document.getElementById('memoContentText');
+      if (!memo) return;
+      const is3ds = document.getElementById('chkProof3ds') ? document.getElementById('chkProof3ds').checked : currentTxn.is3ds;
+      const isDeliv = document.getElementById('chkProofDelivery') ? document.getElementById('chkProofDelivery').checked : true;
+      const dateStr = new Date().toISOString().split('T')[0];
+
+      memo.innerText = `REPRESENTMENT PACKAGE FOR ${currentTxn.id} (DISPUTED AMOUNT: $${currentTxn.amount.toFixed(2)}):
+1. Settlement Verification: Settlement reference confirmed through payment gateway.
+2. 3DS Authentication: ${is3ds ? 'Cryptographic CAVV/ECI verified with Liability Shift under Visa Core Rules 5.2.' : 'Secondary device authorization validated on registered device.'}
+3. Fulfillment Verification: ${isDeliv ? 'Physical Courier Waybill POD delivery signature authenticated on ' + dateStr + '.' : 'Digital token fulfillment verified at IP.'}
+4. Liability Shift: Under Card Network Operating Regulations, merchant is defensible and dispute represents invalid claim.`;
+    }
+
+    function triggerAction(actionName) {
+      updateMemoContent();
+      showToast(`Action '${actionName}' logged to Audit Trail`);
+    }
+
+    function copyMemoText() {
+      const text = document.getElementById('memoContentText').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Formal dispute memorandum copied to clipboard!');
+      }).catch(() => {
+        showToast('Memo ready: copied text.');
+      });
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // Cost Frontier Slider Logic
+    // ────────────────────────────────────────────────────────────────────
     function updateTradeoffSlider(val) {
       const num = parseFloat(val);
       document.getElementById('sliderValueText').innerText = `\u03C4 = ${num.toFixed(2)}`;
+      document.getElementById('activeThresholdDisplay').innerText = `\u03C4* = ${num.toFixed(2)}`;
       const revLoad = Math.max(0.8, (1.0 - Math.pow(num, 0.7)) * 4.2).toFixed(1);
       document.getElementById('queueLoadEstimate').innerText = `${revLoad}% review load`;
       const netSavings = Math.round(2675 - (num - 0.20) * 1200);
       document.getElementById('savingsEstimate').innerText = `+$${netSavings}.00 / 6k txns`;
     }
 
-    function calculateReadiness() {
-      const cbs = document.querySelectorAll('#screenEvidence input[type=checkbox]');
-      let count = 0;
-      cbs.forEach(cb => { if (cb.checked) count++; });
-      const score = Math.round((count / cbs.length) * 100);
-      document.getElementById('readinessScoreText').innerText = score + '%';
-      document.getElementById('readinessCircle').setAttribute('stroke-dasharray', `${score}, 100`);
-    }
-
-    function triggerAction(actionName) {
-      const memo = document.getElementById('memoContainer');
-      memo.classList.remove('hidden');
-      showToast(`Executed '${actionName}' successfully`);
-    }
-
     function updateCostMatrix(invCost, penalty) {
       if (invCost) document.getElementById('txtInvCost').innerText = `$${invCost}.00`;
-      if (penalty) document.getElementById('txtPenaltyFee').innerText = `$${penalty}`;
+      if (penalty) document.getElementById('txtPenaltyFee').innerText = `$${Number(penalty).toLocaleString()}`;
       const total = (1767 + (invCost ? invCost * 1.5 : 0)).toFixed(2);
       document.getElementById('totalCostDisplay').innerText = `$${total}`;
     }
@@ -938,26 +1392,24 @@
       setTimeout(() => {
         toast.classList.remove('translate-y-0');
         toast.classList.add('-translate-y-24');
-      }, 2500);
+      }, 2400);
     }
 
-    async function fetchLiveTelemetry() {
-      try {
-        const res = await fetch('/api/v1/telemetry');
-        if (res.ok) {
-          const data = await res.json();
-          document.getElementById('backendStatusTag').innerText = 'BACKEND CONNECTED';
-          showToast('Live telemetry refreshed from API');
-        }
-      } catch (err) {
-        showToast('Running on local intelligence core');
-      }
+    // Live clock update
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const clockEl = document.getElementById('clockDisplay');
+      if (clockEl) clockEl.innerText = `${h}:${m}`;
     }
 
-    // Initialize 3D on load
+    // Initialize on page load
     window.addEventListener('DOMContentLoaded', () => {
       initIsometricCore();
-      fetchLiveTelemetry();
+      updateClock();
+      setInterval(updateClock, 30000);
+      calculateReadiness();
     });
   </script>
 </body>
