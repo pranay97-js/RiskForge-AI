@@ -9,3 +9,4 @@ scratch
 *.log
 streamlit_app.py
 api
+app.py
