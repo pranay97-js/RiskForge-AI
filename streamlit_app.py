@@ -25,10 +25,31 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+# Ensure runtime packages are available on any cloud host
+for pkg in ["plotly>=5.18.0", "xgboost>=2.0.0,<3.0.0", "shap>=0.44.0"]:
+    _mod = pkg.split(">=")[0].split("<")[0]
+    try:
+        __import__(_mod)
+    except (ImportError, ModuleNotFoundError):
+        try:
+            import subprocess
+            subprocess.run([sys.executable, "-m", "pip", "install", pkg], check=True)
+        except Exception:
+            pass
+
 import numpy as np
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
+
+# Bulletproof plotly import with immediate pip fallback
+try:
+    import plotly.express as px
+    import plotly.graph_objects as go
+except (ImportError, ModuleNotFoundError):
+    import subprocess
+    subprocess.run([sys.executable, "-m", "pip", "install", "plotly>=5.18.0"], check=True)
+    import plotly.express as px
+    import plotly.graph_objects as go
+
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -145,9 +166,14 @@ st.markdown(
     }}
 
     /* Hide Streamlit Deploy button and header menu */
-    .stDeployButton, div[data-testid="stToolbar"], #MainMenu {{
+    .stDeployButton, [data-testid="stAppDeployButton"], div[data-testid="stToolbar"], #MainMenu, header[data-testid="stHeader"] button {{
         display: none !important;
         visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
     }}
 
     /* Sidebar Styling */
