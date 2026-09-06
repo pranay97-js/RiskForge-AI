@@ -144,6 +144,12 @@ st.markdown(
         background-color: transparent !important;
     }}
 
+    /* Hide Streamlit Deploy button and header menu */
+    .stDeployButton, div[data-testid="stToolbar"], #MainMenu {{
+        display: none !important;
+        visibility: hidden !important;
+    }}
+
     /* Sidebar Styling */
     section[data-testid="stSidebar"] {{
         background-color: var(--sidebar-bg) !important;

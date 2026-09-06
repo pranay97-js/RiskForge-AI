@@ -232,39 +232,9 @@
       background: rgba(11, 114, 231, 0.06);
     }
 
-    /* Custom Streamlit Header Bar in top right */
-    .st-header-chrome {
-      position: fixed;
-      top: 14px;
-      right: 24px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      z-index: 50;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-secondary);
-    }
-    .st-header-chrome .deploy-btn {
-      color: var(--text-primary);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
   </style>
 </head>
 <body class="min-h-screen flex">
-
-  <!-- Streamlit Top-Right Chrome ("Deploy ⋮") -->
-  <div class="st-header-chrome">
-    <div class="deploy-btn hover:text-white transition-all">
-      <span>Deploy</span>
-    </div>
-    <div class="cursor-pointer hover:text-white transition-all font-bold text-base">
-      ⋮
-    </div>
-  </div>
 
   <!-- ======================================================================= -->
   <!-- SIDEBAR: Identical Replica from All 5 Screenshots                       -->
