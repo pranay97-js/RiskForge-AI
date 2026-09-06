@@ -11,3 +11,7 @@ streamlit_app.py
 api
 app.py
 pyproject.toml
+backend
+*.py
+**/*.py
+requirements.txt
