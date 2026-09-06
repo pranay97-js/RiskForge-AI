@@ -17,5 +17,3 @@ dependencies = [
     "httpx2>=0.1.0",
 ]
 
-[tool.vercel]
-entrypoint = "app:app"
