@@ -1,5 +1,19 @@
 # Razorpay RiskForge AI — Enterprise Merchant Risk & Dispute Defense Platform
+
+<div align="center">
+
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://riskforge-ai.streamlit.app/)
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Live%20Platform-000000?style=flat&logo=vercel&logoColor=white)](https://risk-forge-ai.vercel.app/)
+[![CI Build](https://github.com/pranay97-js/RiskForge-AI/actions/workflows/ci.yml/badge.svg)](https://github.com/pranay97-js/RiskForge-AI/actions)
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat&logo=python&logoColor=white)](https://python.org)
+[![XGBoost](https://img.shields.io/badge/Model-XGBoost%20v2.1-orange?style=flat&logo=xgboost)](https://github.com/dmlc/xgboost)
+
+### 🚀 Live Interactive Deployments
+**[⚡ Launch Live Streamlit App (riskforge-ai.streamlit.app)](https://riskforge-ai.streamlit.app/)** &nbsp;&bull;&nbsp; **[🌐 Launch Vercel Platform (risk-forge-ai.vercel.app)](https://risk-forge-ai.vercel.app/)**
+
 > **Real-time chargeback risk detection, tri-signal verification, explainable AI, and automated dispute defense.**
+
+</div>
 
 ---
 
@@ -77,7 +91,8 @@ RiskForge AI/
 ├── requirements.txt               # Complete production dependencies
 ├── .env.example                   # Environment configuration template
 ├── .gitignore                     # Clean repository exclusions
-├── app.py                         # 4-screen Streamlit Merchant Dashboard
+├── streamlit_app.py               # Main 4-screen Streamlit Merchant Dashboard & Mobile view
+├── app.py                         # Unified FastAPI Microservice & Streamlit entrypoint
 │
 ├── data/
 │   ├── raw/transactions.csv       # Multi-entity benchmark dataset (40k txns)
@@ -108,7 +123,7 @@ RiskForge AI/
 │   ├── threshold_analysis.py      # Cost-sensitive threshold sweep optimizer
 │   └── final_evaluation.py       # One-shot frozen test evaluation script
 │
-├── tests/                         # Complete automated test suite (46 tests):
+├── tests/                         # Complete automated test suite (50 tests):
 │   ├── test_data.py               # Schema integrity and leakage tests
 │   ├── test_features.py           # Behavioral deviation math & stability tests
 │   ├── test_ml.py                 # Baseline and XGBoost inference tests
@@ -116,6 +131,8 @@ RiskForge AI/
 │   ├── test_cost.py               # Expected loss and queue priority tests
 │   ├── test_decision.py           # Fusion matrix and service tests
 │   ├── test_ai.py                 # Grounded AI schema and responder tests
+│   ├── test_backend_api.py        # FastAPI microservice REST endpoint tests
+│   ├── test_security_robustness.py# SQLi/XSS/path-traversal security & input validation
 │   ├── test_edge_cases.py         # All 12 required Section 10.2 edge cases
 │   └── test_submission.py         # Submission checklist verification tests
 │
@@ -133,20 +150,20 @@ RiskForge AI/
 
 ### 1. Installation
 ```bash
-git clone <repo_url>
-cd "RiskForge AI"
+git clone https://github.com/pranay97-js/RiskForge-AI.git
+cd RiskForge-AI
 pip install -r requirements.txt
 cp .env.example .env
 ```
 
 ### 2. Run Complete Test Suite
 ```bash
-pytest -v tests/
+pytest tests/ -v
 ```
 
 ### 3. Launch the Streamlit Merchant Application
 ```bash
-streamlit run app.py
+streamlit run streamlit_app.py
 ```
 
 ### 4. Re-run Frozen Test Verification (One-Shot)
@@ -167,4 +184,4 @@ python evaluation/final_evaluation.py
 - [x] Architecture diagrams match implementation.
 - [x] Strictly defense-only: zero attack/evasion tooling.
 - [x] No personal identifiable data or live credentials committed.
-- [x] Complete judge demo can be delivered in 3–5 minutes (see [DEMO_GUIDE.md](file:///c:/Users/KIIT0001/Videos/Projects/RiskForge%20AI/DEMO_GUIDE.md)).
+- [x] Complete judge demo can be delivered in 3–5 minutes (see [DEMO_GUIDE.md](DEMO_GUIDE.md)).
