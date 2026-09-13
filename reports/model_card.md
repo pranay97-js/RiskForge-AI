@@ -5,10 +5,10 @@
 - **Model Release Date:** September 2026
 - **Model Version:** v1.0.0 (Production Submission)
 - **Model Architecture:** Gradient Boosted Decision Trees (`XGBClassifier`) with calibrated probability estimation, compared against an L2-regularized `LogisticRegression` baseline.
-- **Explainability Engine:** TreeSHAP (`shap.TreeExplainer`) for fast per-prediction attribution.
-- **Verification Engine:** Deterministic Rule Registry (6 auditable rule checks).
-- **Decision Engine:** Deterministic Multi-Signal Fusion Matrix with Cost Optimization.
-- **License:** Proprietary / Enterprise Defense-Only
+- **Explainability:** TreeSHAP (`shap.TreeExplainer`) for feature attributions.
+- **Rule Engine:** Deterministic rule registry (6 policy rules).
+- **Decision Engine:** Multi-signal decision fusion with cost optimization.
+- **License:** Proprietary / Merchant Defense Project
 
 ---
 

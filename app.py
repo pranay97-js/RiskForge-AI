@@ -1,12 +1,8 @@
-"""Razorpay RiskForge AI — Enterprise Risk Microservice & Vercel Entrypoint.
+"""
+Razorpay RiskForge AI — FastAPI REST Service & Entrypoint.
 
-Unified production risk engine combining:
-- Tabular Machine Learning (Calibrated XGBoost)
-- Deterministic Rule Corroboration (6 Independent Rules)
-- Financial Loss & Bayesian Cost Engine
-- Decision Fusion Architecture
-- TreeSHAP Feature Attributions
-- Grounded AI Dispute Defense Responder
+Provides endpoints for transaction evaluation, telemetry metrics,
+dispute response drafting, and merchant action logging.
 """
 
 from __future__ import annotations

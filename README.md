@@ -1,4 +1,4 @@
-# Razorpay RiskForge AI — Enterprise Merchant Risk & Dispute Defense Platform
+# Razorpay RiskForge AI — Merchant Risk & Dispute Defense Platform
 
 <div align="center">
 
@@ -11,17 +11,17 @@
 ### 🚀 Live Interactive Deployments
 **[⚡ Launch Live Streamlit App (riskforge-ai.streamlit.app)](https://riskforge-ai.streamlit.app/)** &nbsp;&bull;&nbsp; **[🌐 Launch Vercel Platform (risk-forge-ai.vercel.app)](https://risk-forge-ai.vercel.app/)**
 
-> **Real-time chargeback risk detection, tri-signal verification, explainable AI, and automated dispute defense.**
+> **Real-time chargeback risk detection, rule verification, explainable AI, and automated dispute defense.**
 
 </div>
 
 ---
 
-## 🎯 Enterprise Platform Mission
-Deliver a high-throughput, **defense-only financial risk operations platform** tailored for modern digital payment gateways and merchants.  
-RiskForge AI predicts chargeback and dispute probability with calibrated ML, corroborates predictions through deterministic rules, provides transparent TreeSHAP attributions, optimizes Bayesian cost thresholds to reduce false-positive manual review burdens, and drafts network-compliant dispute rebuttals through grounded AI.
+## 📌 Overview
 
-$$\textbf{Predict} \longrightarrow \textbf{Verify} \longrightarrow \textbf{Explain} \longrightarrow \textbf{Act}$$
+RiskForge AI is a real-time risk detection and dispute management platform built for payment gateways and digital merchants. It predicts chargeback probabilities using calibrated gradient boosting (XGBoost), verifies transactions against deterministic policy rules, provides transparent SHAP feature attributions, optimizes decision thresholds to reduce manual review costs, and drafts network-compliant dispute responses.
+
+$$\text{Predict} \longrightarrow \text{Verify} \longrightarrow \text{Explain} \longrightarrow \text{Act}$$
 
 ---
 
@@ -34,10 +34,10 @@ flowchart TD
         C --> FE["Behavioral & Velocity Features"]
     end
 
-    subgraph RiskEngine["2. Tri-Signal Risk Engine"]
-        FE --> ML["ML Detector (XGBoost v2.4)<br/>P(Chargeback)"]
-        FE --> RE["Deterministic Rule Registry<br/>(6 Auditable Controls)"]
-        FE --> SHAP["TreeSHAP Explainability<br/>(Feature Attributions)"]
+    subgraph RiskEngine["2. Risk Engine"]
+        FE --> ML["ML Model (XGBoost)<br/>P(Chargeback)"]
+        FE --> RE["Deterministic Rules<br/>(6 Policy Checks)"]
+        FE --> SHAP["TreeSHAP Attributions<br/>(Feature Factors)"]
     end
 
     subgraph DecisionLayer["3. Cost Engine & Decision Fusion"]
@@ -47,15 +47,15 @@ flowchart TD
         DF --> OS{"Operational State<br/>LOW / REVIEW / HIGH"}
     end
 
-    subgraph GroundedAI["4. Grounded AI Operational Layer"]
-        OS --> AI["Grounded Case Responder<br/>(Strict Pydantic Schema)"]
+    subgraph DisputeLayer["4. Automated Dispute Layer"]
+        OS --> AI["Dispute Response Generator<br/>(Structured Pydantic Schema)"]
         SHAP --> AI
-        EV["Evidence Completeness<br/>(3DS, POD, Receipts)"] --> AI
+        EV["Evidence Package<br/>(3DS, POD, Receipts)"] --> AI
         AI --> OUT["Case Summary + Dispute Rebuttal Draft"]
     end
 
     subgraph Action["5. Merchant Dashboard & Actions"]
-        OUT --> DASH["Streamlit 3D Dashboard<br/>(Executive Queue & Investigator)"]
+        OUT --> DASH["Streamlit Dashboard<br/>(Queue & Investigator)"]
         DASH --> ACT["Allow / Review / Dispute Defense"]
     end
 
@@ -67,9 +67,9 @@ flowchart TD
 
 ---
 
-## 📊 Empirical Evaluation Results on Held-Out Test Set
+## 📊 Evaluation Results (Held-Out Test Set)
 
-The system underwent rigorous held-out out-of-time evaluation on `data/processed/test_frozen.csv` (6,000 transactions, 147 chargebacks):
+The model was evaluated on an out-of-time test split (`data/processed/test_frozen.csv`, 6,000 transactions, 147 chargebacks):
 
 | System | Precision | Recall | F1-Score | PR-AUC | Total Operational Cost |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -78,7 +78,7 @@ The system underwent rigorous held-out out-of-time evaluation on `data/processed
 | **XGBoost (Cost-Optimal, $\tau^*=0.200$)** | 44.33% | 87.76% | 0.5890 | 0.7331 | ₹1,767,170.25 |
 | **Final Operational Policy (ML + Rules + Fusion)** | **42.90%** | **88.44%** | **0.5778** | **0.7331** | **₹1,874,400.28** |
 
-*Key Business Insight: XGBoost cuts false-positive investigations by 59.1% relative to the baseline (45 vs 110 false alarms), while recovering ₹2.67M in preventable dispute losses.*
+*Key Business Insight: XGBoost reduces false-positive manual investigations by 59.1% compared to baseline (45 vs 110 false alarms), recovering ₹2.67M in preventable dispute losses.*
 
 ---
 
@@ -86,67 +86,67 @@ The system underwent rigorous held-out out-of-time evaluation on `data/processed
 ```
 RiskForge AI/
 │
-├── README.md                      # Complete system documentation & results
-├── DEMO_GUIDE.md                  # 3-5 minute judge presentation script
-├── requirements.txt               # Complete production dependencies
+├── README.md                      # Documentation & benchmark results
+├── DEMO_GUIDE.md                  # Walkthrough and demo script
+├── requirements.txt               # Production dependencies
 ├── .env.example                   # Environment configuration template
-├── .gitignore                     # Clean repository exclusions
-├── streamlit_app.py               # Main 4-screen Streamlit Merchant Dashboard & Mobile view
-├── app.py                         # Unified FastAPI Microservice & Streamlit entrypoint
+├── .gitignore                     # Git exclusions
+├── streamlit_app.py               # Main Streamlit Merchant Dashboard & Mobile view
+├── app.py                         # FastAPI REST Microservice & entrypoint
 │
 ├── data/
 │   ├── raw/transactions.csv       # Multi-entity benchmark dataset (40k txns)
-│   ├── processed/                 # Strict chronological OOT splits:
+│   ├── processed/                 # Chronological OOT splits:
 │   │   ├── train.csv              # 28,000 transactions (70%)
 │   │   ├── val.csv                # 6,000 transactions (15%)
 │   │   └── test_frozen.csv        # 6,000 transactions (15% frozen test partition)
-│   └── sample/                    # Lightweight sample datasets for fast inspection
+│   └── sample/                    # Lightweight sample datasets
 │
 ├── models/
 │   ├── baseline.pkl               # Trained Logistic Regression pipeline
-│   ├── xgboost.pkl                # Trained final candidate XGBoost model
-│   ├── feature_pipeline.pkl       # Fitted 43-feature encoder & transformer
-│   └── metadata.json              # Versioning, metrics, and threshold parameters
+│   ├── xgboost.pkl                # Trained XGBoost model
+│   ├── feature_pipeline.pkl       # Fitted 43-feature transformer
+│   └── metadata.json              # Model metrics and configuration
 │
 ├── src/
-│   ├── data/                      # Data loaders, cleaners & chronological splitters
+│   ├── data/                      # Data loading, cleaning & chronological splitting
 │   ├── features/                  # Velocity, behavioral deviation, and time encodings
-│   ├── ml/                        # Training, inference, and calibration routines
-│   ├── rules/                     # Deterministic rule registry & engine (6 rules)
+│   ├── ml/                        # Training, prediction, and calibration
+│   ├── rules/                     # Rule registry & engine (6 policy rules)
 │   ├── decision/                  # Cost engine, threshold sweep & decision fusion
-│   ├── explainability/            # TreeSHAP per-transaction feature attributions
-│   └── ai/                        # Grounded case schemas, prompts & dispute drafter
+│   ├── explainability/            # TreeSHAP feature attributions
+│   └── ai/                        # Case schemas, prompts & dispute drafter
 │
 ├── evaluation/
 │   ├── metrics.py                 # Precision, Recall, PR-AUC, ROC-AUC, Brier score
-│   ├── confusion_matrix.py        # False-positive analysis and ASCII tables
-│   ├── threshold_analysis.py      # Cost-sensitive threshold sweep optimizer
+│   ├── confusion_matrix.py        # False-positive analysis and reporting
+│   ├── threshold_analysis.py      # Threshold cost sweep optimizer
 │   └── final_evaluation.py       # One-shot frozen test evaluation script
 │
 ├── tests/                         # Complete automated test suite (50 tests):
-│   ├── test_data.py               # Schema integrity and leakage tests
-│   ├── test_features.py           # Behavioral deviation math & stability tests
-│   ├── test_ml.py                 # Baseline and XGBoost inference tests
-│   ├── test_rules.py              # Individual deterministic rule condition tests
-│   ├── test_cost.py               # Expected loss and queue priority tests
-│   ├── test_decision.py           # Fusion matrix and service tests
-│   ├── test_ai.py                 # Grounded AI schema and responder tests
-│   ├── test_backend_api.py        # FastAPI microservice REST endpoint tests
-│   ├── test_security_robustness.py# SQLi/XSS/path-traversal security & input validation
-│   ├── test_edge_cases.py         # All 12 required Section 10.2 edge cases
-│   └── test_submission.py         # Submission checklist verification tests
+│   ├── test_data.py               # Data integrity and leakage tests
+│   ├── test_features.py           # Feature engineering tests
+│   ├── test_ml.py                 # Model training and prediction tests
+│   ├── test_rules.py              # Rule engine condition tests
+│   ├── test_cost.py               # Expected loss & threshold tests
+│   ├── test_decision.py           # Decision fusion tests
+│   ├── test_ai.py                 # Case schema and responder tests
+│   ├── test_backend_api.py        # REST API endpoint tests
+│   ├── test_security_robustness.py# Security & input validation tests
+│   ├── test_edge_cases.py         # Edge case handling tests
+│   └── test_submission.py         # Submission verification tests
 │
 └── reports/
-    ├── day1_experiment_log.md     # Data foundation & ML baseline log
-    ├── day2_experiment_log.md     # Cost sweep & decision fusion log
-    ├── final_evaluation_report.md # Official Section 11 frozen test report
-    ├── model_card.md              # Production model card v1.0.0
-    └── figures/                   # High-res PR and ROC curve plots
+    ├── day1_experiment_log.md     # Data foundation & baseline log
+    ├── day2_experiment_log.md     # Cost optimization log
+    ├── final_evaluation_report.md # Final test evaluation report
+    ├── model_card.md              # Model card v1.0.0
+    └── figures/                   # PR and ROC curve plots
 ```
 
 ---
 
-## 🚀 Quickstart & Reproduction
+## 🚀 Quickstart
 
 ### 1. Installation
 ```bash
@@ -156,32 +156,31 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-### 2. Run Complete Test Suite
+### 2. Run Test Suite
 ```bash
 pytest tests/ -v
 ```
 
-### 3. Launch the Streamlit Merchant Application
+### 3. Launch Streamlit Application
 ```bash
 streamlit run streamlit_app.py
 ```
 
-### 4. Re-run Frozen Test Verification (One-Shot)
+### 4. Re-run Test Set Evaluation
 ```bash
 python evaluation/final_evaluation.py
 ```
 
 ---
 
-## ✅ Submission Checklist Compliance (Section 12.1)
+## ✅ Verification Checklist
 - [x] Application starts cleanly from a fresh environment.
-- [x] `README.md` contains exact installation and execution commands.
+- [x] `README.md` contains clear installation and execution commands.
 - [x] `requirements.txt` is complete with pinned dependencies.
 - [x] `.env.example` contains required variable keys without committed secrets.
 - [x] Model artifacts are saved reproducibly (`models/`).
-- [x] Final held-out test results are documented with genuine measured values.
+- [x] Final held-out test results are documented with measured values.
 - [x] Cost assumptions (₹50 review, ₹3,000 chargeback penalty) are clearly labeled.
 - [x] Architecture diagrams match implementation.
-- [x] Strictly defense-only: zero attack/evasion tooling.
 - [x] No personal identifiable data or live credentials committed.
-- [x] Complete judge demo can be delivered in 3–5 minutes (see [DEMO_GUIDE.md](DEMO_GUIDE.md)).
+- [x] Complete walkthrough available in [DEMO_GUIDE.md](DEMO_GUIDE.md).

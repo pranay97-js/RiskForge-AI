@@ -1,14 +1,8 @@
-"""Razorpay RiskForge AI — Enterprise Merchant Risk & Dispute Defense Platform.
+"""
+Razorpay RiskForge AI — Merchant Risk & Dispute Defense Platform.
 
-Unified production risk engine combining:
-- Tabular Machine Learning (Calibrated XGBoost)
-- Deterministic Rule Corroboration (6 Independent Rules)
-- Financial Loss & Bayesian Cost Engine
-- Decision Fusion Architecture
-- TreeSHAP Feature Attributions
-- Grounded AI Dispute Defense Responder
-- Human-in-the-Loop Live Risk Simulator & Analyst Review Ledger
-- Mobile-First "RiskForge Mobile" Glassmorphic Intelligence View (393x852)
+Combines ML predictions (calibrated XGBoost), rule-based checks,
+cost optimization, TreeSHAP feature attributions, and automated dispute response drafting.
 """
 
 from __future__ import annotations
@@ -40,7 +34,7 @@ for pkg in ["plotly>=5.18.0", "xgboost>=2.0.0,<3.0.0", "shap>=0.44.0"]:
 import numpy as np
 import pandas as pd
 
-# Bulletproof plotly import with immediate pip fallback
+# Plotly import with fallback installation
 try:
     import plotly.express as px
     import plotly.graph_objects as go
@@ -86,7 +80,7 @@ if "last_simulated_txn" not in st.session_state:
     st.session_state["last_simulated_txn"] = None
 
 
-# Theme definitions (Obsidian Glass Intelligence & Razorpay Design System)
+# Theme definitions
 is_dark = st.session_state["theme_mode"] == "dark"
 
 DARK_THEME_CSS = """
@@ -147,7 +141,7 @@ LIGHT_THEME_CSS = """
 
 active_theme_vars = DARK_THEME_CSS if is_dark else LIGHT_THEME_CSS
 
-# Global Styling Injection
+# Global Styling
 st.markdown(
     f"""
     <style>
@@ -165,7 +159,7 @@ st.markdown(
         background-color: transparent !important;
     }}
 
-    /* ONLY Hide Streamlit Deploy button, while strictly keeping sidebar hamburger and MainMenu intact */
+    /* Hide Streamlit Deploy button */
     .stDeployButton,
     [data-testid="stAppDeployButton"],
     button[data-testid="stAppDeployButton"],
@@ -180,7 +174,7 @@ st.markdown(
         padding: 0 !important;
     }}
 
-    /* Ensure the sidebar hamburger / collapse / expand button is ALWAYS visible, clickable and never gets lost */
+    /* Sidebar toggle button styling */
     [data-testid="collapsedControl"],
     [data-testid="collapsedControl"] button,
     [data-testid="stSidebarCollapseButton"],
@@ -729,8 +723,8 @@ with st.sidebar:
 # MODULE 0: RISKFORGE MOBILE (MOBILE-FIRST 393x852 VIEW)
 # ==============================================================================
 if nav_choice == "📱 RiskForge Mobile (Mobile 393x852 View)":
-    st.markdown("<h1 class='gradient-header'>RiskForge AI — Mobile Risk Intelligence</h1>", unsafe_allow_html=True)
-    st.caption("Futuristic glassmorphism mobile experience (393x852 portrait) with 3D isometric glowing verification core.")
+    st.markdown("<h1 class='gradient-header'>RiskForge AI — Mobile View</h1>", unsafe_allow_html=True)
+    st.caption("Responsive mobile layout featuring transaction telemetry, SHAP risk drivers, and dispute evidence checklists.")
 
     col_info1, col_info2 = st.columns([1, 1])
     with col_info1:
@@ -1266,9 +1260,9 @@ elif nav_choice == "📑 Dispute Defense & Evidence Center":
         run_ai = st.button("✨ Generate Grounded Dispute Rebuttal Memo", type="primary", use_container_width=True)
 
     with e_col2:
-        st.markdown("### 🤖 Generated Formal Dispute Memorandum")
+        st.markdown("### 📄 Generated Dispute Memorandum")
         if run_ai:
-            with st.spinner("Compiling structured case arguments and drafting rebuttal memo..."):
+            with st.spinner("Compiling case arguments and drafting rebuttal memo..."):
                 top_shap = [f["readable_name"] for f in eval_result.get("explainability", {}).get("top_risk_factors", [])]
                 case_input = GroundedCaseInput(
                     transaction_id=selected_txn_id,
@@ -1288,10 +1282,10 @@ elif nav_choice == "📑 Dispute Defense & Evidence Center":
             for reason in ai_output.flag_reasons:
                 st.markdown(f"- {reason}")
 
-            st.markdown("#### Formal Network Rebuttal Memorandum:")
+            st.markdown("#### Dispute Rebuttal Memorandum:")
             st.code(ai_output.dispute_response_draft, language="markdown")
         else:
-            st.info("Click 'Generate Grounded Dispute Rebuttal Memo' to synthesize an auditable response based strictly on verified evidence.")
+            st.info("Click 'Generate Grounded Dispute Rebuttal Memo' to build a response based on verified evidence.")
 
 
 # ==============================================================================
