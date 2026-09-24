@@ -113,25 +113,25 @@ DARK_THEME_CSS = """
 
 LIGHT_THEME_CSS = """
     :root {
-        --bg-color: #f1f5f9;
-        --card-bg: rgba(255, 255, 255, 0.88);
-        --card-border: rgba(11, 114, 231, 0.22);
-        --sidebar-bg: rgba(248, 250, 252, 0.96);
+        --bg-color: #f8fafc;
+        --card-bg: #ffffff;
+        --card-border: rgba(15, 23, 42, 0.12);
+        --sidebar-bg: #ffffff;
         --text-primary: #0f172a;
-        --text-secondary: #334155;
+        --text-secondary: #475569;
         --input-bg: #ffffff;
-        --input-border: rgba(11, 114, 231, 0.30);
+        --input-border: rgba(15, 23, 42, 0.25);
         --input-text: #0f172a;
         --dropdown-bg: #ffffff;
-        --table-header-bg: rgba(11, 114, 231, 0.10);
+        --table-header-bg: #f1f5f9;
         --accent-blue: #0b72e7;
-        --accent-blue-dim: rgba(11, 114, 231, 0.12);
+        --accent-blue-dim: rgba(11, 114, 231, 0.10);
         --accent-cyan: #0284c7;
         --accent-emerald: #059669;
         --accent-rose: #e11d48;
         --accent-amber: #d97706;
-        --shadow: 0 10px 28px rgba(11, 114, 231, 0.09);
-        --hud-bg: rgba(255, 255, 255, 0.90);
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        --hud-bg: rgba(255, 255, 255, 0.95);
         --hud-border: rgba(11, 114, 231, 0.25);
         --hud-text: #0f172a;
         --pill-bg: rgba(11, 114, 231, 0.10);
@@ -242,8 +242,42 @@ st.markdown(
     p, span, label, div[data-testid="stMarkdownContainer"] p {{
         color: var(--text-primary);
     }}
-    .stCaption, small {{
+    div[data-testid="stMarkdownContainer"] p,
+    div[data-testid="stMarkdownContainer"] span,
+    div[data-testid="stMarkdownContainer"] li,
+    div[data-testid="stMarkdownContainer"] strong {{
+        color: var(--text-primary) !important;
+    }}
+    .stCaption, small, div[data-testid="stCaptionContainer"] p {{
         color: var(--text-secondary) !important;
+    }}
+
+    /* Form & Widget Labels (Ensure high visibility in both light & dark mode) */
+    div[data-testid="stWidgetLabel"],
+    div[data-testid="stWidgetLabel"] label,
+    div[data-testid="stWidgetLabel"] p,
+    div[data-testid="stWidgetLabel"] span {{
+        color: var(--text-primary) !important;
+        font-weight: 600 !important;
+    }}
+    div[data-testid="stRadio"] label,
+    div[data-testid="stRadio"] label p,
+    div[data-testid="stRadio"] label span,
+    div[data-testid="stRadio"] div[role="radiogroup"] p,
+    div[data-testid="stRadio"] div[role="radiogroup"] span,
+    div[data-testid="stRadio"] div[role="radiogroup"] label {{
+        color: var(--text-primary) !important;
+    }}
+    div[data-testid="stCheckbox"] label,
+    div[data-testid="stCheckbox"] label p,
+    div[data-testid="stCheckbox"] label span {{
+        color: var(--text-primary) !important;
+    }}
+    div[data-testid="stSlider"] div,
+    div[data-testid="stSlider"] p,
+    div[data-testid="stSlider"] span,
+    div[data-testid="stSlider"] label {{
+        color: var(--text-primary) !important;
     }}
 
     /* Glassmorphic Metric Cards */
@@ -348,30 +382,65 @@ st.markdown(
         color: var(--input-text) !important;
         background-color: transparent !important;
     }}
+    div[data-baseweb="input"] input::placeholder {{
+        color: var(--text-secondary) !important;
+        opacity: 0.7 !important;
+    }}
     div[data-baseweb="select"] > div {{
         background-color: var(--input-bg) !important;
         border: 1px solid var(--input-border) !important;
         border-radius: 10px !important;
         color: var(--input-text) !important;
     }}
-    div[data-baseweb="select"] span {{
+    div[data-baseweb="select"] span,
+    div[data-baseweb="select"] div {{
         color: var(--input-text) !important;
     }}
-    div[data-baseweb="popover"], div[data-baseweb="menu"], ul[role="listbox"], li[role="option"] {{
+    div[data-baseweb="select"] svg {{
+        fill: var(--text-primary) !important;
+    }}
+    div[data-baseweb="popover"],
+    div[data-baseweb="popover"] *,
+    div[data-baseweb="menu"],
+    div[data-baseweb="menu"] *,
+    ul[role="listbox"],
+    ul[role="listbox"] *,
+    li[role="option"],
+    li[role="option"] * {{
         background-color: var(--dropdown-bg) !important;
         color: var(--text-primary) !important;
     }}
-    li[role="option"]:hover {{
+    li[role="option"]:hover,
+    li[role="option"]:hover * {{
         background-color: var(--accent-blue-dim) !important;
+        color: var(--accent-blue) !important;
+    }}
+
+    /* Number input stepper buttons */
+    div[data-testid="stNumberInput"] button {{
+        background-color: var(--card-bg) !important;
+        border: 1px solid var(--input-border) !important;
+    }}
+    div[data-testid="stNumberInput"] button svg {{
+        fill: var(--text-primary) !important;
+        stroke: var(--text-primary) !important;
     }}
 
     /* Streamlit Native Metric Overrides */
-    div[data-testid="stMetricValue"] {{
+    div[data-testid="stMetric"] {{
+        background: var(--card-bg) !important;
+        border: 1px solid var(--card-border) !important;
+        border-radius: 14px !important;
+        padding: 14px 18px !important;
+    }}
+    div[data-testid="stMetricValue"],
+    div[data-testid="stMetricValue"] div {{
         color: var(--text-primary) !important;
         font-family: 'JetBrains Mono', monospace !important;
         font-weight: 700 !important;
     }}
-    div[data-testid="stMetricLabel"] {{
+    div[data-testid="stMetricLabel"],
+    div[data-testid="stMetricLabel"] p {{
         color: var(--text-secondary) !important;
         font-weight: 700 !important;
         font-size: 11px !important;
@@ -397,9 +466,63 @@ st.markdown(
         border-bottom: 1px solid var(--card-border) !important;
     }}
     div[data-testid="stDataFrame"] {{
-        border: 1px solid var(--card-border);
-        border-radius: 12px;
-        background: var(--card-bg);
+        border: 1px solid var(--card-border) !important;
+        border-radius: 12px !important;
+        background-color: var(--card-bg) !important;
+    }}
+
+    /* Code Blocks & Inline Code */
+    code {{
+        background-color: var(--card-bg) !important;
+        color: var(--accent-blue) !important;
+        border: 1px solid var(--card-border) !important;
+        border-radius: 4px !important;
+        padding: 2px 6px !important;
+        font-family: 'JetBrains Mono', monospace !important;
+    }}
+    div[data-testid="stCodeBlock"] {{
+        background-color: var(--card-bg) !important;
+        border: 1px solid var(--card-border) !important;
+        border-radius: 12px !important;
+    }}
+    div[data-testid="stCodeBlock"] pre,
+    div[data-testid="stCodeBlock"] code,
+    div[data-testid="stCodeBlock"] span {{
+        color: var(--text-primary) !important;
+        font-family: 'JetBrains Mono', monospace !important;
+    }}
+
+    /* Alerts and Callouts */
+    div[data-testid="stAlert"] {{
+        border-radius: 12px !important;
+        border: 1px solid var(--card-border) !important;
+    }}
+    div[data-testid="stAlert"] p,
+    div[data-testid="stAlert"] div,
+    div[data-testid="stAlert"] span {{
+        color: var(--text-primary) !important;
+    }}
+
+    /* Blockquotes */
+    blockquote {{
+        border-left: 3px solid var(--accent-blue) !important;
+        background: var(--card-bg) !important;
+        color: var(--text-primary) !important;
+        padding: 8px 16px !important;
+        border-radius: 0 8px 8px 0 !important;
+    }}
+    blockquote p, blockquote span, blockquote em {{
+        color: var(--text-primary) !important;
+    }}
+
+    /* Progress bar */
+    div[data-testid="stProgress"] > div {{
+        background-color: var(--card-border) !important;
+        border-radius: 999px !important;
+    }}
+    div[data-testid="stProgress"] > div > div {{
+        background: linear-gradient(90deg, #0b72e7, #00d2d2) !important;
+        border-radius: 999px !important;
     }}
 
     /* Buttons */
@@ -698,11 +821,11 @@ with st.sidebar:
     nav_choice = st.radio(
         "Platform Modules",
         [
-            "📱 RiskForge Mobile (Mobile 393x852 View)",
+            "📱 Mobile App",
             "🌐 Executive Command Center",
             "🔍 Transaction Investigator",
-            "✍️ Live Simulator & Human Review",
-            "📑 Dispute Defense & Evidence Center",
+            "✍️ Risk Simulator",
+            "📑 Dispute Resolution",
             "📊 Risk Engine Intelligence",
         ],
         index=0,
@@ -720,10 +843,10 @@ with st.sidebar:
 
 
 # ==============================================================================
-# MODULE 0: RISKFORGE MOBILE (MOBILE-FIRST 393x852 VIEW)
+# MODULE 0: RISKFORGE MOBILE APP
 # ==============================================================================
-if nav_choice == "📱 RiskForge Mobile (Mobile 393x852 View)":
-    st.markdown("<h1 class='gradient-header'>RiskForge AI — Mobile View</h1>", unsafe_allow_html=True)
+if nav_choice == "📱 Mobile App":
+    st.markdown("<h1 class='gradient-header'>RiskForge AI — Mobile App</h1>", unsafe_allow_html=True)
     st.caption("Responsive mobile layout featuring transaction telemetry, SHAP risk drivers, and dispute evidence checklists.")
 
     col_info1, col_info2 = st.columns([1, 1])
@@ -1020,10 +1143,10 @@ elif nav_choice == "🔍 Transaction Investigator":
 
 
 # ==============================================================================
-# MODULE 3: LIVE SIMULATOR & HUMAN REVIEW
+# MODULE 3: RISK SIMULATOR
 # ==============================================================================
-elif nav_choice == "✍️ Live Simulator & Human Review":
-    st.markdown("<h1 class='gradient-header'>Live Risk Simulator & Analyst Review</h1>", unsafe_allow_html=True)
+elif nav_choice == "✍️ Risk Simulator":
+    st.markdown("<h1 class='gradient-header'>Risk Simulator & Analyst Review</h1>", unsafe_allow_html=True)
     st.caption("Manually construct custom transaction payloads, trigger real-time multi-signal scoring, and record human-in-the-loop audit decisions.")
 
     st.markdown("### 1. Scenario Templates & Quick Fill")
@@ -1222,10 +1345,10 @@ elif nav_choice == "✍️ Live Simulator & Human Review":
 
 
 # ==============================================================================
-# MODULE 4: DISPUTE DEFENSE & EVIDENCE CENTER
+# MODULE 4: DISPUTE RESOLUTION
 # ==============================================================================
-elif nav_choice == "📑 Dispute Defense & Evidence Center":
-    st.markdown("<h1 class='gradient-header'>Dispute Defense & Evidence Center</h1>", unsafe_allow_html=True)
+elif nav_choice == "📑 Dispute Resolution":
+    st.markdown("<h1 class='gradient-header'>Dispute Resolution & Evidence Center</h1>", unsafe_allow_html=True)
     st.caption("Compile compelling evidence packages and generate grounded dispute rebuttal letters conforming to card network rules.")
 
     selected_txn_id = st.selectbox("Select Transaction to Defend", sample_df["transaction_id"].head(25).tolist())

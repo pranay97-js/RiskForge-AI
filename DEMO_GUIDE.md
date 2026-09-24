@@ -26,7 +26,7 @@
 
 ---
 
-### 3. Live Simulator & Human Review (`✍️ Live Simulator & Human Review`)
+### 3. Risk Simulator (`✍️ Risk Simulator`)
 - **Manual Transaction Input:**
   - Enter custom transaction amounts, customer identifiers, payment methods, card networks, client device types, and IP countries.
   - Toggle 3D-Secure authentication, new account flags, and dispute histories.
@@ -38,7 +38,7 @@
 
 ---
 
-### 4. Dispute Defense & Evidence Center (`📑 Dispute Defense & Evidence Center`)
+### 4. Dispute Resolution (`📑 Dispute Resolution`)
 - **Compelling Evidence 3.0 Checklist:**
   - 1. Gateway Settlement Receipt & Payment ID
   - 2. 3D-Secure Authentication Logs
