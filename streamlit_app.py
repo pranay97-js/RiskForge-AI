@@ -52,20 +52,27 @@ from src.ai.schemas import EvidenceChecklist, GroundedCaseInput
 from src.decision.cost import CostEngine
 from src.decision.service import RiskDecisionService
 
+# Set Streamlit Page Configuration
 st.set_page_config(
     page_title="Razorpay RiskForge AI — Merchant Risk Platform",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items={
+        "Get Help": None,
+        "Report a bug": None,
         "About": """
-### 🛡️ Razorpay RiskForge AI — Merchant Risk Defense
-**Automated fraud detection and dispute recovery built for online merchants.**
+        ### ⚡ Razorpay RiskForge AI
+        **Merchant Risk & Dispute Defense Platform**
 
-- **Real-Time Screening:** Evaluates orders in milliseconds using calibrated Machine Learning and 6 safety policy rules.
-- **Smart 2FA Verification:** Protects genuine buyers while challenging suspicious high-risk activity.
-- **Automated Dispute Defense:** Compiles courier delivery proofs and authentication logs into bank-ready rebuttal letters to win back disputed funds under Visa and Mastercard rules.
-        """
+        **What is RiskForge AI?**
+        RiskForge AI is an intelligent payment protection platform designed for online merchants and digital businesses to prevent fraud and recover lost dispute revenue.
+
+        **How It Helps You as a Merchant:**
+        - **🛡️ Real-Time Transaction Screening:** Automatically evaluates orders in milliseconds to catch stolen cards, abnormal velocities, and high-risk attacks before orders are fulfilled.
+        - **🟢 Smooth Customer Checkout:** Minimizes false alarms so genuine, verified buyers can purchase with zero friction.
+        - **⚖️ Automated Dispute Recovery:** When a customer disputes a payment, RiskForge compiles proof of delivery (POD), 3D-Secure authentication logs, and payment receipts into a bank-ready rebuttal package to win back your revenue.
+        """,
     },
 )
 
@@ -168,19 +175,11 @@ st.markdown(
         background-color: transparent !important;
     }}
 
-    /* Hide native Streamlit Deploy button, 3-dot MainMenu, screencast/print items, and Streamlit footer */
+    /* Hide Streamlit Deploy button */
     .stDeployButton,
     [data-testid="stAppDeployButton"],
     button[data-testid="stAppDeployButton"],
-    div[data-testid="stAppDeployButton"],
-    #MainMenu,
-    [data-testid="stMainMenu"],
-    button[title="View app options"],
-    [data-testid="stToolbarActions"],
-    footer,
-    footer[data-testid="stFooter"],
-    [data-testid="stMainMenuPopover"] footer,
-    [data-testid="stMainMenuPopover"] a[href*="streamlit.io"] {{
+    div[data-testid="stAppDeployButton"] {{
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
@@ -204,55 +203,6 @@ st.markdown(
         height: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
-    }}
-
-    /* Custom Top-Right 3-Dot Menu Button */
-    div[data-testid="stPopover"] {{
-        position: fixed !important;
-        top: 0.65rem !important;
-        right: 0.75rem !important;
-        z-index: 999999 !important;
-    }}
-
-    div[data-testid="stPopover"] > button {{
-        background-color: var(--card-bg, #0f172a) !important;
-        border: 1px solid var(--card-border, rgba(255, 255, 255, 0.2)) !important;
-        border-radius: 8px !important;
-        padding: 4px 8px !important;
-        font-size: 20px !important;
-        font-weight: 700 !important;
-        line-height: 1 !important;
-        color: var(--text-primary) !important;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2) !important;
-        transition: all 0.2s ease !important;
-        height: 34px !important;
-        min-height: 34px !important;
-        min-width: 38px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }}
-
-    div[data-testid="stPopover"] > button:hover {{
-        background-color: var(--accent-blue-dim, rgba(11, 114, 231, 0.15)) !important;
-        border-color: var(--accent-blue) !important;
-    }}
-
-    div[data-testid="stPopoverBody"] {{
-        background-color: var(--card-bg, #0f172a) !important;
-        border: 1px solid var(--card-border, rgba(255, 255, 255, 0.15)) !important;
-        border-radius: 14px !important;
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45) !important;
-        padding: 12px 14px !important;
-        min-width: 250px !important;
-    }}
-
-    div[data-testid="stPopoverBody"] button {{
-        border-radius: 8px !important;
-        font-size: 13px !important;
-        font-weight: 600 !important;
-        justify-content: flex-start !important;
-        margin-bottom: 4px !important;
     }}
 
     /* Sidebar toggle button styling */
@@ -628,6 +578,249 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# Render Top-Right 3-Dot Options Menu
+components.html(
+    f"""
+    <script>
+    (function() {{
+        const parentDoc = window.parent.document;
+        if (!parentDoc) return;
+
+        const oldBtn = parentDoc.getElementById('rf-custom-menu-btn');
+        if (oldBtn) oldBtn.remove();
+        const oldDrop = parentDoc.getElementById('rf-custom-dropdown');
+        if (oldDrop) oldDrop.remove();
+        const oldModal = parentDoc.getElementById('rf-about-modal-overlay');
+        if (oldModal) oldModal.remove();
+        const oldStyle = parentDoc.getElementById('rf-custom-menu-style');
+        if (oldStyle) oldStyle.remove();
+
+        const isDark = {"true" if is_dark else "false"};
+        const cardBg = isDark ? "rgba(15, 23, 42, 0.95)" : "#ffffff";
+        const cardBorder = isDark ? "rgba(11, 114, 231, 0.35)" : "rgba(15, 23, 42, 0.18)";
+        const textPrimary = isDark ? "#f8fafc" : "#0f172a";
+        const textSecondary = isDark ? "#94a3b8" : "#475569";
+        const hoverBg = isDark ? "rgba(11, 114, 231, 0.22)" : "rgba(11, 114, 231, 0.10)";
+        const hoverText = isDark ? "#38bdf8" : "#0b72e7";
+
+        const style = parentDoc.createElement('style');
+        style.id = 'rf-custom-menu-style';
+        style.innerHTML = `
+            #MainMenu, [data-testid="stMainMenu"], [data-testid="stToolbar"] {{
+                display: none !important;
+            }}
+            #rf-custom-menu-btn {{
+                position: fixed !important;
+                top: 0.65rem !important;
+                right: 0.85rem !important;
+                z-index: 999999 !important;
+                background-color: ${{cardBg}} !important;
+                border: 1px solid ${{cardBorder}} !important;
+                border-radius: 8px !important;
+                padding: 6px 10px !important;
+                cursor: pointer !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2) !important;
+                transition: all 0.2s ease !important;
+                color: ${{textPrimary}} !important;
+                outline: none !important;
+            }}
+            #rf-custom-menu-btn:hover {{
+                background-color: #0b72e7 !important;
+                border-color: #60a5fa !important;
+                color: #ffffff !important;
+            }}
+            #rf-custom-menu-btn:hover svg {{
+                stroke: #ffffff !important;
+                fill: #ffffff !important;
+            }}
+            #rf-custom-dropdown {{
+                position: fixed !important;
+                top: 3.25rem !important;
+                right: 0.85rem !important;
+                z-index: 1000000 !important;
+                background: ${{cardBg}} !important;
+                border: 1px solid ${{cardBorder}} !important;
+                border-radius: 12px !important;
+                padding: 6px !important;
+                min-width: 175px !important;
+                box-shadow: 0 16px 40px rgba(0, 0, 0, ${{isDark ? '0.6' : '0.15'}}) !important;
+                backdrop-filter: blur(20px) !important;
+                -webkit-backdrop-filter: blur(20px) !important;
+                display: none;
+                font-family: 'Plus Jakarta Sans', sans-serif !important;
+            }}
+            #rf-custom-dropdown.show {{
+                display: block !important;
+                animation: rfDropdownFade 0.15s ease-out;
+            }}
+            .rf-menu-item {{
+                padding: 9px 14px !important;
+                border-radius: 8px !important;
+                color: ${{textPrimary}} !important;
+                font-size: 13px !important;
+                font-weight: 600 !important;
+                cursor: pointer !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 10px !important;
+                transition: all 0.15s ease !important;
+            }}
+            .rf-menu-item:hover {{
+                background: ${{hoverBg}} !important;
+                color: ${{hoverText}} !important;
+            }}
+            .rf-menu-item span {{
+                font-size: 15px !important;
+                width: 18px !important;
+                display: inline-block !important;
+                text-align: center !important;
+            }}
+            #rf-about-modal-overlay {{
+                position: fixed !important;
+                inset: 0 !important;
+                background: rgba(0, 0, 0, 0.72) !important;
+                backdrop-filter: blur(8px) !important;
+                -webkit-backdrop-filter: blur(8px) !important;
+                z-index: 1000001 !important;
+                display: none;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 20px !important;
+            }}
+            #rf-about-modal-overlay.show {{
+                display: flex !important;
+                animation: rfModalFade 0.2s ease-out;
+            }}
+            #rf-about-modal {{
+                background: ${{cardBg}} !important;
+                border: 1px solid ${{cardBorder}} !important;
+                border-radius: 20px !important;
+                max-width: 520px !important;
+                width: 100% !important;
+                padding: 28px 32px !important;
+                box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6) !important;
+                font-family: 'Plus Jakarta Sans', sans-serif !important;
+                color: ${{textPrimary}} !important;
+                position: relative !important;
+            }}
+            @keyframes rfDropdownFade {{
+                from {{ opacity: 0; transform: translateY(-6px); }}
+                to {{ opacity: 1; transform: translateY(0); }}
+            }}
+            @keyframes rfModalFade {{
+                from {{ opacity: 0; transform: scale(0.96); }}
+                to {{ opacity: 1; transform: scale(1); }}
+            }}
+        `;
+        parentDoc.head.appendChild(style);
+
+        const btn = parentDoc.createElement('button');
+        btn.id = 'rf-custom-menu-btn';
+        btn.setAttribute('title', 'Options Menu');
+        btn.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <circle cx="12" cy="5" r="2"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+                <circle cx="12" cy="19" r="2"></circle>
+            </svg>
+        `;
+        parentDoc.body.appendChild(btn);
+
+        const dropdown = parentDoc.createElement('div');
+        dropdown.id = 'rf-custom-dropdown';
+        dropdown.innerHTML = `
+            <div class="rf-menu-item" id="rf-opt-settings"><span>⚙</span> Settings</div>
+            <div class="rf-menu-item" id="rf-opt-fullscreen"><span>⛶</span> Full screen</div>
+            <div class="rf-menu-item" id="rf-opt-reset"><span>↻</span> Reset</div>
+            <div class="rf-menu-item" id="rf-opt-about"><span>ℹ</span> About</div>
+        `;
+        parentDoc.body.appendChild(dropdown);
+
+        const modalOverlay = parentDoc.createElement('div');
+        modalOverlay.id = 'rf-about-modal-overlay';
+        modalOverlay.innerHTML = `
+            <div id="rf-about-modal">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                    <div>
+                        <div style="font-size:20px; font-weight:800; letter-spacing:-0.5px;">
+                            <span style="color:#0b72e7;">Razorpay</span> <span style="background:linear-gradient(135deg, #00d2d2, #0b72e7); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">RiskForge AI</span>
+                        </div>
+                        <div style="font-size:11px; font-weight:700; color:${{textSecondary}}; text-transform:uppercase; letter-spacing:0.8px; margin-top:2px;">
+                            Merchant Risk & Dispute Defense Platform
+                        </div>
+                    </div>
+                    <button id="rf-modal-close" style="background:none; border:none; color:${{textSecondary}}; font-size:24px; cursor:pointer; line-height:1; padding:0 4px;">&times;</button>
+                </div>
+                <div style="font-size:13.5px; line-height:1.6; color:${{textSecondary}}; margin-bottom:16px;">
+                    <strong style="color:${{textPrimary}};">RiskForge AI</strong> is an intelligent payment protection system built for online merchants and payment gateways to stop fraud and eliminate costly chargebacks.
+                </div>
+                <div style="font-size:12px; font-weight:700; color:#0b72e7; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">
+                    How It Protects Your Business:
+                </div>
+                <ul style="font-size:13px; line-height:1.7; color:${{textSecondary}}; padding-left:18px; margin:0 0 20px 0;">
+                    <li><strong style="color:${{textPrimary}};">⚡ Real-Time Fraud Shield:</strong> Evaluates orders in milliseconds using machine learning and policy rules to detect stolen cards and identity theft before goods are dispatched.</li>
+                    <li><strong style="color:${{textPrimary}};">🟢 Zero Friction for Honest Buyers:</strong> High-precision algorithms prevent false alarms, ensuring your legitimate customers purchase smoothly.</li>
+                    <li><strong style="color:${{textPrimary}};">⚖️ Automated Dispute Recovery:</strong> When a customer disputes a payment, RiskForge instantly packages proof of delivery (POD), 3D-Secure authentication logs, and receipts into a bank-ready rebuttal to win back your revenue.</li>
+                </ul>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid ${{cardBorder}}; padding-top:14px; font-size:11px; color:${{textSecondary}};">
+                    <span>Version 2.0.0 &bull; ISO 27001 Defense-Only Mode</span>
+                    <button id="rf-modal-close-btn" style="background:linear-gradient(135deg, #0b72e7, #00d2d2); color:#ffffff; border:none; padding:7px 18px; border-radius:8px; font-weight:600; cursor:pointer; font-size:12px;">Close</button>
+                </div>
+            </div>
+        `;
+        parentDoc.body.appendChild(modalOverlay);
+
+        btn.onclick = function(e) {{
+            e.stopPropagation();
+            dropdown.classList.toggle('show');
+        }};
+
+        parentDoc.onclick = function(e) {{
+            if (!dropdown.contains(e.target) && e.target !== btn) {{
+                dropdown.classList.remove('show');
+            }}
+        }};
+
+        parentDoc.getElementById('rf-opt-settings').onclick = function() {{
+            dropdown.classList.remove('show');
+            const sidebar = parentDoc.querySelector('section[data-testid="stSidebar"]');
+            if (sidebar) {{
+                sidebar.scrollIntoView({{ behavior: 'smooth' }});
+            }}
+        }};
+
+        parentDoc.getElementById('rf-opt-fullscreen').onclick = function() {{
+            dropdown.classList.remove('show');
+            if (!parentDoc.fullscreenElement) {{
+                parentDoc.documentElement.requestFullscreen().catch(() => {{}});
+            }} else {{
+                parentDoc.exitFullscreen().catch(() => {{}});
+            }}
+        }};
+
+        parentDoc.getElementById('rf-opt-reset').onclick = function() {{
+            dropdown.classList.remove('show');
+            window.parent.location.reload();
+        }};
+
+        parentDoc.getElementById('rf-opt-about').onclick = function() {{
+            dropdown.classList.remove('show');
+            modalOverlay.classList.add('show');
+        }};
+
+        parentDoc.getElementById('rf-modal-close').onclick = () => modalOverlay.classList.remove('show');
+        parentDoc.getElementById('rf-modal-close-btn').onclick = () => modalOverlay.classList.remove('show');
+        modalOverlay.onclick = function(e) {{
+            if (e.target === modalOverlay) modalOverlay.classList.remove('show');
+        }};
+    }})();
+    </script>
+    """,
+    height=0,
+)
 
 @st.cache_resource
 def get_decision_service() -> RiskDecisionService:
@@ -850,115 +1043,6 @@ def render_3d_risk_globe(risk_state: str = "LOW", risk_score: float = 0.15, amou
 service = get_decision_service()
 ai_responder = get_ai_responder()
 sample_df = load_sample_transactions()
-
-# ==============================================================================
-# TOP-RIGHT KEBAB MENU & DIALOGS
-# ==============================================================================
-@st.dialog("ℹ️ About RiskForge AI", width="large")
-def show_about_dialog():
-    st.markdown(
-        """
-        ### 🛡️ What is Razorpay RiskForge AI?
-        **RiskForge AI** is an automated risk intelligence and dispute defense system designed for online stores and digital merchants. It acts as an instant safety shield that protects your business from payment fraud, stolen cards, and costly chargebacks.
-
-        ---
-
-        ### 🔍 How It Protects Merchants & Businesses
-
-        1. **Instant Transaction Screening (Before Fulfilling Orders)**
-           Every payment is analyzed in real time across 40+ behavioral signals—including rapid ordering bursts (velocity), foreign IP discrepancies, and historical disputes—to spot fraud before you ship goods or lose money.
-
-        2. **Smart 2FA Challenges (Zero Friction for Good Customers)**
-           Instead of blocking legitimate customers, questionable orders are prompted with OTP / 3D-Secure verification. Genuine buyers breeze through, while stolen-card fraudsters get stopped cold.
-
-        3. **Automated Dispute Defense (Win Back Disputed Revenue)**
-           When a buyer falsely claims they never authorized a payment (friendly fraud), RiskForge automatically gathers verified proof of delivery, OTP authentication timestamps, and invoices into an official rebuttal package formatted to win liability representments under Visa and Mastercard rules.
-
-        ---
-
-        ### 🧭 Quick Platform Navigation
-        - **📱 Mobile App:** Responsive portrait view for on-call fraud teams.
-        - **🌐 Executive Command Center:** Live portfolio metrics, 3D threat visualizer, and incoming transaction stream.
-        - **🔍 Transaction Investigator:** Deep autopsy of any order with TreeSHAP factor attributions.
-        - **✍️ Risk Simulator:** Construct custom test payments or try realistic fraud scenario templates.
-        - **📑 Dispute Resolution:** 1-click Compelling Evidence 3.0 checklists and automated rebuttal letters.
-        - **📊 Risk Engine Intelligence:** Machine learning benchmarks, ROC-AUC curves, and financial cost frontiers.
-        """
-    )
-
-
-@st.dialog("⚙️ Platform Settings")
-def show_settings_dialog():
-    st.markdown("#### 🛠️ Operational Preferences")
-    st.markdown("##### 🎨 Appearance & Theme")
-    cur_theme = "Dark Mode 🌙" if is_dark else "Light Mode ☀️"
-    theme_choice = st.radio("Active Theme", ["Dark Mode 🌙", "Light Mode ☀️"], index=0 if is_dark else 1, horizontal=True)
-    if st.button("Apply Theme", type="primary", use_container_width=True):
-        st.session_state["theme_mode"] = "dark" if "Dark" in theme_choice else "light"
-        st.rerun()
-
-    st.markdown("---")
-    st.markdown("##### 🔒 Safeguards & Compliance")
-    st.checkbox("Automatic 2FA Step-Up on High Risk Signals", value=True)
-    st.checkbox("Log Analyst Decisions to Immutable Audit Ledger", value=True)
-    st.checkbox("ISO 27001 Defense-Only PII Tokenization Active", value=True, disabled=True)
-    st.caption("Active Model: Calibrated XGBoost v2.1 with TreeSHAP attributions.")
-
-
-# Top-Right Custom 3-Dot Kebab Menu
-top_kebab = st.popover("⋮", use_container_width=False)
-with top_kebab:
-    # 1. Segmented Theme Controls: ◐ System   ☀ Light   ☾ Dark
-    theme_cols = st.columns(3)
-    with theme_cols[0]:
-        if st.button("◐ System", use_container_width=True, type="secondary", help="Set default theme"):
-            st.session_state["theme_mode"] = "dark"
-            st.rerun()
-    with theme_cols[1]:
-        if st.button("☀ Light", use_container_width=True, type="primary" if not is_dark else "secondary"):
-            st.session_state["theme_mode"] = "light"
-            st.rerun()
-    with theme_cols[2]:
-        if st.button("☾ Dark", use_container_width=True, type="primary" if is_dark else "secondary"):
-            st.session_state["theme_mode"] = "dark"
-            st.rerun()
-
-    st.markdown("<hr style='margin: 8px 0 10px 0; border: none; border-top: 1px solid var(--card-border);'>", unsafe_allow_html=True)
-
-    # 2. Settings
-    if st.button("⚙ Settings", use_container_width=True, type="secondary"):
-        show_settings_dialog()
-
-    # 3. Full screen
-    st.markdown(
-        """
-        <button onclick="if (!document.fullscreenElement) { (document.documentElement.requestFullscreen ? document.documentElement.requestFullscreen() : parent.document.documentElement.requestFullscreen()); } else { (document.exitFullscreen ? document.exitFullscreen() : parent.document.exitFullscreen()); }" 
-                style="width: 100%; padding: 6px 12px; margin-bottom: 4px; background: transparent; border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: flex-start; gap: 8px; transition: all 0.2s ease;">
-            <span>⛶</span> <span>Full screen</span>
-        </button>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    # 4. Reset
-    if st.button("↻ Reset", use_container_width=True, type="secondary"):
-        st.session_state["analyst_audit_log"] = [
-            {
-                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "transaction_id": "TXN_INIT_9041",
-                "amount": 42000.0,
-                "engine_verdict": "REVIEW",
-                "analyst_action": "Approved after 2FA",
-                "notes": "Customer confirmed order via registered phone OTP.",
-            }
-        ]
-        st.session_state["last_simulated_txn"] = None
-        st.toast("Session reset to initial clean state.", icon="↻")
-        st.rerun()
-
-    # 5. About
-    if st.button("ℹ About", use_container_width=True, type="secondary"):
-        show_about_dialog()
 
 # Sidebar Navigation & Enterprise Controls
 with st.sidebar:
