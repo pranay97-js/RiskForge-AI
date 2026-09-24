@@ -52,12 +52,21 @@ from src.ai.schemas import EvidenceChecklist, GroundedCaseInput
 from src.decision.cost import CostEngine
 from src.decision.service import RiskDecisionService
 
-# Set Streamlit Page Configuration
 st.set_page_config(
     page_title="Razorpay RiskForge AI — Merchant Risk Platform",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded",
+    menu_items={
+        "About": """
+### 🛡️ Razorpay RiskForge AI — Merchant Risk Defense
+**Automated fraud detection and dispute recovery built for online merchants.**
+
+- **Real-Time Screening:** Evaluates orders in milliseconds using calibrated Machine Learning and 6 safety policy rules.
+- **Smart 2FA Verification:** Protects genuine buyers while challenging suspicious high-risk activity.
+- **Automated Dispute Defense:** Compiles courier delivery proofs and authentication logs into bank-ready rebuttal letters to win back disputed funds under Visa and Mastercard rules.
+        """
+    },
 )
 
 # Initialize Session State Variables
@@ -159,11 +168,19 @@ st.markdown(
         background-color: transparent !important;
     }}
 
-    /* Hide Streamlit Deploy button */
+    /* Hide native Streamlit Deploy button, 3-dot MainMenu, screencast/print items, and Streamlit footer */
     .stDeployButton,
     [data-testid="stAppDeployButton"],
     button[data-testid="stAppDeployButton"],
-    div[data-testid="stAppDeployButton"] {{
+    div[data-testid="stAppDeployButton"],
+    #MainMenu,
+    [data-testid="stMainMenu"],
+    button[title="View app options"],
+    [data-testid="stToolbarActions"],
+    footer,
+    footer[data-testid="stFooter"],
+    [data-testid="stMainMenuPopover"] footer,
+    [data-testid="stMainMenuPopover"] a[href*="streamlit.io"] {{
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
@@ -187,6 +204,55 @@ st.markdown(
         height: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
+    }}
+
+    /* Custom Top-Right 3-Dot Menu Button */
+    div[data-testid="stPopover"] {{
+        position: fixed !important;
+        top: 0.65rem !important;
+        right: 0.75rem !important;
+        z-index: 999999 !important;
+    }}
+
+    div[data-testid="stPopover"] > button {{
+        background-color: var(--card-bg, #0f172a) !important;
+        border: 1px solid var(--card-border, rgba(255, 255, 255, 0.2)) !important;
+        border-radius: 8px !important;
+        padding: 4px 8px !important;
+        font-size: 20px !important;
+        font-weight: 700 !important;
+        line-height: 1 !important;
+        color: var(--text-primary) !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2) !important;
+        transition: all 0.2s ease !important;
+        height: 34px !important;
+        min-height: 34px !important;
+        min-width: 38px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }}
+
+    div[data-testid="stPopover"] > button:hover {{
+        background-color: var(--accent-blue-dim, rgba(11, 114, 231, 0.15)) !important;
+        border-color: var(--accent-blue) !important;
+    }}
+
+    div[data-testid="stPopoverBody"] {{
+        background-color: var(--card-bg, #0f172a) !important;
+        border: 1px solid var(--card-border, rgba(255, 255, 255, 0.15)) !important;
+        border-radius: 14px !important;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45) !important;
+        padding: 12px 14px !important;
+        min-width: 250px !important;
+    }}
+
+    div[data-testid="stPopoverBody"] button {{
+        border-radius: 8px !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        justify-content: flex-start !important;
+        margin-bottom: 4px !important;
     }}
 
     /* Sidebar toggle button styling */
@@ -784,6 +850,115 @@ def render_3d_risk_globe(risk_state: str = "LOW", risk_score: float = 0.15, amou
 service = get_decision_service()
 ai_responder = get_ai_responder()
 sample_df = load_sample_transactions()
+
+# ==============================================================================
+# TOP-RIGHT KEBAB MENU & DIALOGS
+# ==============================================================================
+@st.dialog("ℹ️ About RiskForge AI", width="large")
+def show_about_dialog():
+    st.markdown(
+        """
+        ### 🛡️ What is Razorpay RiskForge AI?
+        **RiskForge AI** is an automated risk intelligence and dispute defense system designed for online stores and digital merchants. It acts as an instant safety shield that protects your business from payment fraud, stolen cards, and costly chargebacks.
+
+        ---
+
+        ### 🔍 How It Protects Merchants & Businesses
+
+        1. **Instant Transaction Screening (Before Fulfilling Orders)**
+           Every payment is analyzed in real time across 40+ behavioral signals—including rapid ordering bursts (velocity), foreign IP discrepancies, and historical disputes—to spot fraud before you ship goods or lose money.
+
+        2. **Smart 2FA Challenges (Zero Friction for Good Customers)**
+           Instead of blocking legitimate customers, questionable orders are prompted with OTP / 3D-Secure verification. Genuine buyers breeze through, while stolen-card fraudsters get stopped cold.
+
+        3. **Automated Dispute Defense (Win Back Disputed Revenue)**
+           When a buyer falsely claims they never authorized a payment (friendly fraud), RiskForge automatically gathers verified proof of delivery, OTP authentication timestamps, and invoices into an official rebuttal package formatted to win liability representments under Visa and Mastercard rules.
+
+        ---
+
+        ### 🧭 Quick Platform Navigation
+        - **📱 Mobile App:** Responsive portrait view for on-call fraud teams.
+        - **🌐 Executive Command Center:** Live portfolio metrics, 3D threat visualizer, and incoming transaction stream.
+        - **🔍 Transaction Investigator:** Deep autopsy of any order with TreeSHAP factor attributions.
+        - **✍️ Risk Simulator:** Construct custom test payments or try realistic fraud scenario templates.
+        - **📑 Dispute Resolution:** 1-click Compelling Evidence 3.0 checklists and automated rebuttal letters.
+        - **📊 Risk Engine Intelligence:** Machine learning benchmarks, ROC-AUC curves, and financial cost frontiers.
+        """
+    )
+
+
+@st.dialog("⚙️ Platform Settings")
+def show_settings_dialog():
+    st.markdown("#### 🛠️ Operational Preferences")
+    st.markdown("##### 🎨 Appearance & Theme")
+    cur_theme = "Dark Mode 🌙" if is_dark else "Light Mode ☀️"
+    theme_choice = st.radio("Active Theme", ["Dark Mode 🌙", "Light Mode ☀️"], index=0 if is_dark else 1, horizontal=True)
+    if st.button("Apply Theme", type="primary", use_container_width=True):
+        st.session_state["theme_mode"] = "dark" if "Dark" in theme_choice else "light"
+        st.rerun()
+
+    st.markdown("---")
+    st.markdown("##### 🔒 Safeguards & Compliance")
+    st.checkbox("Automatic 2FA Step-Up on High Risk Signals", value=True)
+    st.checkbox("Log Analyst Decisions to Immutable Audit Ledger", value=True)
+    st.checkbox("ISO 27001 Defense-Only PII Tokenization Active", value=True, disabled=True)
+    st.caption("Active Model: Calibrated XGBoost v2.1 with TreeSHAP attributions.")
+
+
+# Top-Right Custom 3-Dot Kebab Menu
+top_kebab = st.popover("⋮", use_container_width=False)
+with top_kebab:
+    # 1. Segmented Theme Controls: ◐ System   ☀ Light   ☾ Dark
+    theme_cols = st.columns(3)
+    with theme_cols[0]:
+        if st.button("◐ System", use_container_width=True, type="secondary", help="Set default theme"):
+            st.session_state["theme_mode"] = "dark"
+            st.rerun()
+    with theme_cols[1]:
+        if st.button("☀ Light", use_container_width=True, type="primary" if not is_dark else "secondary"):
+            st.session_state["theme_mode"] = "light"
+            st.rerun()
+    with theme_cols[2]:
+        if st.button("☾ Dark", use_container_width=True, type="primary" if is_dark else "secondary"):
+            st.session_state["theme_mode"] = "dark"
+            st.rerun()
+
+    st.markdown("<hr style='margin: 8px 0 10px 0; border: none; border-top: 1px solid var(--card-border);'>", unsafe_allow_html=True)
+
+    # 2. Settings
+    if st.button("⚙ Settings", use_container_width=True, type="secondary"):
+        show_settings_dialog()
+
+    # 3. Full screen
+    st.markdown(
+        """
+        <button onclick="if (!document.fullscreenElement) { (document.documentElement.requestFullscreen ? document.documentElement.requestFullscreen() : parent.document.documentElement.requestFullscreen()); } else { (document.exitFullscreen ? document.exitFullscreen() : parent.document.exitFullscreen()); }" 
+                style="width: 100%; padding: 6px 12px; margin-bottom: 4px; background: transparent; border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-primary); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: flex-start; gap: 8px; transition: all 0.2s ease;">
+            <span>⛶</span> <span>Full screen</span>
+        </button>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # 4. Reset
+    if st.button("↻ Reset", use_container_width=True, type="secondary"):
+        st.session_state["analyst_audit_log"] = [
+            {
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "transaction_id": "TXN_INIT_9041",
+                "amount": 42000.0,
+                "engine_verdict": "REVIEW",
+                "analyst_action": "Approved after 2FA",
+                "notes": "Customer confirmed order via registered phone OTP.",
+            }
+        ]
+        st.session_state["last_simulated_txn"] = None
+        st.toast("Session reset to initial clean state.", icon="↻")
+        st.rerun()
+
+    # 5. About
+    if st.button("ℹ About", use_container_width=True, type="secondary"):
+        show_about_dialog()
 
 # Sidebar Navigation & Enterprise Controls
 with st.sidebar:
