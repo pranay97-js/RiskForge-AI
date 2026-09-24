@@ -174,6 +174,21 @@ st.markdown(
         padding: 0 !important;
     }}
 
+    /* Hide Streamlit Heading Anchor & Copy Link Buttons */
+    [data-testid="stHeaderActionElements"],
+    [data-testid="stHeadingWithActionElements"] button,
+    .stHeadingContainer a,
+    a.header-anchor {{
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }}
+
     /* Sidebar toggle button styling */
     [data-testid="collapsedControl"],
     [data-testid="collapsedControl"] button,
