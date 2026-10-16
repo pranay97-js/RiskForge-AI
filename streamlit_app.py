@@ -217,41 +217,20 @@ st.markdown(
         visibility: visible !important;
         opacity: 1 !important;
         pointer-events: auto !important;
-        z-index: 999999 !important;
+        z-index: 999997 !important;
     }}
 
-    /* Prominently style the hamburger button so it is easy to find and click at all times */
-    [data-testid="collapsedControl"],
-    [data-testid="stSidebarCollapsedControl"],
-    div[data-testid="stSidebarCollapsedControl"],
-    button[data-testid="stSidebarCollapsedControl"] {{
+    /* Streamlit expand button: hidden behind our custom floating hamburger button */
+    [data-testid="stExpandSidebarButton"],
+    button[data-testid="stExpandSidebarButton"] {{
+        opacity: 0 !important;
         position: fixed !important;
         top: 0.65rem !important;
         left: 0.75rem !important;
-        z-index: 999999 !important;
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        background-color: var(--card-bg, #0f172a) !important;
-        border: 1px solid var(--card-border, rgba(255, 255, 255, 0.2)) !important;
-        border-radius: 8px !important;
-        padding: 4px 6px !important;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
-        transition: all 0.2s ease !important;
-    }}
-
-    [data-testid="collapsedControl"]:hover,
-    [data-testid="stSidebarCollapsedControl"]:hover {{
-        background-color: var(--accent-blue, #3b82f6) !important;
-        border-color: #60a5fa !important;
-    }}
-
-    [data-testid="collapsedControl"] button,
-    [data-testid="stSidebarCollapsedControl"] button {{
-        color: var(--text-primary, #ffffff) !important;
-        background: transparent !important;
-        border: none !important;
+        width: 38px !important;
+        height: 38px !important;
+        z-index: 999996 !important;
+        pointer-events: none !important;
     }}
 
     [data-testid="collapsedControl"] svg,
@@ -639,7 +618,18 @@ components.html(
             #MainMenu, [data-testid="stMainMenu"], .stDeployButton, [data-testid="stAppDeployButton"] {{
                 display: none !important;
             }}
-            /* Sidebar Collapsed Control Fix: Ensure it is clickable & properly positioned */
+            /* Streamlit Native Expand Button: positioned under our custom hamburger */
+            [data-testid="stExpandSidebarButton"],
+            button[data-testid="stExpandSidebarButton"] {{
+                opacity: 0 !important;
+                position: fixed !important;
+                top: 0.65rem !important;
+                left: 0.75rem !important;
+                width: 38px !important;
+                height: 38px !important;
+                z-index: 999996 !important;
+                pointer-events: none !important;
+            }}
             [data-testid="collapsedControl"],
             [data-testid="stSidebarCollapsedControl"] {{
                 display: flex !important;
@@ -1119,45 +1109,54 @@ components.html(
         `;
         parentDoc.body.appendChild(hamburgerBtn);
 
-        function syncSidebarToggle() {{
+        function isSidebarOpen() {{
             const sidebar = parentDoc.querySelector('section[data-testid="stSidebar"]');
-            const btn = parentDoc.getElementById('rf-persistent-hamburger');
-            if (!btn) return;
-            if (!sidebar) {{
-                btn.style.display = 'flex';
-                return;
-            }}
+            if (!sidebar) return false;
             const ariaExpanded = sidebar.getAttribute('aria-expanded');
-            const style = window.getComputedStyle(sidebar);
+            if (ariaExpanded === 'true') return true;
+            if (ariaExpanded === 'false') return false;
             const rect = sidebar.getBoundingClientRect();
-            const isCollapsed = ariaExpanded === 'false' || 
-                                rect.width <= 15 || 
-                                (style.transform && style.transform !== 'none' && style.transform.indexOf('matrix') !== -1 && rect.right <= 10) ||
-                                style.display === 'none' ||
-                                style.visibility === 'hidden';
-            btn.style.display = isCollapsed ? 'flex' : 'none';
+            return rect.width > 50 && rect.left >= 0;
         }}
 
-        hamburgerBtn.onclick = function(e) {{
-            e.stopPropagation();
-            const expandBtn = parentDoc.querySelector(
-                '[data-testid="stSidebarCollapsedControl"] button, ' +
-                '[data-testid="collapsedControl"] button, ' +
-                '[data-testid="stSidebarCollapsedControl"], ' +
-                'button[data-testid="stSidebarCollapsedControl"], ' +
-                '[data-testid="stSidebarCollapseButton"] button'
-            );
-            if (expandBtn) {{
-                expandBtn.click();
+        function toggleSidebar() {{
+            const open = isSidebarOpen();
+            if (open) {{
+                const colBtn = parentDoc.querySelector(
+                    '[data-testid="stSidebarCollapseButton"] button, ' +
+                    'button[data-testid="stSidebarCollapseButton"], ' +
+                    '[data-testid="stSidebarCollapseButton"], ' +
+                    '[data-testid="stSidebarHeader"] button'
+                );
+                if (colBtn) colBtn.click();
             }} else {{
-                const sidebar = parentDoc.querySelector('section[data-testid="stSidebar"]');
-                if (sidebar) {{
-                    const isCol = sidebar.getAttribute('aria-expanded') === 'false';
-                    sidebar.setAttribute('aria-expanded', isCol ? 'true' : 'false');
-                }}
+                const expBtn = parentDoc.querySelector(
+                    '[data-testid="stExpandSidebarButton"], ' +
+                    'button[data-testid="stExpandSidebarButton"], ' +
+                    '[data-testid="stExpandSidebarButton"] button, ' +
+                    '[data-testid="stSidebarCollapsedControl"] button, ' +
+                    'button[data-testid="stSidebarCollapsedControl"], ' +
+                    '[data-testid="stSidebarCollapsedControl"], ' +
+                    '[data-testid="collapsedControl"] button, ' +
+                    '[data-testid="collapsedControl"]'
+                );
+                if (expBtn) expBtn.click();
             }}
             setTimeout(syncSidebarToggle, 150);
             setTimeout(syncSidebarToggle, 350);
+        }}
+
+        function syncSidebarToggle() {{
+            const btn = parentDoc.getElementById('rf-persistent-hamburger');
+            if (!btn) return;
+            const open = isSidebarOpen();
+            btn.style.display = open ? 'none' : 'flex';
+        }}
+
+        hamburgerBtn.onclick = function(e) {{
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSidebar();
         }};
 
         const sidebarElem = parentDoc.querySelector('section[data-testid="stSidebar"]');
@@ -1608,17 +1607,12 @@ components.html(
         }});
 
         setupPillGroup('rf-sidebar-pills', function(val) {{
-            const sidebar = parentDoc.querySelector('section[data-testid="stSidebar"]');
-            if (!sidebar) return;
-            const isCurrentlyExpanded = sidebar.getAttribute('aria-expanded') === 'true';
-            if (val === 'collapsed' && isCurrentlyExpanded) {{
-                const colBtn = parentDoc.querySelector('[data-testid="stSidebarCollapseButton"] button, [data-testid="stSidebarHeader"] button');
-                if (colBtn) colBtn.click();
-            }} else if (val === 'expanded' && !isCurrentlyExpanded) {{
-                const expBtn = parentDoc.querySelector('[data-testid="stSidebarCollapsedControl"] button, [data-testid="collapsedControl"] button, [data-testid="stSidebarCollapsedControl"]');
-                if (expBtn) expBtn.click();
+            const open = isSidebarOpen();
+            if (val === 'collapsed' && open) {{
+                toggleSidebar();
+            }} else if (val === 'expanded' && !open) {{
+                toggleSidebar();
             }}
-            setTimeout(syncSidebarToggle, 200);
         }});
 
         setupPillGroup('rf-display-pills');

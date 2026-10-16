@@ -204,6 +204,13 @@
   ></iframe>
 
   <script>
+    (function() {
+      var iframe = document.getElementById('app-frame');
+      if (iframe && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+        iframe.src = 'http://localhost:8501/';
+      }
+    })();
+
     // Fallback timer: ensure preloader dismisses smoothly
     setTimeout(function() {
       var p = document.getElementById('preloader');
