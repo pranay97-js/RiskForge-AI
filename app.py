@@ -168,6 +168,8 @@ def mobile_dashboard():
     return HTMLResponse("<h1>Razorpay RiskForge AI</h1><p>Mobile App active.</p>")
 
 
+@app.get("/health")
+@app.get("/api/health")
 @app.get("/api/v1/health")
 def health_check():
     """Health and service readiness check."""

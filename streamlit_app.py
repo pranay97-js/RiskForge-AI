@@ -1597,11 +1597,14 @@ components.html(
         }}
 
         setupPillGroup('rf-theme-pills', function(val) {{
+            const buttons = Array.from(parentDoc.querySelectorAll('button'));
             if (val === 'dark') {{
-                const darkBtn = parentDoc.querySelector('button:has(div:contains("Dark Mode")), button:contains("Dark Mode")');
-                // Persist theme selection
+                const darkBtn = buttons.find(b => b.textContent && b.textContent.includes('Dark Mode'));
+                if (darkBtn) darkBtn.click();
                 localStorage.setItem('riskforge_theme_pref', 'dark');
             }} else if (val === 'light') {{
+                const lightBtn = buttons.find(b => b.textContent && b.textContent.includes('Light Mode'));
+                if (lightBtn) lightBtn.click();
                 localStorage.setItem('riskforge_theme_pref', 'light');
             }}
         }});
